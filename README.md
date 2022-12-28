@@ -1,0 +1,5 @@
+- Deploy token sale
+- Deploy token contract
+- Deploy token generator
+- Deploy pool contracts
+- Deploy pool generators

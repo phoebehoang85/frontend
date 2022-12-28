@@ -1,0 +1,75 @@
+.feature--card-wrapper{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    height: 100%;
+    grid-gap: 30px;
+}
+.feature--card-item{
+    position: relative;
+    background: rgba(26, 29, 30, 0.6);
+border-radius: 15px;
+border: 2px solid;
+border-image-source: linear-gradient(154.52deg, rgba(0, 172, 243, 0.7) -1.66%, rgba(43, 40, 40, 0) 27.78%, rgba(125, 125, 125, 0.25) 91.17%);
+background: #1A1D1E99;
+text-align: center;
+padding: 34px 0 35px;
+}
+.feature--card-item:nth-child(2){
+  border: 2px solid;
+  border-image-source: linear-gradient(150.67deg, rgba(151, 232, 85, 0.2) 4.78%, rgba(43, 40, 40, 0) 31.46%, rgba(125, 125, 125, 0.25) 88.92%);
+  background: #1A1D1E99;
+}
+.feature--card-item:nth-child(3){
+  border: 2px solid;
+  border-image-source: linear-gradient(150.32deg, rgba(228, 79, 207, 0.74) 2.42%, rgba(43, 40, 40, 0) 29.79%, rgba(125, 125, 125, 0.44) 88.72%);
+  background: #1A1D1E99;
+}
+.feature--card-item > .title {
+    font-family: var(--font-base);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 30px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: var(--color-white);
+    margin-bottom: 17px;
+  }
+  .feature--card-item .count-number {
+    background: linear-gradient(66.9deg, #00E5ED 7.65%, #0044FF 91.86%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    text-shadow: 0px 0px 12px rgba(0, 210, 239, 0.5);
+    font-family: var(--font-alt);
+    font-style: normal;
+    font-weight: 600;
+    font-size: 96px;
+    line-height: 84px;
+  }
+  .feature--card-item:nth-child(2) .count-number {
+    background: linear-gradient(67.68deg, #C7F661 3.4%, #04B913 81.57%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    text-shadow: 0px 0px 12px rgba(87, 215, 69, 0.56);
+    
+  }
+  .feature--card-item:nth-child(3) .count-number {
+    background: linear-gradient(0.31deg, #FF4D63 -14.7%, #C42E89 25.07%, #9415A8 63.6%, #7606BB 92.19%, #6B00C2 108.35%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    text-shadow: 0px 0px 12px rgba(195, 45, 138, 0.56);
+  }
+  .feature--card-item .count-number span {
+	font-size: 45px;
+}
+@media (max-width:767px) {
+    .feature--card-wrapper{
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
