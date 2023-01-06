@@ -31,8 +31,8 @@ async function publicMint(caller_account,source,token_amount, value) {
   console.log(totalAmount,value);
 
   const injector = await web3FromSource(source);
-  await contract.tx
-    .publicMint({ gasLimit, value },
+  await contract.tx["tokenMintCapTrait::publicMint"]
+    ({ gasLimit, value },
     totalAmount)
     .signAndSend(
       caller_account,
@@ -129,7 +129,7 @@ async function cap(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.cap(
+    const { result, output } = await contract.query["tokenMintCapTrait::cap"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -157,7 +157,7 @@ async function mintingCap(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.mintingCap(
+    const { result, output } = await contract.query["tokenMintCapTrait::mintingCap"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -186,7 +186,7 @@ async function totalMinted(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.totalMinted(
+    const { result, output } = await contract.query["tokenMintCapTrait::totalMinted"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -216,7 +216,7 @@ async function mintingFee(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.mintingFee(
+    const { result, output } = await contract.query["tokenMintCapTrait::mintingFee"](
       caller_account,
       { value: azero_value, gasLimit }
     );

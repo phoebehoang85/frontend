@@ -1,8 +1,8 @@
 const azt_contract = {
-  CONTRACT_ADDRESS: "5CL3PdXW2im18Ckaa6s8UKLD81nnzUAZWnQVC5yFW94wWVoK",
+  CONTRACT_ADDRESS: "5HHnuKjqG4qbFHni4AbRehPZeDZyuPAoNVSFMH7qXaY9qErn",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0xf64702c654eeb9c2989c275cbc77afef61a014633e3b1dc06833539f61c40955",
+		"hash": "0xf859ef81a723973ddea9b2473ee22a662be5c97bc5050b9f2263519e206baba1",
 		"language": "ink! 3.4.0",
 		"compiler": "rustc 1.68.0-nightly"
 	  },
@@ -92,257 +92,206 @@ const azt_contract = {
 		  "events": [],
 		  "messages": [
 			{
-			  "args": [
-				{
-				  "label": "amount",
-				  "type": {
-					"displayName": [
-					  "Balance"
-					],
-					"type": 0
-				  }
-				}
+			  "args": [],
+			  "docs": [
+				" Returns the total token supply."
 			  ],
-			  "docs": [],
-			  "label": "public_mint",
-			  "mutates": true,
-			  "payable": true,
+			  "label": "PSP22::total_supply",
+			  "mutates": false,
+			  "payable": false,
 			  "returnType": {
 				"displayName": [
-				  "Result"
+				  "psp22_external",
+				  "TotalSupplyOutput"
 				],
-				"type": 13
+				"type": 0
 			  },
-			  "selector": "0xf5331a91"
+			  "selector": "0x162df8c2"
 			},
 			{
 			  "args": [
 				{
-				  "label": "mint_to",
+				  "label": "spender",
 				  "type": {
 					"displayName": [
-					  "AccountId"
+					  "psp22_external",
+					  "ApproveInput1"
 					],
 					"type": 2
 				  }
 				},
 				{
-				  "label": "amount",
-				  "type": {
-					"displayName": [
-					  "Balance"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "owner_mint",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Result"
-				],
-				"type": 13
-			  },
-			  "selector": "0x34342873"
-			},
-			{
-			  "args": [
-				{
-				  "label": "amount",
-				  "type": {
-					"displayName": [
-					  "Balance"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "burn",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Result"
-				],
-				"type": 13
-			  },
-			  "selector": "0xb1efc17b"
-			},
-			{
-			  "args": [
-				{
-				  "label": "cap",
-				  "type": {
-					"displayName": [
-					  "Balance"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "set_cap",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Result"
-				],
-				"type": 13
-			  },
-			  "selector": "0x498ecdc9"
-			},
-			{
-			  "args": [
-				{
-				  "label": "minting_fee",
-				  "type": {
-					"displayName": [
-					  "Balance"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "set_minting_fee",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Result"
-				],
-				"type": 13
-			  },
-			  "selector": "0xecc508b8"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "cap",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Balance"
-				],
-				"type": 0
-			  },
-			  "selector": "0xb00b03c6"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "minting_cap",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Balance"
-				],
-				"type": 0
-			  },
-			  "selector": "0xa3d6da39"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "total_minted",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Balance"
-				],
-				"type": 0
-			  },
-			  "selector": "0x16af933a"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "minting_fee",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Balance"
-				],
-				"type": 0
-			  },
-			  "selector": "0x551b4106"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "token_name",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "String"
-				],
-				"type": 12
-			  },
-			  "selector": "0x53db29ae"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "token_symbol",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "String"
-				],
-				"type": 12
-			  },
-			  "selector": "0xd733ea17"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "token_decimals",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "u8"
-				],
-				"type": 4
-			  },
-			  "selector": "0x9715e3ca"
-			},
-			{
-			  "args": [
-				{
 				  "label": "value",
 				  "type": {
 					"displayName": [
-					  "Balance"
+					  "psp22_external",
+					  "ApproveInput2"
 					],
 					"type": 0
 				  }
 				}
 			  ],
 			  "docs": [
-				" Withdraw Fees - only Owner"
+				" Allows `spender` to withdraw from the caller's account multiple times, up to",
+				" the `value` amount.",
+				"",
+				" If this function is called again it overwrites the current allowance with `value`.",
+				"",
+				" An `Approval` event is emitted.",
+				"",
+				" # Errors",
+				"",
+				" Returns `ZeroSenderAddress` error if sender's address is zero.",
+				"",
+				" Returns `ZeroRecipientAddress` error if recipient's address is zero."
 			  ],
-			  "label": "withdraw_fee",
+			  "label": "PSP22::approve",
 			  "mutates": true,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
-				  "Result"
+				  "psp22_external",
+				  "ApproveOutput"
 				],
-				"type": 15
+				"type": 13
 			  },
-			  "selector": "0x07fdb555"
+			  "selector": "0xb20f1bbd"
+			},
+			{
+			  "args": [
+				{
+				  "label": "to",
+				  "type": {
+					"displayName": [
+					  "psp22_external",
+					  "TransferInput1"
+					],
+					"type": 2
+				  }
+				},
+				{
+				  "label": "value",
+				  "type": {
+					"displayName": [
+					  "psp22_external",
+					  "TransferInput2"
+					],
+					"type": 0
+				  }
+				},
+				{
+				  "label": "data",
+				  "type": {
+					"displayName": [
+					  "psp22_external",
+					  "TransferInput3"
+					],
+					"type": 12
+				  }
+				}
+			  ],
+			  "docs": [
+				" Transfers `value` amount of tokens from the caller's account to account `to`",
+				" with additional `data` in unspecified format.",
+				"",
+				" On success a `Transfer` event is emitted.",
+				"",
+				" # Errors",
+				"",
+				" Returns `InsufficientBalance` error if there are not enough tokens on",
+				" the caller's account Balance.",
+				"",
+				" Returns `ZeroSenderAddress` error if sender's address is zero.",
+				"",
+				" Returns `ZeroRecipientAddress` error if recipient's address is zero."
+			  ],
+			  "label": "PSP22::transfer",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "psp22_external",
+				  "TransferOutput"
+				],
+				"type": 13
+			  },
+			  "selector": "0xdb20f9f5"
+			},
+			{
+			  "args": [
+				{
+				  "label": "spender",
+				  "type": {
+					"displayName": [
+					  "psp22_external",
+					  "IncreaseAllowanceInput1"
+					],
+					"type": 2
+				  }
+				},
+				{
+				  "label": "delta_value",
+				  "type": {
+					"displayName": [
+					  "psp22_external",
+					  "IncreaseAllowanceInput2"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [
+				" Atomically increases the allowance granted to `spender` by the caller.",
+				"",
+				" An `Approval` event is emitted.",
+				"",
+				" # Errors",
+				"",
+				" Returns `ZeroSenderAddress` error if sender's address is zero.",
+				"",
+				" Returns `ZeroRecipientAddress` error if recipient's address is zero."
+			  ],
+			  "label": "PSP22::increase_allowance",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "psp22_external",
+				  "IncreaseAllowanceOutput"
+				],
+				"type": 13
+			  },
+			  "selector": "0x96d6b57a"
+			},
+			{
+			  "args": [
+				{
+				  "label": "owner",
+				  "type": {
+					"displayName": [
+					  "psp22_external",
+					  "BalanceOfInput1"
+					],
+					"type": 2
+				  }
+				}
+			  ],
+			  "docs": [
+				" Returns the account Balance for the specified `owner`.",
+				"",
+				" Returns `0` if the account is non-existent."
+			  ],
+			  "label": "PSP22::balance_of",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "psp22_external",
+				  "BalanceOfOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x6568382f"
 			},
 			{
 			  "args": [
@@ -383,23 +332,6 @@ const azt_contract = {
 				"type": 0
 			  },
 			  "selector": "0x4d47d921"
-			},
-			{
-			  "args": [],
-			  "docs": [
-				" Returns the total token supply."
-			  ],
-			  "label": "PSP22::total_supply",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "psp22_external",
-				  "TotalSupplyOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0x162df8c2"
 			},
 			{
 			  "args": [
@@ -484,145 +416,6 @@ const azt_contract = {
 				  "type": {
 					"displayName": [
 					  "psp22_external",
-					  "ApproveInput1"
-					],
-					"type": 2
-				  }
-				},
-				{
-				  "label": "value",
-				  "type": {
-					"displayName": [
-					  "psp22_external",
-					  "ApproveInput2"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [
-				" Allows `spender` to withdraw from the caller's account multiple times, up to",
-				" the `value` amount.",
-				"",
-				" If this function is called again it overwrites the current allowance with `value`.",
-				"",
-				" An `Approval` event is emitted.",
-				"",
-				" # Errors",
-				"",
-				" Returns `ZeroSenderAddress` error if sender's address is zero.",
-				"",
-				" Returns `ZeroRecipientAddress` error if recipient's address is zero."
-			  ],
-			  "label": "PSP22::approve",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "psp22_external",
-				  "ApproveOutput"
-				],
-				"type": 13
-			  },
-			  "selector": "0xb20f1bbd"
-			},
-			{
-			  "args": [
-				{
-				  "label": "owner",
-				  "type": {
-					"displayName": [
-					  "psp22_external",
-					  "BalanceOfInput1"
-					],
-					"type": 2
-				  }
-				}
-			  ],
-			  "docs": [
-				" Returns the account Balance for the specified `owner`.",
-				"",
-				" Returns `0` if the account is non-existent."
-			  ],
-			  "label": "PSP22::balance_of",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "psp22_external",
-				  "BalanceOfOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0x6568382f"
-			},
-			{
-			  "args": [
-				{
-				  "label": "to",
-				  "type": {
-					"displayName": [
-					  "psp22_external",
-					  "TransferInput1"
-					],
-					"type": 2
-				  }
-				},
-				{
-				  "label": "value",
-				  "type": {
-					"displayName": [
-					  "psp22_external",
-					  "TransferInput2"
-					],
-					"type": 0
-				  }
-				},
-				{
-				  "label": "data",
-				  "type": {
-					"displayName": [
-					  "psp22_external",
-					  "TransferInput3"
-					],
-					"type": 12
-				  }
-				}
-			  ],
-			  "docs": [
-				" Transfers `value` amount of tokens from the caller's account to account `to`",
-				" with additional `data` in unspecified format.",
-				"",
-				" On success a `Transfer` event is emitted.",
-				"",
-				" # Errors",
-				"",
-				" Returns `InsufficientBalance` error if there are not enough tokens on",
-				" the caller's account Balance.",
-				"",
-				" Returns `ZeroSenderAddress` error if sender's address is zero.",
-				"",
-				" Returns `ZeroRecipientAddress` error if recipient's address is zero."
-			  ],
-			  "label": "PSP22::transfer",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "psp22_external",
-				  "TransferOutput"
-				],
-				"type": 13
-			  },
-			  "selector": "0xdb20f9f5"
-			},
-			{
-			  "args": [
-				{
-				  "label": "spender",
-				  "type": {
-					"displayName": [
-					  "psp22_external",
 					  "DecreaseAllowanceInput1"
 					],
 					"type": 2
@@ -668,96 +461,6 @@ const azt_contract = {
 			{
 			  "args": [
 				{
-				  "label": "spender",
-				  "type": {
-					"displayName": [
-					  "psp22_external",
-					  "IncreaseAllowanceInput1"
-					],
-					"type": 2
-				  }
-				},
-				{
-				  "label": "delta_value",
-				  "type": {
-					"displayName": [
-					  "psp22_external",
-					  "IncreaseAllowanceInput2"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [
-				" Atomically increases the allowance granted to `spender` by the caller.",
-				"",
-				" An `Approval` event is emitted.",
-				"",
-				" # Errors",
-				"",
-				" Returns `ZeroSenderAddress` error if sender's address is zero.",
-				"",
-				" Returns `ZeroRecipientAddress` error if recipient's address is zero."
-			  ],
-			  "label": "PSP22::increase_allowance",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "psp22_external",
-				  "IncreaseAllowanceOutput"
-				],
-				"type": 13
-			  },
-			  "selector": "0x96d6b57a"
-			},
-			{
-			  "args": [],
-			  "docs": [
-				" Leaves the contract without owner. It will not be possible to call",
-				" owner's functions anymore. Can only be called by the current owner.",
-				"",
-				" NOTE: Renouncing ownership will leave the contract without an owner,",
-				" thereby removing any functionality that is only available to the owner.",
-				"",
-				" On success a `OwnershipTransferred` event is emitted.",
-				"",
-				" # Errors",
-				"",
-				" Panics with `CallerIsNotOwner` error if caller is not owner"
-			  ],
-			  "label": "Ownable::renounce_ownership",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "ownable_external",
-				  "RenounceOwnershipOutput"
-				],
-				"type": 17
-			  },
-			  "selector": "0x5e228753"
-			},
-			{
-			  "args": [],
-			  "docs": [
-				" Returns the address of the current owner."
-			  ],
-			  "label": "Ownable::owner",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "ownable_external",
-				  "OwnerOutput"
-				],
-				"type": 2
-			  },
-			  "selector": "0x4fa43c8c"
-			},
-			{
-			  "args": [
-				{
 				  "label": "new_owner",
 				  "type": {
 					"displayName": [
@@ -788,9 +491,326 @@ const azt_contract = {
 				  "ownable_external",
 				  "TransferOwnershipOutput"
 				],
-				"type": 17
+				"type": 15
 			  },
 			  "selector": "0x11f43efd"
+			},
+			{
+			  "args": [],
+			  "docs": [
+				" Returns the address of the current owner."
+			  ],
+			  "label": "Ownable::owner",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "ownable_external",
+				  "OwnerOutput"
+				],
+				"type": 2
+			  },
+			  "selector": "0x4fa43c8c"
+			},
+			{
+			  "args": [],
+			  "docs": [
+				" Leaves the contract without owner. It will not be possible to call",
+				" owner's functions anymore. Can only be called by the current owner.",
+				"",
+				" NOTE: Renouncing ownership will leave the contract without an owner,",
+				" thereby removing any functionality that is only available to the owner.",
+				"",
+				" On success a `OwnershipTransferred` event is emitted.",
+				"",
+				" # Errors",
+				"",
+				" Panics with `CallerIsNotOwner` error if caller is not owner"
+			  ],
+			  "label": "Ownable::renounce_ownership",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "ownable_external",
+				  "RenounceOwnershipOutput"
+				],
+				"type": 15
+			  },
+			  "selector": "0x5e228753"
+			},
+			{
+			  "args": [
+				{
+				  "label": "amount",
+				  "type": {
+					"displayName": [
+					  "tokentrait_external",
+					  "BurnInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "TokenTrait::burn",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokentrait_external",
+				  "BurnOutput"
+				],
+				"type": 13
+			  },
+			  "selector": "0xf111ba3a"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenTrait::token_decimals",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokentrait_external",
+				  "TokenDecimalsOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0x1e217eb2"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenTrait::token_name",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokentrait_external",
+				  "TokenNameOutput"
+				],
+				"type": 12
+			  },
+			  "selector": "0xa6caa4ff"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenTrait::token_symbol",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokentrait_external",
+				  "TokenSymbolOutput"
+				],
+				"type": 12
+			  },
+			  "selector": "0xfc9d001b"
+			},
+			{
+			  "args": [
+				{
+				  "label": "amount",
+				  "type": {
+					"displayName": [
+					  "tokenmintcaptrait_external",
+					  "PublicMintInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "TokenMintCapTrait::public_mint",
+			  "mutates": true,
+			  "payable": true,
+			  "returnType": {
+				"displayName": [
+				  "tokenmintcaptrait_external",
+				  "PublicMintOutput"
+				],
+				"type": 13
+			  },
+			  "selector": "0x49e5f576"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenMintCapTrait::minting_cap",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmintcaptrait_external",
+				  "MintingCapOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x73a46329"
+			},
+			{
+			  "args": [
+				{
+				  "label": "minting_fee",
+				  "type": {
+					"displayName": [
+					  "tokenmintcaptrait_external",
+					  "SetMintingFeeInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "TokenMintCapTrait::set_minting_fee",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmintcaptrait_external",
+				  "SetMintingFeeOutput"
+				],
+				"type": 13
+			  },
+			  "selector": "0x58f9c527"
+			},
+			{
+			  "args": [
+				{
+				  "label": "value",
+				  "type": {
+					"displayName": [
+					  "tokenmintcaptrait_external",
+					  "WithdrawFeeInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [
+				" Withdraw Fees - only Owner"
+			  ],
+			  "label": "TokenMintCapTrait::withdraw_fee",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmintcaptrait_external",
+				  "WithdrawFeeOutput"
+				],
+				"type": 17
+			  },
+			  "selector": "0x8e723dd2"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenMintCapTrait::total_minted",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmintcaptrait_external",
+				  "TotalMintedOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x950dee6e"
+			},
+			{
+			  "args": [
+				{
+				  "label": "mint_to",
+				  "type": {
+					"displayName": [
+					  "tokenmintcaptrait_external",
+					  "OwnerMintInput1"
+					],
+					"type": 2
+				  }
+				},
+				{
+				  "label": "amount",
+				  "type": {
+					"displayName": [
+					  "tokenmintcaptrait_external",
+					  "OwnerMintInput2"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "TokenMintCapTrait::owner_mint",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmintcaptrait_external",
+				  "OwnerMintOutput"
+				],
+				"type": 13
+			  },
+			  "selector": "0x57102ff8"
+			},
+			{
+			  "args": [
+				{
+				  "label": "cap",
+				  "type": {
+					"displayName": [
+					  "tokenmintcaptrait_external",
+					  "SetCapInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "TokenMintCapTrait::set_cap",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmintcaptrait_external",
+				  "SetCapOutput"
+				],
+				"type": 13
+			  },
+			  "selector": "0xef31e5bb"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenMintCapTrait::minting_fee",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmintcaptrait_external",
+				  "MintingFeeOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x9a581b7a"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenMintCapTrait::cap",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmintcaptrait_external",
+				  "CapOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0xad78cc2e"
 			}
 		  ]
 		},
@@ -905,66 +925,136 @@ const azt_contract = {
 			  },
 			  {
 				"layout": {
-				  "cell": {
-					"key": "0x0000000000000000000000000000000000000000000000000000000000000000",
-					"ty": 12
+				  "struct": {
+					"fields": [
+					  {
+						"layout": {
+						  "cell": {
+							"key": "0xf6cf727200000000000000000000000000000000000000000000000000000000",
+							"ty": 12
+						  }
+						},
+						"name": "name"
+					  },
+					  {
+						"layout": {
+						  "cell": {
+							"key": "0xf7cf727200000000000000000000000000000000000000000000000000000000",
+							"ty": 12
+						  }
+						},
+						"name": "symbol"
+					  },
+					  {
+						"layout": {
+						  "cell": {
+							"key": "0xf8cf727200000000000000000000000000000000000000000000000000000000",
+							"ty": 4
+						  }
+						},
+						"name": "decimals"
+					  },
+					  {
+						"layout": {
+						  "enum": {
+							"dispatchKey": "0xf9cf727200000000000000000000000000000000000000000000000000000000",
+							"variants": {
+							  "0": {
+								"fields": [
+								  {
+									"layout": {
+									  "cell": {
+										"key": "0xfacf727200000000000000000000000000000000000000000000000000000000",
+										"ty": 11
+									  }
+									},
+									"name": null
+								  }
+								]
+							  },
+							  "1": {
+								"fields": []
+							  }
+							}
+						  }
+						},
+						"name": "_reserved"
+					  }
+					]
 				  }
 				},
-				"name": "name"
+				"name": "token"
 			  },
 			  {
 				"layout": {
-				  "cell": {
-					"key": "0x0100000000000000000000000000000000000000000000000000000000000000",
-					"ty": 12
+				  "struct": {
+					"fields": [
+					  {
+						"layout": {
+						  "cell": {
+							"key": "0xfcd453b300000000000000000000000000000000000000000000000000000000",
+							"ty": 0
+						  }
+						},
+						"name": "cap"
+					  },
+					  {
+						"layout": {
+						  "cell": {
+							"key": "0xfdd453b300000000000000000000000000000000000000000000000000000000",
+							"ty": 0
+						  }
+						},
+						"name": "minting_fee"
+					  },
+					  {
+						"layout": {
+						  "cell": {
+							"key": "0xfed453b300000000000000000000000000000000000000000000000000000000",
+							"ty": 0
+						  }
+						},
+						"name": "minting_cap"
+					  },
+					  {
+						"layout": {
+						  "cell": {
+							"key": "0xffd453b300000000000000000000000000000000000000000000000000000000",
+							"ty": 0
+						  }
+						},
+						"name": "total_minted"
+					  },
+					  {
+						"layout": {
+						  "enum": {
+							"dispatchKey": "0x00d553b300000000000000000000000000000000000000000000000000000000",
+							"variants": {
+							  "0": {
+								"fields": [
+								  {
+									"layout": {
+									  "cell": {
+										"key": "0x01d553b300000000000000000000000000000000000000000000000000000000",
+										"ty": 11
+									  }
+									},
+									"name": null
+								  }
+								]
+							  },
+							  "1": {
+								"fields": []
+							  }
+							}
+						  }
+						},
+						"name": "_reserved"
+					  }
+					]
 				  }
 				},
-				"name": "symbol"
-			  },
-			  {
-				"layout": {
-				  "cell": {
-					"key": "0x0200000000000000000000000000000000000000000000000000000000000000",
-					"ty": 4
-				  }
-				},
-				"name": "decimals"
-			  },
-			  {
-				"layout": {
-				  "cell": {
-					"key": "0x0300000000000000000000000000000000000000000000000000000000000000",
-					"ty": 0
-				  }
-				},
-				"name": "cap"
-			  },
-			  {
-				"layout": {
-				  "cell": {
-					"key": "0x0400000000000000000000000000000000000000000000000000000000000000",
-					"ty": 0
-				  }
-				},
-				"name": "minting_fee"
-			  },
-			  {
-				"layout": {
-				  "cell": {
-					"key": "0x0500000000000000000000000000000000000000000000000000000000000000",
-					"ty": 0
-				  }
-				},
-				"name": "minting_cap"
-			  },
-			  {
-				"layout": {
-				  "cell": {
-					"key": "0x0600000000000000000000000000000000000000000000000000000000000000",
-					"ty": 0
-				  }
-				},
-				"name": "total_minted"
+				"name": "token_mint_cap"
 			  }
 			]
 		  }
@@ -1293,22 +1383,22 @@ const azt_contract = {
 				"variant": {
 				  "variants": [
 					{
-					  "fields": [
-						{
-						  "type": 12,
-						  "typeName": "String"
-						}
-					  ],
 					  "index": 0,
-					  "name": "Custom"
+					  "name": "CallerIsNotOwner"
+					},
+					{
+					  "index": 1,
+					  "name": "NewOwnerIsZero"
 					}
 				  ]
 				}
 			  },
 			  "path": [
-				"my_psp22_sale",
-				"my_psp22_sale",
-				"Error"
+				"openbrush_contracts",
+				"traits",
+				"errors",
+				"ownable",
+				"OwnableError"
 			  ]
 			}
 		  },
@@ -1361,12 +1451,91 @@ const azt_contract = {
 				"variant": {
 				  "variants": [
 					{
+					  "fields": [
+						{
+						  "type": 12,
+						  "typeName": "String"
+						}
+					  ],
 					  "index": 0,
-					  "name": "CallerIsNotOwner"
+					  "name": "Custom"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 14,
+						  "typeName": "PSP22Error"
+						}
+					  ],
+					  "index": 1,
+					  "name": "PSP22Error"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 19,
+						  "typeName": "PSP34Error"
+						}
+					  ],
+					  "index": 2,
+					  "name": "PSP34Error"
+					},
+					{
+					  "index": 3,
+					  "name": "CannotTransfer"
+					}
+				  ]
+				}
+			  },
+			  "path": [
+				"inkwhale_project",
+				"traits",
+				"error",
+				"Error"
+			  ]
+			}
+		  },
+		  {
+			"id": 19,
+			"type": {
+			  "def": {
+				"variant": {
+				  "variants": [
+					{
+					  "fields": [
+						{
+						  "type": 12,
+						  "typeName": "String"
+						}
+					  ],
+					  "index": 0,
+					  "name": "Custom"
 					},
 					{
 					  "index": 1,
-					  "name": "NewOwnerIsZero"
+					  "name": "SelfApprove"
+					},
+					{
+					  "index": 2,
+					  "name": "NotApproved"
+					},
+					{
+					  "index": 3,
+					  "name": "TokenExists"
+					},
+					{
+					  "index": 4,
+					  "name": "TokenNotExists"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 12,
+						  "typeName": "String"
+						}
+					  ],
+					  "index": 5,
+					  "name": "SafeTransferCheckFailed"
 					}
 				  ]
 				}
@@ -1375,8 +1544,8 @@ const azt_contract = {
 				"openbrush_contracts",
 				"traits",
 				"errors",
-				"ownable",
-				"OwnableError"
+				"psp34",
+				"PSP34Error"
 			  ]
 			}
 		  }
