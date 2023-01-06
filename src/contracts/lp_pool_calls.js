@@ -30,8 +30,7 @@ async function topupRewardPool(caller_account,source,amount) {
     const tokenAmount = new BN(amount * 10 ** 6).mul(new BN(10 ** 6)).toString();
 
     const injector = await web3FromSource(source);
-    await contract.tx
-      .topupRewardPool({ gasLimit, value: 0 },tokenAmount)
+    await contract.tx["genericPoolContractTrait::topupRewardPool"]({ gasLimit, value: 0 },tokenAmount)
       .signAndSend(
         caller_account,
         { signer: injector.signer },
@@ -189,8 +188,7 @@ async function withdrawRewardPool(caller_account,source,amount) {
     const tokenAmount = new BN(amount * 10 ** 6).mul(new BN(10 ** 6)).toString();
 
     const injector = await web3FromSource(source);
-    await contract.tx
-      .withdrawRewardPool({ gasLimit, value: 0 },tokenAmount)
+    await contract.tx["genericPoolContractTrait::withdrawRewardPool"]({ gasLimit, value: 0 },tokenAmount)
       .signAndSend(
         caller_account,
         { signer: injector.signer },
@@ -229,7 +227,7 @@ async function duration(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.duration(
+    const { result, output } = await contract.query["genericPoolContractTrait::duration"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -258,7 +256,7 @@ async function startTime(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.startTime(
+    const { result, output } = await contract.query["genericPoolContractTrait::startTime"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -287,7 +285,7 @@ async function multiplier(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.multiplier(
+    const { result, output } = await contract.query["genericPoolContractTrait::multiplier"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -316,7 +314,7 @@ async function rewardPool(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.rewardPool(
+    const { result, output } = await contract.query["genericPoolContractTrait::rewardPool"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -345,7 +343,7 @@ async function totalStaked(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.totalStaked(
+    const { result, output } = await contract.query["genericPoolContractTrait::totalStaked"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -374,7 +372,7 @@ async function unstakeFee(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.unstakeFee(
+    const { result, output } = await contract.query["genericPoolContractTrait::unstakeFee"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -403,7 +401,7 @@ async function getStakeInfo(caller_account, staker) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.getStakeInfo(
+    const { result, output } = await contract.query["genericPoolContractTrait::getStakeInfo"](
       caller_account,
       { value: azero_value, gasLimit },
       staker
@@ -434,7 +432,7 @@ async function psp22ContractAddress(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.psp22ContractAddress(
+    const { result, output } = await contract.query["genericPoolContractTrait::psp22ContractAddress"](
       caller_account,
       { value: azero_value, gasLimit }
     );

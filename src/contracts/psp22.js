@@ -1,8 +1,8 @@
 const psp22_contract = {
-  CONTRACT_ADDRESS: "5Gz3suMfZyBnJWxrULG85FKa4UVGM6Lmz7axekw4h5iJPdT5",
+  CONTRACT_ADDRESS: "5CaEJfRNDJ8h76QmsPSj8V4sRqoQpqZAuF3QKX5hbySMgdkF",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0xb46004cdd3da143ff6b971e7f9115cddce01e6c9b5e214b88103044d6761d421",
+		"hash": "0x733301b2d571f12f07d235a7911841b282bc7fffeb3c9a60e90b03d25cb18b4d",
 		"language": "ink! 3.4.0",
 		"compiler": "rustc 1.68.0-nightly"
 	  },
@@ -90,117 +90,72 @@ const psp22_contract = {
 			{
 			  "args": [
 				{
-				  "label": "amount",
-				  "type": {
-					"displayName": [
-					  "Balance"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "burn",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Result"
-				],
-				"type": 13
-			  },
-			  "selector": "0xb1efc17b"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "token_name",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "String"
-				],
-				"type": 12
-			  },
-			  "selector": "0x53db29ae"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "token_symbol",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "String"
-				],
-				"type": 12
-			  },
-			  "selector": "0xd733ea17"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "token_decimals",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "u8"
-				],
-				"type": 4
-			  },
-			  "selector": "0x9715e3ca"
-			},
-			{
-			  "args": [
-				{
-				  "label": "spender",
+				  "label": "owner",
 				  "type": {
 					"displayName": [
 					  "psp22_external",
-					  "ApproveInput1"
+					  "AllowanceInput1"
 					],
 					"type": 2
 				  }
 				},
 				{
-				  "label": "value",
+				  "label": "spender",
 				  "type": {
 					"displayName": [
 					  "psp22_external",
-					  "ApproveInput2"
+					  "AllowanceInput2"
 					],
-					"type": 0
+					"type": 2
 				  }
 				}
 			  ],
 			  "docs": [
-				" Allows `spender` to withdraw from the caller's account multiple times, up to",
-				" the `value` amount.",
+				" Returns the amount which `spender` is still allowed to withdraw from `owner`.",
 				"",
-				" If this function is called again it overwrites the current allowance with `value`.",
-				"",
-				" An `Approval` event is emitted.",
-				"",
-				" # Errors",
-				"",
-				" Returns `ZeroSenderAddress` error if sender's address is zero.",
-				"",
-				" Returns `ZeroRecipientAddress` error if recipient's address is zero."
+				" Returns `0` if no allowance has been set `0`."
 			  ],
-			  "label": "PSP22::approve",
-			  "mutates": true,
+			  "label": "PSP22::allowance",
+			  "mutates": false,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
 				  "psp22_external",
-				  "ApproveOutput"
+				  "AllowanceOutput"
 				],
-				"type": 13
+				"type": 0
 			  },
-			  "selector": "0xb20f1bbd"
+			  "selector": "0x4d47d921"
+			},
+			{
+			  "args": [
+				{
+				  "label": "owner",
+				  "type": {
+					"displayName": [
+					  "psp22_external",
+					  "BalanceOfInput1"
+					],
+					"type": 2
+				  }
+				}
+			  ],
+			  "docs": [
+				" Returns the account Balance for the specified `owner`.",
+				"",
+				" Returns `0` if the account is non-existent."
+			  ],
+			  "label": "PSP22::balance_of",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "psp22_external",
+				  "BalanceOfOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x6568382f"
 			},
 			{
 			  "args": [
@@ -254,36 +209,6 @@ const psp22_contract = {
 			{
 			  "args": [
 				{
-				  "label": "owner",
-				  "type": {
-					"displayName": [
-					  "psp22_external",
-					  "BalanceOfInput1"
-					],
-					"type": 2
-				  }
-				}
-			  ],
-			  "docs": [
-				" Returns the account Balance for the specified `owner`.",
-				"",
-				" Returns `0` if the account is non-existent."
-			  ],
-			  "label": "PSP22::balance_of",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "psp22_external",
-				  "BalanceOfOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0x6568382f"
-			},
-			{
-			  "args": [
-				{
 				  "label": "spender",
 				  "type": {
 					"displayName": [
@@ -330,42 +255,127 @@ const psp22_contract = {
 			{
 			  "args": [
 				{
-				  "label": "owner",
+				  "label": "spender",
 				  "type": {
 					"displayName": [
 					  "psp22_external",
-					  "AllowanceInput1"
+					  "ApproveInput1"
 					],
 					"type": 2
 				  }
 				},
 				{
-				  "label": "spender",
+				  "label": "value",
 				  "type": {
 					"displayName": [
 					  "psp22_external",
-					  "AllowanceInput2"
+					  "ApproveInput2"
 					],
-					"type": 2
+					"type": 0
 				  }
 				}
 			  ],
 			  "docs": [
-				" Returns the amount which `spender` is still allowed to withdraw from `owner`.",
+				" Allows `spender` to withdraw from the caller's account multiple times, up to",
+				" the `value` amount.",
 				"",
-				" Returns `0` if no allowance has been set `0`."
+				" If this function is called again it overwrites the current allowance with `value`.",
+				"",
+				" An `Approval` event is emitted.",
+				"",
+				" # Errors",
+				"",
+				" Returns `ZeroSenderAddress` error if sender's address is zero.",
+				"",
+				" Returns `ZeroRecipientAddress` error if recipient's address is zero."
 			  ],
-			  "label": "PSP22::allowance",
-			  "mutates": false,
+			  "label": "PSP22::approve",
+			  "mutates": true,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
 				  "psp22_external",
-				  "AllowanceOutput"
+				  "ApproveOutput"
 				],
-				"type": 0
+				"type": 13
 			  },
-			  "selector": "0x4d47d921"
+			  "selector": "0xb20f1bbd"
+			},
+			{
+			  "args": [
+				{
+				  "label": "from",
+				  "type": {
+					"displayName": [
+					  "psp22_external",
+					  "TransferFromInput1"
+					],
+					"type": 2
+				  }
+				},
+				{
+				  "label": "to",
+				  "type": {
+					"displayName": [
+					  "psp22_external",
+					  "TransferFromInput2"
+					],
+					"type": 2
+				  }
+				},
+				{
+				  "label": "value",
+				  "type": {
+					"displayName": [
+					  "psp22_external",
+					  "TransferFromInput3"
+					],
+					"type": 0
+				  }
+				},
+				{
+				  "label": "data",
+				  "type": {
+					"displayName": [
+					  "psp22_external",
+					  "TransferFromInput4"
+					],
+					"type": 12
+				  }
+				}
+			  ],
+			  "docs": [
+				" Transfers `value` tokens on the behalf of `from` to the account `to`",
+				" with additional `data` in unspecified format.",
+				"",
+				" This can be used to allow a contract to transfer tokens on ones behalf and/or",
+				" to charge fees in sub-currencies, for example.",
+				"",
+				" On success a `Transfer` and `Approval` events are emitted.",
+				"",
+				" # Errors",
+				"",
+				" Returns `InsufficientAllowance` error if there are not enough tokens allowed",
+				" for the caller to withdraw from `from`.",
+				"",
+				" Returns `InsufficientBalance` error if there are not enough tokens on",
+				" the the account Balance of `from`.",
+				"",
+				" Returns `ZeroSenderAddress` error if sender's address is zero.",
+				"",
+				" Returns `ZeroRecipientAddress` error if recipient's address is zero."
+			  ],
+			  "label": "PSP22::transfer_from",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "psp22_external",
+				  "TransferFromOutput"
+				],
+				"type": 13
+			  },
+			  "selector": "0x54b3c76e"
 			},
 			{
 			  "args": [],
@@ -445,80 +455,75 @@ const psp22_contract = {
 			  "selector": "0xdb20f9f5"
 			},
 			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenTrait::token_name",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokentrait_external",
+				  "TokenNameOutput"
+				],
+				"type": 12
+			  },
+			  "selector": "0xa6caa4ff"
+			},
+			{
 			  "args": [
 				{
-				  "label": "from",
+				  "label": "amount",
 				  "type": {
 					"displayName": [
-					  "psp22_external",
-					  "TransferFromInput1"
-					],
-					"type": 2
-				  }
-				},
-				{
-				  "label": "to",
-				  "type": {
-					"displayName": [
-					  "psp22_external",
-					  "TransferFromInput2"
-					],
-					"type": 2
-				  }
-				},
-				{
-				  "label": "value",
-				  "type": {
-					"displayName": [
-					  "psp22_external",
-					  "TransferFromInput3"
+					  "tokentrait_external",
+					  "BurnInput1"
 					],
 					"type": 0
 				  }
-				},
-				{
-				  "label": "data",
-				  "type": {
-					"displayName": [
-					  "psp22_external",
-					  "TransferFromInput4"
-					],
-					"type": 12
-				  }
 				}
 			  ],
-			  "docs": [
-				" Transfers `value` tokens on the behalf of `from` to the account `to`",
-				" with additional `data` in unspecified format.",
-				"",
-				" This can be used to allow a contract to transfer tokens on ones behalf and/or",
-				" to charge fees in sub-currencies, for example.",
-				"",
-				" On success a `Transfer` and `Approval` events are emitted.",
-				"",
-				" # Errors",
-				"",
-				" Returns `InsufficientAllowance` error if there are not enough tokens allowed",
-				" for the caller to withdraw from `from`.",
-				"",
-				" Returns `InsufficientBalance` error if there are not enough tokens on",
-				" the the account Balance of `from`.",
-				"",
-				" Returns `ZeroSenderAddress` error if sender's address is zero.",
-				"",
-				" Returns `ZeroRecipientAddress` error if recipient's address is zero."
-			  ],
-			  "label": "PSP22::transfer_from",
+			  "docs": [],
+			  "label": "TokenTrait::burn",
 			  "mutates": true,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
-				  "psp22_external",
-				  "TransferFromOutput"
+				  "tokentrait_external",
+				  "BurnOutput"
 				],
 				"type": 13
 			  },
-			  "selector": "0x54b3c76e"
+			  "selector": "0xf111ba3a"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenTrait::token_symbol",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokentrait_external",
+				  "TokenSymbolOutput"
+				],
+				"type": 12
+			  },
+			  "selector": "0xfc9d001b"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenTrait::token_decimals",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokentrait_external",
+				  "TokenDecimalsOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0x1e217eb2"
 			}
 		  ]
 		},
@@ -589,30 +594,65 @@ const psp22_contract = {
 			  },
 			  {
 				"layout": {
-				  "cell": {
-					"key": "0x0000000000000000000000000000000000000000000000000000000000000000",
-					"ty": 12
+				  "struct": {
+					"fields": [
+					  {
+						"layout": {
+						  "cell": {
+							"key": "0xf6cf727200000000000000000000000000000000000000000000000000000000",
+							"ty": 12
+						  }
+						},
+						"name": "name"
+					  },
+					  {
+						"layout": {
+						  "cell": {
+							"key": "0xf7cf727200000000000000000000000000000000000000000000000000000000",
+							"ty": 12
+						  }
+						},
+						"name": "symbol"
+					  },
+					  {
+						"layout": {
+						  "cell": {
+							"key": "0xf8cf727200000000000000000000000000000000000000000000000000000000",
+							"ty": 4
+						  }
+						},
+						"name": "decimals"
+					  },
+					  {
+						"layout": {
+						  "enum": {
+							"dispatchKey": "0xf9cf727200000000000000000000000000000000000000000000000000000000",
+							"variants": {
+							  "0": {
+								"fields": [
+								  {
+									"layout": {
+									  "cell": {
+										"key": "0xfacf727200000000000000000000000000000000000000000000000000000000",
+										"ty": 11
+									  }
+									},
+									"name": null
+								  }
+								]
+							  },
+							  "1": {
+								"fields": []
+							  }
+							}
+						  }
+						},
+						"name": "_reserved"
+					  }
+					]
 				  }
 				},
-				"name": "name"
-			  },
-			  {
-				"layout": {
-				  "cell": {
-					"key": "0x0100000000000000000000000000000000000000000000000000000000000000",
-					"ty": 12
-				  }
-				},
-				"name": "symbol"
-			  },
-			  {
-				"layout": {
-				  "cell": {
-					"key": "0x0200000000000000000000000000000000000000000000000000000000000000",
-					"ty": 4
-				  }
-				},
-				"name": "decimals"
+				"name": "token"
 			  }
 			]
 		  }

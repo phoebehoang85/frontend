@@ -81,7 +81,7 @@ async function getTokenCount(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.getTokenCount(
+    const { result, output } = await contract.query["tokenManagerTrait::getTokenCount"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -110,7 +110,7 @@ async function getCreationFee(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.getCreationFee(
+    const { result, output } = await contract.query["tokenManagerTrait::getCreationFee"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -139,7 +139,7 @@ async function getTokenInfo(caller_account, index) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.getTokenInfo(
+    const { result, output } = await contract.query["tokenManagerTrait::getTokenInfo"](
       caller_account,
       { value: azero_value, gasLimit },
       index

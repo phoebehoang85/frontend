@@ -1,8 +1,8 @@
 const core_contract = {
-  CONTRACT_ADDRESS: "5DbQ4bnSy3Cp8wPTXGrEnr14EAXU9vjV3TN6UTKFS2dv699X",
+  CONTRACT_ADDRESS: "5EVfGMBKgfuf6xwD8LrBL5pToYNXrVEanvFCUCYNCfnqEk5h",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0x04f71d7d1d24d825d32ae6b8941cfe35c9f76276a93fc3bd68121a7699383883",
+		"hash": "0x02600afa9490c0dfaee02f7d3f01ec8098e8d7842738118fad3932d63fcc7fbb",
 		"language": "ink! 3.4.0",
 		"compiler": "rustc 1.68.0-nightly"
 	  },
@@ -120,204 +120,36 @@ const core_contract = {
 				"displayName": [
 				  "Result"
 				],
-				"type": 11
+				"type": 12
 			  },
 			  "selector": "0x7d97ec7b"
 			},
 			{
-			  "args": [
-				{
-				  "label": "index",
-				  "type": {
-					"displayName": [
-					  "u64"
-					],
-					"type": 5
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "get_token_info",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Option"
-				],
-				"type": 13
-			  },
-			  "selector": "0x44bf925c"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "get_token_count",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "u64"
-				],
-				"type": 5
-			  },
-			  "selector": "0x744362af"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "get_creation_fee",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Balance"
-				],
-				"type": 6
-			  },
-			  "selector": "0xfd96b0ad"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "get_contract_hash",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Hash"
-				],
-				"type": 4
-			  },
-			  "selector": "0xe9232553"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "get_wal_contract",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "AccountId"
-				],
-				"type": 0
-			  },
-			  "selector": "0xec8bb683"
-			},
-			{
-			  "args": [
-				{
-				  "label": "psp22_hash",
-				  "type": {
-					"displayName": [
-					  "Hash"
-					],
-					"type": 4
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "set_contract_hash",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Result"
-				],
-				"type": 11
-			  },
-			  "selector": "0x01e49483"
-			},
-			{
-			  "args": [
-				{
-				  "label": "wal_contract",
-				  "type": {
-					"displayName": [
-					  "AccountId"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "set_wal_contract",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Result"
-				],
-				"type": 11
-			  },
-			  "selector": "0x2456533d"
-			},
-			{
-			  "args": [
-				{
-				  "label": "value",
-				  "type": {
-					"displayName": [
-					  "Balance"
-					],
-					"type": 6
-				  }
-				}
-			  ],
-			  "docs": [
-				" Withdraw Fees - only Owner"
-			  ],
-			  "label": "withdraw_fee",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Result"
-				],
-				"type": 11
-			  },
-			  "selector": "0x07fdb555"
-			},
-			{
-			  "args": [
-				{
-				  "label": "value",
-				  "type": {
-					"displayName": [
-					  "Balance"
-					],
-					"type": 6
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "withdraw_wal",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "Result"
-				],
-				"type": 11
-			  },
-			  "selector": "0xda1e1d15"
-			},
-			{
 			  "args": [],
 			  "docs": [
-				" Returns the address of the current owner."
+				" Leaves the contract without owner. It will not be possible to call",
+				" owner's functions anymore. Can only be called by the current owner.",
+				"",
+				" NOTE: Renouncing ownership will leave the contract without an owner,",
+				" thereby removing any functionality that is only available to the owner.",
+				"",
+				" On success a `OwnershipTransferred` event is emitted.",
+				"",
+				" # Errors",
+				"",
+				" Panics with `CallerIsNotOwner` error if caller is not owner"
 			  ],
-			  "label": "Ownable::owner",
-			  "mutates": false,
+			  "label": "Ownable::renounce_ownership",
+			  "mutates": true,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
 				  "ownable_external",
-				  "OwnerOutput"
+				  "RenounceOwnershipOutput"
 				],
-				"type": 0
+				"type": 16
 			  },
-			  "selector": "0x4fa43c8c"
+			  "selector": "0x5e228753"
 			},
 			{
 			  "args": [
@@ -352,36 +184,218 @@ const core_contract = {
 				  "ownable_external",
 				  "TransferOwnershipOutput"
 				],
-				"type": 14
+				"type": 16
 			  },
 			  "selector": "0x11f43efd"
 			},
 			{
 			  "args": [],
 			  "docs": [
-				" Leaves the contract without owner. It will not be possible to call",
-				" owner's functions anymore. Can only be called by the current owner.",
-				"",
-				" NOTE: Renouncing ownership will leave the contract without an owner,",
-				" thereby removing any functionality that is only available to the owner.",
-				"",
-				" On success a `OwnershipTransferred` event is emitted.",
-				"",
-				" # Errors",
-				"",
-				" Panics with `CallerIsNotOwner` error if caller is not owner"
+				" Returns the address of the current owner."
 			  ],
-			  "label": "Ownable::renounce_ownership",
-			  "mutates": true,
+			  "label": "Ownable::owner",
+			  "mutates": false,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
 				  "ownable_external",
-				  "RenounceOwnershipOutput"
+				  "OwnerOutput"
 				],
-				"type": 14
+				"type": 0
 			  },
-			  "selector": "0x5e228753"
+			  "selector": "0x4fa43c8c"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenManagerTrait::get_contract_hash",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "GetContractHashOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0xf39b5876"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenManagerTrait::get_token_count",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "GetTokenCountOutput"
+				],
+				"type": 5
+			  },
+			  "selector": "0xebabc233"
+			},
+			{
+			  "args": [
+				{
+				  "label": "value",
+				  "type": {
+					"displayName": [
+					  "tokenmanagertrait_external",
+					  "WithdrawFeeInput1"
+					],
+					"type": 6
+				  }
+				}
+			  ],
+			  "docs": [
+				" Withdraw Fees - only Owner"
+			  ],
+			  "label": "TokenManagerTrait::withdraw_fee",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "WithdrawFeeOutput"
+				],
+				"type": 12
+			  },
+			  "selector": "0xf8bc0c3d"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenManagerTrait::get_wal_contract",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "GetWalContractOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x23887774"
+			},
+			{
+			  "args": [
+				{
+				  "label": "value",
+				  "type": {
+					"displayName": [
+					  "tokenmanagertrait_external",
+					  "WithdrawWalInput1"
+					],
+					"type": 6
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "TokenManagerTrait::withdraw_wal",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "WithdrawWalOutput"
+				],
+				"type": 12
+			  },
+			  "selector": "0x4e807631"
+			},
+			{
+			  "args": [
+				{
+				  "label": "wal_contract",
+				  "type": {
+					"displayName": [
+					  "tokenmanagertrait_external",
+					  "SetWalContractInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "TokenManagerTrait::set_wal_contract",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "SetWalContractOutput"
+				],
+				"type": 12
+			  },
+			  "selector": "0x929ea02e"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenManagerTrait::get_creation_fee",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "GetCreationFeeOutput"
+				],
+				"type": 6
+			  },
+			  "selector": "0x034ef9b9"
+			},
+			{
+			  "args": [
+				{
+				  "label": "index",
+				  "type": {
+					"displayName": [
+					  "tokenmanagertrait_external",
+					  "GetTokenInfoInput1"
+					],
+					"type": 5
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "TokenManagerTrait::get_token_info",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "GetTokenInfoOutput"
+				],
+				"type": 18
+			  },
+			  "selector": "0x3453024b"
+			},
+			{
+			  "args": [
+				{
+				  "label": "psp22_hash",
+				  "type": {
+					"displayName": [
+					  "tokenmanagertrait_external",
+					  "SetContractHashInput1"
+					],
+					"type": 4
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "TokenManagerTrait::set_contract_hash",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "SetContractHashOutput"
+				],
+				"type": 12
+			  },
+			  "selector": "0xf38784b8"
 			}
 		  ]
 		},
@@ -439,7 +453,7 @@ const core_contract = {
 					  {
 						"layout": {
 						  "cell": {
-							"key": "0x2ab4d7df00000000000000000000000000000000000000000000000000000000",
+							"key": "0xc386dafc00000000000000000000000000000000000000000000000000000000",
 							"ty": 4
 						  }
 						},
@@ -448,7 +462,7 @@ const core_contract = {
 					  {
 						"layout": {
 						  "cell": {
-							"key": "0x2bb4d7df00000000000000000000000000000000000000000000000000000000",
+							"key": "0xc486dafc00000000000000000000000000000000000000000000000000000000",
 							"ty": 0
 						  }
 						},
@@ -457,7 +471,7 @@ const core_contract = {
 					  {
 						"layout": {
 						  "cell": {
-							"key": "0x2cb4d7df00000000000000000000000000000000000000000000000000000000",
+							"key": "0xc586dafc00000000000000000000000000000000000000000000000000000000",
 							"ty": 5
 						  }
 						},
@@ -466,7 +480,7 @@ const core_contract = {
 					  {
 						"layout": {
 						  "cell": {
-							"key": "0x2db4d7df00000000000000000000000000000000000000000000000000000000",
+							"key": "0xc686dafc00000000000000000000000000000000000000000000000000000000",
 							"ty": 0
 						  }
 						},
@@ -475,7 +489,7 @@ const core_contract = {
 					  {
 						"layout": {
 						  "cell": {
-							"key": "0x2eb4d7df00000000000000000000000000000000000000000000000000000000",
+							"key": "0xc786dafc00000000000000000000000000000000000000000000000000000000",
 							"ty": 6
 						  }
 						},
@@ -484,7 +498,7 @@ const core_contract = {
 					  {
 						"layout": {
 						  "cell": {
-							"key": "0x2fb4d7df00000000000000000000000000000000000000000000000000000000",
+							"key": "0xc886dafc00000000000000000000000000000000000000000000000000000000",
 							"ty": 7
 						  }
 						},
@@ -493,14 +507,14 @@ const core_contract = {
 					  {
 						"layout": {
 						  "enum": {
-							"dispatchKey": "0x30b4d7df00000000000000000000000000000000000000000000000000000000",
+							"dispatchKey": "0xc986dafc00000000000000000000000000000000000000000000000000000000",
 							"variants": {
 							  "0": {
 								"fields": [
 								  {
 									"layout": {
 									  "cell": {
-										"key": "0x31b4d7df00000000000000000000000000000000000000000000000000000000",
+										"key": "0xca86dafc00000000000000000000000000000000000000000000000000000000",
 										"ty": 3
 									  }
 									},
@@ -615,9 +629,7 @@ const core_contract = {
 				"composite": {
 				  "fields": [
 					{
-					  "name": "offset_key",
-					  "type": 10,
-					  "typeName": "Key"
+					  "type": 10
 					}
 				  ]
 				}
@@ -633,8 +645,8 @@ const core_contract = {
 				}
 			  ],
 			  "path": [
-				"ink_storage",
-				"lazy",
+				"openbrush_lang",
+				"storage",
 				"mapping",
 				"Mapping"
 			  ]
@@ -685,8 +697,10 @@ const core_contract = {
 				}
 			  },
 			  "path": [
-				"token_generator",
-				"token_generator",
+				"inkwhale_project",
+				"impls",
+				"token_manager",
+				"data",
 				"Token"
 			  ]
 			}
@@ -705,23 +719,25 @@ const core_contract = {
 			"id": 10,
 			"type": {
 			  "def": {
-				"composite": {
-				  "fields": [
-					{
-					  "type": 1,
-					  "typeName": "[u8; 32]"
-					}
-				  ]
+				"sequence": {
+				  "type": 11
 				}
-			  },
-			  "path": [
-				"ink_primitives",
-				"Key"
-			  ]
+			  }
 			}
 		  },
 		  {
 			"id": 11,
+			"type": {
+			  "def": {
+				"tuple": [
+				  5,
+				  8
+				]
+			  }
+			}
+		  },
+		  {
+			"id": 12,
 			"type": {
 			  "def": {
 				"variant": {
@@ -738,7 +754,7 @@ const core_contract = {
 					{
 					  "fields": [
 						{
-						  "type": 12
+						  "type": 13
 						}
 					  ],
 					  "index": 1,
@@ -754,7 +770,7 @@ const core_contract = {
 				},
 				{
 				  "name": "E",
-				  "type": 12
+				  "type": 13
 				}
 			  ],
 			  "path": [
@@ -763,7 +779,58 @@ const core_contract = {
 			}
 		  },
 		  {
-			"id": 12,
+			"id": 13,
+			"type": {
+			  "def": {
+				"variant": {
+				  "variants": [
+					{
+					  "fields": [
+						{
+						  "type": 9,
+						  "typeName": "String"
+						}
+					  ],
+					  "index": 0,
+					  "name": "Custom"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 14,
+						  "typeName": "PSP22Error"
+						}
+					  ],
+					  "index": 1,
+					  "name": "PSP22Error"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 15,
+						  "typeName": "PSP34Error"
+						}
+					  ],
+					  "index": 2,
+					  "name": "PSP34Error"
+					},
+					{
+					  "index": 3,
+					  "name": "CannotTransfer"
+					}
+				  ]
+				}
+			  },
+			  "path": [
+				"inkwhale_project",
+				"traits",
+				"error",
+				"Error"
+			  ]
+			}
+		  },
+		  {
+			"id": 14,
 			"type": {
 			  "def": {
 				"variant": {
@@ -780,20 +847,166 @@ const core_contract = {
 					},
 					{
 					  "index": 1,
-					  "name": "CannotTransfer"
+					  "name": "InsufficientBalance"
+					},
+					{
+					  "index": 2,
+					  "name": "InsufficientAllowance"
+					},
+					{
+					  "index": 3,
+					  "name": "ZeroRecipientAddress"
+					},
+					{
+					  "index": 4,
+					  "name": "ZeroSenderAddress"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 9,
+						  "typeName": "String"
+						}
+					  ],
+					  "index": 5,
+					  "name": "SafeTransferCheckFailed"
 					}
 				  ]
 				}
 			  },
 			  "path": [
-				"token_generator",
-				"token_generator",
-				"Error"
+				"openbrush_contracts",
+				"traits",
+				"errors",
+				"psp22",
+				"PSP22Error"
 			  ]
 			}
 		  },
 		  {
-			"id": 13,
+			"id": 15,
+			"type": {
+			  "def": {
+				"variant": {
+				  "variants": [
+					{
+					  "fields": [
+						{
+						  "type": 9,
+						  "typeName": "String"
+						}
+					  ],
+					  "index": 0,
+					  "name": "Custom"
+					},
+					{
+					  "index": 1,
+					  "name": "SelfApprove"
+					},
+					{
+					  "index": 2,
+					  "name": "NotApproved"
+					},
+					{
+					  "index": 3,
+					  "name": "TokenExists"
+					},
+					{
+					  "index": 4,
+					  "name": "TokenNotExists"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 9,
+						  "typeName": "String"
+						}
+					  ],
+					  "index": 5,
+					  "name": "SafeTransferCheckFailed"
+					}
+				  ]
+				}
+			  },
+			  "path": [
+				"openbrush_contracts",
+				"traits",
+				"errors",
+				"psp34",
+				"PSP34Error"
+			  ]
+			}
+		  },
+		  {
+			"id": 16,
+			"type": {
+			  "def": {
+				"variant": {
+				  "variants": [
+					{
+					  "fields": [
+						{
+						  "type": 3
+						}
+					  ],
+					  "index": 0,
+					  "name": "Ok"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 17
+						}
+					  ],
+					  "index": 1,
+					  "name": "Err"
+					}
+				  ]
+				}
+			  },
+			  "params": [
+				{
+				  "name": "T",
+				  "type": 3
+				},
+				{
+				  "name": "E",
+				  "type": 17
+				}
+			  ],
+			  "path": [
+				"Result"
+			  ]
+			}
+		  },
+		  {
+			"id": 17,
+			"type": {
+			  "def": {
+				"variant": {
+				  "variants": [
+					{
+					  "index": 0,
+					  "name": "CallerIsNotOwner"
+					},
+					{
+					  "index": 1,
+					  "name": "NewOwnerIsZero"
+					}
+				  ]
+				}
+			  },
+			  "path": [
+				"openbrush_contracts",
+				"traits",
+				"errors",
+				"ownable",
+				"OwnableError"
+			  ]
+			}
+		  },
+		  {
+			"id": 18,
 			"type": {
 			  "def": {
 				"variant": {
@@ -822,74 +1035,6 @@ const core_contract = {
 			  ],
 			  "path": [
 				"Option"
-			  ]
-			}
-		  },
-		  {
-			"id": 14,
-			"type": {
-			  "def": {
-				"variant": {
-				  "variants": [
-					{
-					  "fields": [
-						{
-						  "type": 3
-						}
-					  ],
-					  "index": 0,
-					  "name": "Ok"
-					},
-					{
-					  "fields": [
-						{
-						  "type": 15
-						}
-					  ],
-					  "index": 1,
-					  "name": "Err"
-					}
-				  ]
-				}
-			  },
-			  "params": [
-				{
-				  "name": "T",
-				  "type": 3
-				},
-				{
-				  "name": "E",
-				  "type": 15
-				}
-			  ],
-			  "path": [
-				"Result"
-			  ]
-			}
-		  },
-		  {
-			"id": 15,
-			"type": {
-			  "def": {
-				"variant": {
-				  "variants": [
-					{
-					  "index": 0,
-					  "name": "CallerIsNotOwner"
-					},
-					{
-					  "index": 1,
-					  "name": "NewOwnerIsZero"
-					}
-				  ]
-				}
-			  },
-			  "path": [
-				"openbrush_contracts",
-				"traits",
-				"errors",
-				"ownable",
-				"OwnableError"
 			  ]
 			}
 		  }

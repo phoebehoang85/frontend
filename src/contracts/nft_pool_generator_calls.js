@@ -90,7 +90,7 @@ async function getPoolCount(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.getPoolCount(
+    const { result, output } = await contract.query["genericPoolGeneratorTrait::getPoolCount"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -123,7 +123,7 @@ async function getPoolCountByOwner(caller_account, owner) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.getPoolCountByOwner(
+    const { result, output } = await contract.query["genericPoolGeneratorTrait::getPoolCountByOwner"](
       caller_account,
       { value: azero_value, gasLimit },
       owner
@@ -158,7 +158,7 @@ async function getPoolByOwner(caller_account, owner, index) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.getPoolByOwner(
+    const { result, output } = await contract.query["genericPoolGeneratorTrait::getPoolByOwner"](
       caller_account,
       { value: azero_value, gasLimit },
       owner,
@@ -189,7 +189,7 @@ async function getCreationFee(caller_account) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.getCreationFee(
+    const { result, output } = await contract.query["genericPoolGeneratorTrait::getCreationFee"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -218,7 +218,7 @@ async function getPool(caller_account, index) {
   const gasLimit = -1;
   const azero_value = 0;
   try {
-    const { result, output } = await contract.query.getPool(
+    const { result, output } = await contract.query["genericPoolGeneratorTrait::getPool"](
       caller_account,
       { value: azero_value, gasLimit },
       index

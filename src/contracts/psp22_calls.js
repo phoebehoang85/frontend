@@ -92,7 +92,7 @@ async function tokenName(caller_account) {
   const azero_value = 0;
 
   try {
-    const { result, output } = await contract.query.tokenName(
+    const { result, output } = await contract.query["tokenTrait::tokenName"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -120,7 +120,7 @@ async function tokenSymbol(caller_account) {
   const azero_value = 0;
 
   try {
-    const { result, output } = await contract.query.tokenSymbol(
+    const { result, output } = await contract.query["tokenTrait::tokenSymbol"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -148,7 +148,7 @@ async function tokenDecimals(caller_account) {
   const azero_value = 0;
 
   try {
-    const { result, output } = await contract.query.tokenDecimals(
+    const { result, output } = await contract.query["tokenTrait::tokenDecimals"](
       caller_account,
       { value: azero_value, gasLimit }
     );
@@ -220,7 +220,7 @@ async function burn(caller_account, source, amount) {
   const totalAmount = new BN(amount * 10 ** 6).mul(new BN(10 ** 6)).toString();
 
   const injector = await web3FromSource(source);
-  await contract.tx.burn({ gasLimit, value },
+  await contract.tx["tokenTrait::burn"]({ gasLimit, value },
     totalAmount
   )
     .signAndSend(
