@@ -1,8 +1,8 @@
 const nft_pool_generator_contract = {
-  CONTRACT_ADDRESS: "5GK3xN9ha2RzUZmaBCiivw6Gq2zhN7EyJ18MwGuVX8y3aDPB",
+  CONTRACT_ADDRESS: "5ETY5ifnaUrVbqQfrECxsn6DmRhKST6K2Au1bQ1Z24bEuQfw",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0xc6f4e765a8b75293ca8407ec3732d056b7a869550fec66391aea8cd73a9d9450",
+		"hash": "0xe00c2812e1c64b80283538b1cd6ca916f1f94383093d65b7a1dccadbe2ff26b7",
 		"language": "ink! 3.4.0",
 		"compiler": "rustc 1.68.0-nightly"
 	  },
@@ -160,6 +160,33 @@ const nft_pool_generator_contract = {
 			  "selector": "0x4fa43c8c"
 			},
 			{
+			  "args": [],
+			  "docs": [
+				" Leaves the contract without owner. It will not be possible to call",
+				" owner's functions anymore. Can only be called by the current owner.",
+				"",
+				" NOTE: Renouncing ownership will leave the contract without an owner,",
+				" thereby removing any functionality that is only available to the owner.",
+				"",
+				" On success a `OwnershipTransferred` event is emitted.",
+				"",
+				" # Errors",
+				"",
+				" Panics with `CallerIsNotOwner` error if caller is not owner"
+			  ],
+			  "label": "Ownable::renounce_ownership",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "ownable_external",
+				  "RenounceOwnershipOutput"
+				],
+				"type": 20
+			  },
+			  "selector": "0x5e228753"
+			},
+			{
 			  "args": [
 				{
 				  "label": "new_owner",
@@ -197,74 +224,6 @@ const nft_pool_generator_contract = {
 			  "selector": "0x11f43efd"
 			},
 			{
-			  "args": [],
-			  "docs": [
-				" Leaves the contract without owner. It will not be possible to call",
-				" owner's functions anymore. Can only be called by the current owner.",
-				"",
-				" NOTE: Renouncing ownership will leave the contract without an owner,",
-				" thereby removing any functionality that is only available to the owner.",
-				"",
-				" On success a `OwnershipTransferred` event is emitted.",
-				"",
-				" # Errors",
-				"",
-				" Panics with `CallerIsNotOwner` error if caller is not owner"
-			  ],
-			  "label": "Ownable::renounce_ownership",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "ownable_external",
-				  "RenounceOwnershipOutput"
-				],
-				"type": 20
-			  },
-			  "selector": "0x5e228753"
-			},
-			{
-			  "args": [
-				{
-				  "label": "wal_contract",
-				  "type": {
-					"displayName": [
-					  "genericpoolgeneratortrait_external",
-					  "SetWalContractInput1"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::set_wal_contract",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "SetWalContractOutput"
-				],
-				"type": 15
-			  },
-			  "selector": "0xe36f3db4"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::get_unstake_fee",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "GetUnstakeFeeOutput"
-				],
-				"type": 6
-			  },
-			  "selector": "0xa4395f88"
-			},
-			{
 			  "args": [
 				{
 				  "label": "index",
@@ -291,58 +250,34 @@ const nft_pool_generator_contract = {
 			  "selector": "0xd8207f36"
 			},
 			{
-			  "args": [
-				{
-				  "label": "unstake_fee",
-				  "type": {
-					"displayName": [
-					  "genericpoolgeneratortrait_external",
-					  "SetUnstakeFeeInput1"
-					],
-					"type": 6
-				  }
-				}
-			  ],
+			  "args": [],
 			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::set_unstake_fee",
-			  "mutates": true,
+			  "label": "GenericPoolGeneratorTrait::get_pool_count",
+			  "mutates": false,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
 				  "genericpoolgeneratortrait_external",
-				  "SetUnstakeFeeOutput"
+				  "GetPoolCountOutput"
 				],
-				"type": 15
+				"type": 5
 			  },
-			  "selector": "0xfd8d8fda"
+			  "selector": "0x38b09ecb"
 			},
 			{
-			  "args": [
-				{
-				  "label": "value",
-				  "type": {
-					"displayName": [
-					  "genericpoolgeneratortrait_external",
-					  "WithdrawFeeInput1"
-					],
-					"type": 6
-				  }
-				}
-			  ],
-			  "docs": [
-				" Withdraw Fees - only Owner"
-			  ],
-			  "label": "GenericPoolGeneratorTrait::withdraw_fee",
-			  "mutates": true,
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::get_wal_contract",
+			  "mutates": false,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
 				  "genericpoolgeneratortrait_external",
-				  "WithdrawFeeOutput"
+				  "GetWalContractOutput"
 				],
-				"type": 15
+				"type": 0
 			  },
-			  "selector": "0xe386c676"
+			  "selector": "0x7b7280e9"
 			},
 			{
 			  "args": [
@@ -381,21 +316,6 @@ const nft_pool_generator_contract = {
 			  "selector": "0x476bc739"
 			},
 			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::get_pool_count",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "GetPoolCountOutput"
-				],
-				"type": 5
-			  },
-			  "selector": "0x38b09ecb"
-			},
-			{
 			  "args": [
 				{
 				  "label": "pool_hash",
@@ -420,6 +340,168 @@ const nft_pool_generator_contract = {
 				"type": 15
 			  },
 			  "selector": "0xc49c451f"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::get_unstake_fee",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "GetUnstakeFeeOutput"
+				],
+				"type": 6
+			  },
+			  "selector": "0xa4395f88"
+			},
+			{
+			  "args": [
+				{
+				  "label": "contract_owner",
+				  "type": {
+					"displayName": [
+					  "genericpoolgeneratortrait_external",
+					  "GetPoolCountByOwnerInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::get_pool_count_by_owner",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "GetPoolCountByOwnerOutput"
+				],
+				"type": 5
+			  },
+			  "selector": "0xa4cef8cd"
+			},
+			{
+			  "args": [
+				{
+				  "label": "wal_contract",
+				  "type": {
+					"displayName": [
+					  "genericpoolgeneratortrait_external",
+					  "SetWalContractInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::set_wal_contract",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "SetWalContractOutput"
+				],
+				"type": 15
+			  },
+			  "selector": "0xe36f3db4"
+			},
+			{
+			  "args": [
+				{
+				  "label": "creation_fee",
+				  "type": {
+					"displayName": [
+					  "genericpoolgeneratortrait_external",
+					  "SetCreationFeeInput1"
+					],
+					"type": 6
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::set_creation_fee",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "SetCreationFeeOutput"
+				],
+				"type": 15
+			  },
+			  "selector": "0x3cd3873c"
+			},
+			{
+			  "args": [
+				{
+				  "label": "unstake_fee",
+				  "type": {
+					"displayName": [
+					  "genericpoolgeneratortrait_external",
+					  "SetUnstakeFeeInput1"
+					],
+					"type": 6
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::set_unstake_fee",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "SetUnstakeFeeOutput"
+				],
+				"type": 15
+			  },
+			  "selector": "0xfd8d8fda"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::get_pool_hash",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "GetPoolHashOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0x79f903bb"
+			},
+			{
+			  "args": [
+				{
+				  "label": "value",
+				  "type": {
+					"displayName": [
+					  "genericpoolgeneratortrait_external",
+					  "WithdrawFeeInput1"
+					],
+					"type": 6
+				  }
+				}
+			  ],
+			  "docs": [
+				" Withdraw Fees - only Owner"
+			  ],
+			  "label": "GenericPoolGeneratorTrait::withdraw_fee",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "WithdrawFeeOutput"
+				],
+				"type": 15
+			  },
+			  "selector": "0xe386c676"
 			},
 			{
 			  "args": [
@@ -461,88 +543,6 @@ const nft_pool_generator_contract = {
 				"type": 6
 			  },
 			  "selector": "0xea416566"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::get_pool_hash",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "GetPoolHashOutput"
-				],
-				"type": 4
-			  },
-			  "selector": "0x79f903bb"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::get_wal_contract",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "GetWalContractOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0x7b7280e9"
-			},
-			{
-			  "args": [
-				{
-				  "label": "contract_owner",
-				  "type": {
-					"displayName": [
-					  "genericpoolgeneratortrait_external",
-					  "GetPoolCountByOwnerInput1"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::get_pool_count_by_owner",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "GetPoolCountByOwnerOutput"
-				],
-				"type": 5
-			  },
-			  "selector": "0xa4cef8cd"
-			},
-			{
-			  "args": [
-				{
-				  "label": "creation_fee",
-				  "type": {
-					"displayName": [
-					  "genericpoolgeneratortrait_external",
-					  "SetCreationFeeInput1"
-					],
-					"type": 6
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::set_creation_fee",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "SetCreationFeeOutput"
-				],
-				"type": 15
-			  },
-			  "selector": "0x3cd3873c"
 			}
 		  ]
 		},

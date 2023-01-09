@@ -1,8 +1,8 @@
 const lp_pool_contract = {
-  CONTRACT_ADDRESS: "5FGfBMUF8pnLgJ2gApRQZon3DUfW3pS1LNRGsgcESFYSm3Sw",
+  CONTRACT_ADDRESS: "5Dwfs7sGB2mN9k7c3bzzF8EoX5geae56DS7E5zKj9in6YaFk",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0x8672fa0385e26b2be0d5e714930e6c58d7fde0277d16431496cb54ce3e72514c",
+		"hash": "0x26979e410c21350576f9cdbe64965a9b1963e7d14b0a019766e8c107f6d210f3",
 		"language": "ink! 3.4.0",
 		"compiler": "rustc 1.68.0-nightly"
 	  },
@@ -204,6 +204,23 @@ const lp_pool_contract = {
 			  "selector": "0x5e228753"
 			},
 			{
+			  "args": [],
+			  "docs": [
+				" Returns the address of the current owner."
+			  ],
+			  "label": "Ownable::owner",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "ownable_external",
+				  "OwnerOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x4fa43c8c"
+			},
+			{
 			  "args": [
 				{
 				  "label": "new_owner",
@@ -241,23 +258,6 @@ const lp_pool_contract = {
 			  "selector": "0x11f43efd"
 			},
 			{
-			  "args": [],
-			  "docs": [
-				" Returns the address of the current owner."
-			  ],
-			  "label": "Ownable::owner",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "ownable_external",
-				  "OwnerOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0x4fa43c8c"
-			},
-			{
 			  "args": [
 				{
 				  "label": "staker",
@@ -282,148 +282,6 @@ const lp_pool_contract = {
 				"type": 17
 			  },
 			  "selector": "0x7d91f5c8"
-			},
-			{
-			  "args": [
-				{
-				  "label": "amount",
-				  "type": {
-					"displayName": [
-					  "genericpoolcontracttrait_external",
-					  "TopupRewardPoolInput1"
-					],
-					"type": 4
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::topup_reward_pool",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "TopupRewardPoolOutput"
-				],
-				"type": 10
-			  },
-			  "selector": "0xaaa53e1a"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::multiplier",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "MultiplierOutput"
-				],
-				"type": 4
-			  },
-			  "selector": "0xfb1ecf6a"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::start_time",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "StartTimeOutput"
-				],
-				"type": 7
-			  },
-			  "selector": "0xc48cf63e"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::wal_contract",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "WalContractOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0x497e56f2"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::total_staked",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "TotalStakedOutput"
-				],
-				"type": 4
-			  },
-			  "selector": "0x6d230adf"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::duration",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "DurationOutput"
-				],
-				"type": 7
-			  },
-			  "selector": "0xec96d641"
-			},
-			{
-			  "args": [
-				{
-				  "label": "amount",
-				  "type": {
-					"displayName": [
-					  "genericpoolcontracttrait_external",
-					  "WithdrawRewardPoolInput1"
-					],
-					"type": 4
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::withdraw_reward_pool",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "WithdrawRewardPoolOutput"
-				],
-				"type": 10
-			  },
-			  "selector": "0x7be928b9"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::reward_pool",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "RewardPoolOutput"
-				],
-				"type": 4
-			  },
-			  "selector": "0xfc6c3a08"
 			},
 			{
 			  "args": [],
@@ -454,6 +312,148 @@ const lp_pool_contract = {
 				"type": 4
 			  },
 			  "selector": "0xc74b547f"
+			},
+			{
+			  "args": [
+				{
+				  "label": "amount",
+				  "type": {
+					"displayName": [
+					  "genericpoolcontracttrait_external",
+					  "WithdrawRewardPoolInput1"
+					],
+					"type": 4
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::withdraw_reward_pool",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "WithdrawRewardPoolOutput"
+				],
+				"type": 10
+			  },
+			  "selector": "0x7be928b9"
+			},
+			{
+			  "args": [
+				{
+				  "label": "amount",
+				  "type": {
+					"displayName": [
+					  "genericpoolcontracttrait_external",
+					  "TopupRewardPoolInput1"
+					],
+					"type": 4
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::topup_reward_pool",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "TopupRewardPoolOutput"
+				],
+				"type": 10
+			  },
+			  "selector": "0xaaa53e1a"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::duration",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "DurationOutput"
+				],
+				"type": 7
+			  },
+			  "selector": "0xec96d641"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::start_time",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "StartTimeOutput"
+				],
+				"type": 7
+			  },
+			  "selector": "0xc48cf63e"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::total_staked",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "TotalStakedOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0x6d230adf"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::multiplier",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "MultiplierOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0xfb1ecf6a"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::reward_pool",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "RewardPoolOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0xfc6c3a08"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::wal_contract",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "WalContractOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x497e56f2"
 			},
 			{
 			  "args": [],

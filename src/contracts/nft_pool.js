@@ -1,8 +1,8 @@
 const nft_pool_contract = {
-  CONTRACT_ADDRESS: "5FiVsyJfcwEMDLFKSDcK47Veh4bLJHFXDjeheLHNUkVpcdnD",
+  CONTRACT_ADDRESS: "5GnSVjWkh7wCrMDEEVipZGzJJm3RUqXz8DFUtJd4gXAfPS5w",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0xa0461e1a0e421dcfb31db2e87a9717b68d151719b82e79975916e6eea7aba27b",
+		"hash": "0x24b04d61a74554b377a59845e92c8877a591801bbbbcb501bb21107d1b19e798",
 		"language": "ink! 3.4.0",
 		"compiler": "rustc 1.68.0-nightly"
 	  },
@@ -194,6 +194,33 @@ const nft_pool_contract = {
 			  "selector": "0x4fa43c8c"
 			},
 			{
+			  "args": [],
+			  "docs": [
+				" Leaves the contract without owner. It will not be possible to call",
+				" owner's functions anymore. Can only be called by the current owner.",
+				"",
+				" NOTE: Renouncing ownership will leave the contract without an owner,",
+				" thereby removing any functionality that is only available to the owner.",
+				"",
+				" On success a `OwnershipTransferred` event is emitted.",
+				"",
+				" # Errors",
+				"",
+				" Panics with `CallerIsNotOwner` error if caller is not owner"
+			  ],
+			  "label": "Ownable::renounce_ownership",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "ownable_external",
+				  "RenounceOwnershipOutput"
+				],
+				"type": 21
+			  },
+			  "selector": "0x5e228753"
+			},
+			{
 			  "args": [
 				{
 				  "label": "new_owner",
@@ -232,146 +259,18 @@ const nft_pool_contract = {
 			},
 			{
 			  "args": [],
-			  "docs": [
-				" Leaves the contract without owner. It will not be possible to call",
-				" owner's functions anymore. Can only be called by the current owner.",
-				"",
-				" NOTE: Renouncing ownership will leave the contract without an owner,",
-				" thereby removing any functionality that is only available to the owner.",
-				"",
-				" On success a `OwnershipTransferred` event is emitted.",
-				"",
-				" # Errors",
-				"",
-				" Panics with `CallerIsNotOwner` error if caller is not owner"
-			  ],
-			  "label": "Ownable::renounce_ownership",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "ownable_external",
-				  "RenounceOwnershipOutput"
-				],
-				"type": 21
-			  },
-			  "selector": "0x5e228753"
-			},
-			{
-			  "args": [],
 			  "docs": [],
-			  "label": "GenericPoolContractTrait::wal_contract",
+			  "label": "GenericPoolContractTrait::duration",
 			  "mutates": false,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
 				  "genericpoolcontracttrait_external",
-				  "WalContractOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0x497e56f2"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::multiplier",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "MultiplierOutput"
-				],
-				"type": 4
-			  },
-			  "selector": "0xfb1ecf6a"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::start_time",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "StartTimeOutput"
+				  "DurationOutput"
 				],
 				"type": 7
 			  },
-			  "selector": "0xc48cf63e"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::psp22_contract_address",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "Psp22ContractAddressOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0x0da3be06"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::staking_contract_address",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "StakingContractAddressOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0xb22a7a83"
-			},
-			{
-			  "args": [
-				{
-				  "label": "staker",
-				  "type": {
-					"displayName": [
-					  "genericpoolcontracttrait_external",
-					  "GetStakeInfoInput1"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::get_stake_info",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "GetStakeInfoOutput"
-				],
-				"type": 23
-			  },
-			  "selector": "0x7d91f5c8"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::reward_pool",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "RewardPoolOutput"
-				],
-				"type": 4
-			  },
-			  "selector": "0xfc6c3a08"
+			  "selector": "0xec96d641"
 			},
 			{
 			  "args": [],
@@ -387,21 +286,6 @@ const nft_pool_contract = {
 				"type": 4
 			  },
 			  "selector": "0xc74b547f"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::duration",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "DurationOutput"
-				],
-				"type": 7
-			  },
-			  "selector": "0xec96d641"
 			},
 			{
 			  "args": [
@@ -458,6 +342,92 @@ const nft_pool_contract = {
 			{
 			  "args": [],
 			  "docs": [],
+			  "label": "GenericPoolContractTrait::multiplier",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "MultiplierOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0xfb1ecf6a"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::wal_contract",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "WalContractOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x497e56f2"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::staking_contract_address",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "StakingContractAddressOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0xb22a7a83"
+			},
+			{
+			  "args": [
+				{
+				  "label": "staker",
+				  "type": {
+					"displayName": [
+					  "genericpoolcontracttrait_external",
+					  "GetStakeInfoInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::get_stake_info",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "GetStakeInfoOutput"
+				],
+				"type": 23
+			  },
+			  "selector": "0x7d91f5c8"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::start_time",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "StartTimeOutput"
+				],
+				"type": 7
+			  },
+			  "selector": "0xc48cf63e"
+			},
+			{
+			  "args": [],
+			  "docs": [],
 			  "label": "GenericPoolContractTrait::total_staked",
 			  "mutates": false,
 			  "payable": false,
@@ -469,6 +439,36 @@ const nft_pool_contract = {
 				"type": 4
 			  },
 			  "selector": "0x6d230adf"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::psp22_contract_address",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "Psp22ContractAddressOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x0da3be06"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::reward_pool",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "RewardPoolOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0xfc6c3a08"
 			},
 			{
 			  "args": [

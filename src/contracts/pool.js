@@ -1,8 +1,8 @@
 const pool_contract = {
-  CONTRACT_ADDRESS: "5HB9Zo8g2GucypghMWYFTsQR9C5L18ayPWjjqybVtZFzfNjV",
+  CONTRACT_ADDRESS: "5EDjQuif7kLBMSzE9AzuzdWSVEvTazBPtsAcfj5kdXYZwFyy",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0x0bd698d380688bab185df1c6e11f2276c60c6653a1cb007e5aea8edad3343116",
+		"hash": "0x9f511c522cb21ca946a78ffcf5be80eb4467baeda7641198b1df4b3d48456482",
 		"language": "ink! 3.4.0",
 		"compiler": "rustc 1.68.0-nightly"
 	  },
@@ -168,43 +168,6 @@ const pool_contract = {
 			  "selector": "0x51564730"
 			},
 			{
-			  "args": [
-				{
-				  "label": "new_owner",
-				  "type": {
-					"displayName": [
-					  "ownable_external",
-					  "TransferOwnershipInput1"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [
-				" Transfers ownership of the contract to a `new_owner`.",
-				" Can only be called by the current owner.",
-				"",
-				" On success a `OwnershipTransferred` event is emitted.",
-				"",
-				" # Errors",
-				"",
-				" Panics with `CallerIsNotOwner` error if caller is not owner.",
-				"",
-				" Panics with `NewOwnerIsZero` error if new owner's address is zero."
-			  ],
-			  "label": "Ownable::transfer_ownership",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "ownable_external",
-				  "TransferOwnershipOutput"
-				],
-				"type": 16
-			  },
-			  "selector": "0x11f43efd"
-			},
-			{
 			  "args": [],
 			  "docs": [
 				" Returns the address of the current owner."
@@ -251,6 +214,103 @@ const pool_contract = {
 			{
 			  "args": [
 				{
+				  "label": "new_owner",
+				  "type": {
+					"displayName": [
+					  "ownable_external",
+					  "TransferOwnershipInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [
+				" Transfers ownership of the contract to a `new_owner`.",
+				" Can only be called by the current owner.",
+				"",
+				" On success a `OwnershipTransferred` event is emitted.",
+				"",
+				" # Errors",
+				"",
+				" Panics with `CallerIsNotOwner` error if caller is not owner.",
+				"",
+				" Panics with `NewOwnerIsZero` error if new owner's address is zero."
+			  ],
+			  "label": "Ownable::transfer_ownership",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "ownable_external",
+				  "TransferOwnershipOutput"
+				],
+				"type": 16
+			  },
+			  "selector": "0x11f43efd"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::multiplier",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "MultiplierOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0xfb1ecf6a"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::duration",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "DurationOutput"
+				],
+				"type": 7
+			  },
+			  "selector": "0xec96d641"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::psp22_contract_address",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "Psp22ContractAddressOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x0da3be06"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::staking_contract_address",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "StakingContractAddressOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0xb22a7a83"
+			},
+			{
+			  "args": [
+				{
 				  "label": "amount",
 				  "type": {
 					"displayName": [
@@ -277,32 +337,73 @@ const pool_contract = {
 			{
 			  "args": [],
 			  "docs": [],
-			  "label": "GenericPoolContractTrait::staking_contract_address",
+			  "label": "GenericPoolContractTrait::unstake_fee",
 			  "mutates": false,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
 				  "genericpoolcontracttrait_external",
-				  "StakingContractAddressOutput"
+				  "UnstakeFeeOutput"
 				],
-				"type": 0
+				"type": 4
 			  },
-			  "selector": "0xb22a7a83"
+			  "selector": "0xc74b547f"
 			},
 			{
 			  "args": [],
 			  "docs": [],
-			  "label": "GenericPoolContractTrait::total_staked",
+			  "label": "GenericPoolContractTrait::wal_contract",
 			  "mutates": false,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
 				  "genericpoolcontracttrait_external",
-				  "TotalStakedOutput"
+				  "WalContractOutput"
 				],
-				"type": 4
+				"type": 0
 			  },
-			  "selector": "0x6d230adf"
+			  "selector": "0x497e56f2"
+			},
+			{
+			  "args": [
+				{
+				  "label": "staker",
+				  "type": {
+					"displayName": [
+					  "genericpoolcontracttrait_external",
+					  "GetStakeInfoInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::get_stake_info",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "GetStakeInfoOutput"
+				],
+				"type": 18
+			  },
+			  "selector": "0x7d91f5c8"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::start_time",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "StartTimeOutput"
+				],
+				"type": 7
+			  },
+			  "selector": "0xc48cf63e"
 			},
 			{
 			  "args": [
@@ -333,96 +434,6 @@ const pool_contract = {
 			{
 			  "args": [],
 			  "docs": [],
-			  "label": "GenericPoolContractTrait::duration",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "DurationOutput"
-				],
-				"type": 7
-			  },
-			  "selector": "0xec96d641"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::unstake_fee",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "UnstakeFeeOutput"
-				],
-				"type": 4
-			  },
-			  "selector": "0xc74b547f"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::start_time",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "StartTimeOutput"
-				],
-				"type": 7
-			  },
-			  "selector": "0xc48cf63e"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::multiplier",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "MultiplierOutput"
-				],
-				"type": 4
-			  },
-			  "selector": "0xfb1ecf6a"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::psp22_contract_address",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "Psp22ContractAddressOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0x0da3be06"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::wal_contract",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "WalContractOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0x497e56f2"
-			},
-			{
-			  "args": [],
-			  "docs": [],
 			  "label": "GenericPoolContractTrait::reward_pool",
 			  "mutates": false,
 			  "payable": false,
@@ -436,30 +447,19 @@ const pool_contract = {
 			  "selector": "0xfc6c3a08"
 			},
 			{
-			  "args": [
-				{
-				  "label": "staker",
-				  "type": {
-					"displayName": [
-					  "genericpoolcontracttrait_external",
-					  "GetStakeInfoInput1"
-					],
-					"type": 0
-				  }
-				}
-			  ],
+			  "args": [],
 			  "docs": [],
-			  "label": "GenericPoolContractTrait::get_stake_info",
+			  "label": "GenericPoolContractTrait::total_staked",
 			  "mutates": false,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
 				  "genericpoolcontracttrait_external",
-				  "GetStakeInfoOutput"
+				  "TotalStakedOutput"
 				],
-				"type": 18
+				"type": 4
 			  },
-			  "selector": "0x7d91f5c8"
+			  "selector": "0x6d230adf"
 			}
 		  ]
 		},
