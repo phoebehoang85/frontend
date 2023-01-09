@@ -92,6 +92,10 @@ const Token = () => {
       //console.log(balance.free / 10 ** 12, balance.reserved / 10 ** 12);
       setAZeroBalance(balance.free / 10 ** 12);
 
+      psp22_contract.setPSP22Contract(api, {
+        CONTRACT_ADDRESS: tokenContract,
+        CONTRACT_ABI: psp22.CONTRACT_ABI,
+      });  
       let token_balance = await psp22_contract.balanceOf(
         selectedAccount,
         selectedAccount
@@ -130,6 +134,12 @@ const Token = () => {
       toast.error('You need Azero to perform this transfer');
       return;
     }
+
+    psp22_contract.setPSP22Contract(api, {
+      CONTRACT_ADDRESS: tokenContract,
+      CONTRACT_ABI: psp22.CONTRACT_ABI,
+    });  
+
     let newToken = await psp22_contract.transfer(
       selectedAccount,
       extensionName,
@@ -160,6 +170,12 @@ const Token = () => {
       toast.error('You need Azero to perform this transfer');
       return;
     }
+
+    psp22_contract.setPSP22Contract(api, {
+      CONTRACT_ADDRESS: tokenContract,
+      CONTRACT_ABI: psp22.CONTRACT_ABI,
+    });  
+
     let burnToken = await psp22_contract.burn(
       selectedAccount,
       extensionName,

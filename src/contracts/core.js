@@ -1,8 +1,8 @@
 const core_contract = {
-  CONTRACT_ADDRESS: "5EVfGMBKgfuf6xwD8LrBL5pToYNXrVEanvFCUCYNCfnqEk5h",
+  CONTRACT_ADDRESS: "5DmtzmF9k14WP6NWJxMUAMbQNrfjg9zWb6qBuhfqaf5CTNo8",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0x02600afa9490c0dfaee02f7d3f01ec8098e8d7842738118fad3932d63fcc7fbb",
+		"hash": "0x045a95cc95f872d11d1cf9e90653245b7ce7267052bfbf3aa9e2b9c7f21c4a49",
 		"language": "ink! 3.4.0",
 		"compiler": "rustc 1.68.0-nightly"
 	  },
@@ -125,33 +125,6 @@ const core_contract = {
 			  "selector": "0x7d97ec7b"
 			},
 			{
-			  "args": [],
-			  "docs": [
-				" Leaves the contract without owner. It will not be possible to call",
-				" owner's functions anymore. Can only be called by the current owner.",
-				"",
-				" NOTE: Renouncing ownership will leave the contract without an owner,",
-				" thereby removing any functionality that is only available to the owner.",
-				"",
-				" On success a `OwnershipTransferred` event is emitted.",
-				"",
-				" # Errors",
-				"",
-				" Panics with `CallerIsNotOwner` error if caller is not owner"
-			  ],
-			  "label": "Ownable::renounce_ownership",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "ownable_external",
-				  "RenounceOwnershipOutput"
-				],
-				"type": 16
-			  },
-			  "selector": "0x5e228753"
-			},
-			{
 			  "args": [
 				{
 				  "label": "new_owner",
@@ -207,6 +180,33 @@ const core_contract = {
 			},
 			{
 			  "args": [],
+			  "docs": [
+				" Leaves the contract without owner. It will not be possible to call",
+				" owner's functions anymore. Can only be called by the current owner.",
+				"",
+				" NOTE: Renouncing ownership will leave the contract without an owner,",
+				" thereby removing any functionality that is only available to the owner.",
+				"",
+				" On success a `OwnershipTransferred` event is emitted.",
+				"",
+				" # Errors",
+				"",
+				" Panics with `CallerIsNotOwner` error if caller is not owner"
+			  ],
+			  "label": "Ownable::renounce_ownership",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "ownable_external",
+				  "RenounceOwnershipOutput"
+				],
+				"type": 16
+			  },
+			  "selector": "0x5e228753"
+			},
+			{
+			  "args": [],
 			  "docs": [],
 			  "label": "TokenManagerTrait::get_contract_hash",
 			  "mutates": false,
@@ -221,19 +221,112 @@ const core_contract = {
 			  "selector": "0xf39b5876"
 			},
 			{
-			  "args": [],
+			  "args": [
+				{
+				  "label": "wal_contract",
+				  "type": {
+					"displayName": [
+					  "tokenmanagertrait_external",
+					  "SetWalContractInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
 			  "docs": [],
-			  "label": "TokenManagerTrait::get_token_count",
+			  "label": "TokenManagerTrait::set_wal_contract",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "SetWalContractOutput"
+				],
+				"type": 12
+			  },
+			  "selector": "0x929ea02e"
+			},
+			{
+			  "args": [
+				{
+				  "label": "index",
+				  "type": {
+					"displayName": [
+					  "tokenmanagertrait_external",
+					  "GetTokenInfoInput1"
+					],
+					"type": 5
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "TokenManagerTrait::get_token_info",
 			  "mutates": false,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
 				  "tokenmanagertrait_external",
-				  "GetTokenCountOutput"
+				  "GetTokenInfoOutput"
 				],
-				"type": 5
+				"type": 18
 			  },
-			  "selector": "0xebabc233"
+			  "selector": "0x3453024b"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenManagerTrait::get_wal_contract",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "GetWalContractOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x23887774"
+			},
+			{
+			  "args": [
+				{
+				  "label": "psp22_hash",
+				  "type": {
+					"displayName": [
+					  "tokenmanagertrait_external",
+					  "SetContractHashInput1"
+					],
+					"type": 4
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "TokenManagerTrait::set_contract_hash",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "SetContractHashOutput"
+				],
+				"type": 12
+			  },
+			  "selector": "0xf38784b8"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenManagerTrait::get_creation_fee",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "GetCreationFeeOutput"
+				],
+				"type": 6
+			  },
+			  "selector": "0x034ef9b9"
 			},
 			{
 			  "args": [
@@ -266,17 +359,17 @@ const core_contract = {
 			{
 			  "args": [],
 			  "docs": [],
-			  "label": "TokenManagerTrait::get_wal_contract",
+			  "label": "TokenManagerTrait::get_token_count",
 			  "mutates": false,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
 				  "tokenmanagertrait_external",
-				  "GetWalContractOutput"
+				  "GetTokenCountOutput"
 				],
-				"type": 0
+				"type": 5
 			  },
-			  "selector": "0x23887774"
+			  "selector": "0xebabc233"
 			},
 			{
 			  "args": [
@@ -303,99 +396,6 @@ const core_contract = {
 				"type": 12
 			  },
 			  "selector": "0x4e807631"
-			},
-			{
-			  "args": [
-				{
-				  "label": "wal_contract",
-				  "type": {
-					"displayName": [
-					  "tokenmanagertrait_external",
-					  "SetWalContractInput1"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "TokenManagerTrait::set_wal_contract",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "tokenmanagertrait_external",
-				  "SetWalContractOutput"
-				],
-				"type": 12
-			  },
-			  "selector": "0x929ea02e"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "TokenManagerTrait::get_creation_fee",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "tokenmanagertrait_external",
-				  "GetCreationFeeOutput"
-				],
-				"type": 6
-			  },
-			  "selector": "0x034ef9b9"
-			},
-			{
-			  "args": [
-				{
-				  "label": "index",
-				  "type": {
-					"displayName": [
-					  "tokenmanagertrait_external",
-					  "GetTokenInfoInput1"
-					],
-					"type": 5
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "TokenManagerTrait::get_token_info",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "tokenmanagertrait_external",
-				  "GetTokenInfoOutput"
-				],
-				"type": 18
-			  },
-			  "selector": "0x3453024b"
-			},
-			{
-			  "args": [
-				{
-				  "label": "psp22_hash",
-				  "type": {
-					"displayName": [
-					  "tokenmanagertrait_external",
-					  "SetContractHashInput1"
-					],
-					"type": 4
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "TokenManagerTrait::set_contract_hash",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "tokenmanagertrait_external",
-				  "SetContractHashOutput"
-				],
-				"type": 12
-			  },
-			  "selector": "0xf38784b8"
 			}
 		  ]
 		},
