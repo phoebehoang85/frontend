@@ -18,11 +18,10 @@ import {
   Stack,
   Text,
   Tooltip,
-  VStack,
 } from "@chakra-ui/react";
 import SectionContainer from "components/container/SectionContainer";
 
-import { useHistory, useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import IWCard from "components/card/Card";
 import IWTabs from "components/tabs/IWTabs";
 import ConfirmModal from "components/modal/ConfirmModal";

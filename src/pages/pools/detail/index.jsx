@@ -1,12 +1,10 @@
 import { ChevronRightIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
 import {
-  Box,
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   Circle,
   Flex,
-  Heading,
   HStack,
   Image,
   Show,
