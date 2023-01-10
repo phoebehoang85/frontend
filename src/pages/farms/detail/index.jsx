@@ -21,7 +21,7 @@ import {
 } from "@chakra-ui/react";
 import SectionContainer from "components/container/SectionContainer";
 
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import IWCard from "components/card/Card";
 import IWTabs from "components/tabs/IWTabs";
 import ConfirmModal from "components/modal/ConfirmModal";
@@ -35,10 +35,8 @@ import { DiscordIcon } from "components/icons/Icons";
 import { TwitterIcon } from "components/icons/Icons";
 
 export default function FarmDetailPage() {
-  const params = useParams();
+  // const params = useParams();
   const location = useLocation();
-  console.log("params", params);
-  console.log("location", location?.state?.mode);
 
   const currMode = location?.state?.mode;
 

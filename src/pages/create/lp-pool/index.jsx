@@ -18,7 +18,7 @@ import { useLocation } from "react-router-dom";
 
 export default function CreateLPPage() {
   const { pathname } = useLocation();
-  console.log("mode pathname", pathname);
+
   const mode =
     pathname === "/create/token-lp"
       ? "TOKEN_LP"
@@ -26,7 +26,6 @@ export default function CreateLPPage() {
       ? "NFT_LP"
       : "";
 
-  console.log("mode CreateLPPage", mode);
   return (
     <>
       <SectionContainer

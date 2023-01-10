@@ -15,7 +15,6 @@ import {
 import SectionContainer from "components/container/SectionContainer";
 import IWInput from "components/input/Input";
 
-import { useParams } from "react-router-dom";
 import IWCard from "components/card/Card";
 import IWTabs from "components/tabs/IWTabs";
 import ConfirmModal from "components/modal/ConfirmModal";
@@ -25,8 +24,6 @@ import CardThreeColumn from "components/card/CardThreeColumn";
 import CardTwoColumn from "components/card/CardTwoColumn";
 
 export default function PoolDetailPage() {
-  const params = useParams();
-  console.log("params", params);
   return (
     <>
       <Show above="md">

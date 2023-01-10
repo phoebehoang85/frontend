@@ -3,6 +3,7 @@ import {
   Flex,
   Heading,
   Modal,
+  ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
@@ -18,6 +19,7 @@ export default function ConfirmModal({
   message,
   buttonLabel,
   buttonVariant,
+  children,
   ...rest
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -44,7 +46,7 @@ export default function ConfirmModal({
             </Heading>
           </ModalHeader>
 
-          {/* <ModalBody px="46px">.</ModalBody> */}
+          <ModalBody px="46px">{children}</ModalBody>
 
           <ModalFooter px="46px" pb="42px">
             <Flex w="full" justifyContent="center">

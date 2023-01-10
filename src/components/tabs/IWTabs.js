@@ -6,13 +6,17 @@ import {
   TabPanels,
   Tabs,
 } from "@chakra-ui/react";
-import { useState } from "react";
+// import { useState } from "react";
 
 export default function IWTabs({ tabsData, ...rest }) {
-  const [tabIndex, setTabIndex] = useState(0);
-  console.log("tabIndex", tabIndex);
+  // const [tabIndex, setTabIndex] = useState(0);
+
   return (
-    <Tabs onChange={(index) => setTabIndex(index)} isLazy w="full">
+    <Tabs
+      // onChange={(index) => setTabIndex(index)}
+      isLazy
+      w="full"
+    >
       <TabList>
         {tabsData?.map(({ label }, idx) => (
           <Tab
