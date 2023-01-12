@@ -12,10 +12,117 @@ import {
 import SectionContainer from "components/container/SectionContainer";
 import IWInput from "components/input/Input";
 
-import LogoPancake from "assets/img/denom/logo-pancake.png";
 import { IWTable } from "components/table/IWTable";
+import { APICall } from "api/client";
+import { useEffect, useState, useMemo } from "react";
+import { execContractQuery } from "utils/contracts";
+import { useSelector } from "react-redux";
+import pool_contract from "utils/contracts/pool_contract";
+import { formatChainStringToNumber } from "utils";
 
-export default function PoolsPage() {
+export default function PoolsPage({ api }) {
+  const { currentAccount } = useSelector((s) => s.wallet);
+
+  const [poolsListData, setPoolsListData] = useState([]);
+
+  useEffect(() => {
+    let isUnmounted = false;
+
+    const fetchPoolsList = async () => {
+      try {
+        const { status, ret } = await APICall.getPoolsList();
+
+        if (status === "OK") {
+          const poolsListAddMyStake = await Promise.all(
+            ret?.map(async (pool) => {
+              let queryResult = await execContractQuery(
+                currentAccount?.address,
+                api,
+                pool_contract.CONTRACT_ABI,
+                pool?.poolContract,
+                0,
+                "genericPoolContractTrait::getStakeInfo",
+                currentAccount?.address
+              );
+
+              let stakeInfo = queryResult?.toHuman();
+
+              if (stakeInfo) {
+                stakeInfo = {
+                  ...stakeInfo,
+                  lastRewardUpdate: formatChainStringToNumber(
+                    stakeInfo.lastRewardUpdate
+                  ),
+                  stakedValue: formatChainStringToNumber(stakeInfo.stakedValue),
+                  unclaimedReward: formatChainStringToNumber(
+                    stakeInfo.unclaimedReward
+                  ),
+                };
+              }
+
+              return { ...pool, stakeInfo };
+            })
+          );
+
+          if (isUnmounted) return;
+          setPoolsListData(poolsListAddMyStake);
+        }
+      } catch (error) {
+        console.log("error", error.message);
+      }
+    };
+    fetchPoolsList();
+
+    return () => (isUnmounted = true);
+  }, [api, currentAccount?.address]);
+
+  const poolsListDataFiltered = useMemo(() => {
+    return poolsListData;
+  }, [poolsListData]);
+
+  const tableData = {
+    tableHeader: [
+      {
+        name: "tokenName",
+        hasTooltip: false,
+        tooltipContent: "Lorem lorem",
+        label: "Stake & Earn",
+      },
+      {
+        name: "totalStaked",
+        hasTooltip: true,
+        tooltipContent: "Lorem lorem",
+        label: "TVL",
+      },
+      {
+        name: "apy",
+        hasTooltip: false,
+        tooltipContent: "Lorem lorem",
+        label: "APY",
+      },
+      {
+        name: "rewardPool",
+        hasTooltip: true,
+        tooltipContent: "Lorem lorem",
+        label: "Reward Pool",
+      },
+      {
+        name: "startTime",
+        hasTooltip: false,
+        tooltipContent: "Lorem lorem",
+        label: "Expired In",
+      },
+      {
+        name: "stakeInfo",
+        hasTooltip: false,
+        tooltipContent: "Lorem lorem",
+        label: "My Stake",
+      },
+    ],
+
+    tableBody: poolsListDataFiltered,
+  };
+
   return (
     <SectionContainer
       mt={{ base: "0px", xl: "20px" }}
@@ -104,119 +211,3 @@ export default function PoolsPage() {
     </SectionContainer>
   );
 }
-
-const tableData = {
-  tableHeader: [
-    {
-      name: "poolName",
-      hasTooltip: false,
-      tooltipContent: "Lorem lorem",
-      label: "Stake & Earn",
-    },
-    {
-      name: "tvl",
-      hasTooltip: true,
-      tooltipContent: "Lorem lorem",
-      label: "TVL",
-    },
-    {
-      name: "apr",
-      hasTooltip: false,
-      tooltipContent: "Lorem lorem",
-      label: "APR",
-    },
-    {
-      name: "rewardPool",
-      hasTooltip: true,
-      tooltipContent: "Lorem lorem",
-      label: "Reward Pool",
-    },
-    {
-      name: "expiredIn",
-      hasTooltip: false,
-      tooltipContent: "Lorem lorem",
-      label: "Expired In",
-    },
-    {
-      name: "myStake",
-      hasTooltip: false,
-      tooltipContent: "Lorem lorem",
-      label: "My Stake (WAL)",
-    },
-  ],
-
-  tableBody: [
-    {
-      poolName: "azUSD",
-      poolLogo: LogoPancake,
-      contractAddress: "5CiPbRSoW5bV21mEMYXPBNwamjHa5ZBnFW5mF1etPfJbtUe5",
-      redirectUrl: "pools/5CiPbRSoW5bV21mEMYXPBNwamjHa5ZBnFW5mF1etPfJbtUe5",
-      tvl: "1,711,777.500",
-      apr: "35%",
-      rewardPool: "298,093.215",
-      expiredIn: "18d : 10h : 10m : 54s",
-      myStake: "100,000",
-      isMyStake: Boolean(parseInt(Math.random().toFixed(0))),
-    },
-    {
-      poolName: "azUSD",
-      poolLogo: LogoPancake,
-      contractAddress: "5CiPbRSoW5bV21mEMYXPBNwamjHa5ZBnFW5mF1etPfJbtUe5",
-      redirectUrl: "pools/5CiPbRSoW5bV21mEMYXPBNwamjHa5ZBnFW5mF1etPfJbtUe5",
-      tvl: "1,711,777.500",
-      apr: "35%",
-      rewardPool: "298,093.215",
-      expiredIn: "18d : 10h : 10m : 54s",
-      myStake: "100,000",
-      isMyStake: Boolean(parseInt(Math.random().toFixed(0))),
-    },
-    {
-      poolName: "azUSD",
-      poolLogo: LogoPancake,
-      contractAddress: "5CiPbRSoW5bV21mEMYXPBNwamjHa5ZBnFW5mF1etPfJbtUe5",
-      redirectUrl: "pools/5CiPbRSoW5bV21mEMYXPBNwamjHa5ZBnFW5mF1etPfJbtUe5",
-      tvl: "1,711,777.500",
-      apr: "35%",
-      rewardPool: "298,093.215",
-      expiredIn: "18d : 10h : 10m : 54s",
-      myStake: "100,000",
-      isMyStake: Boolean(parseInt(Math.random().toFixed(0))),
-    },
-    {
-      poolName: "azUSD",
-      poolLogo: LogoPancake,
-      contractAddress: "5CiPbRSoW5bV21mEMYXPBNwamjHa5ZBnFW5mF1etPfJbtUe5",
-      redirectUrl: "pools/5CiPbRSoW5bV21mEMYXPBNwamjHa5ZBnFW5mF1etPfJbtUe5",
-      tvl: "1,711,777.500",
-      apr: "35%",
-      rewardPool: "298,093.215",
-      expiredIn: "18d : 10h : 10m : 54s",
-      myStake: "100,000",
-      isMyStake: Boolean(parseInt(Math.random().toFixed(0))),
-    },
-    {
-      poolName: "azUSD",
-      poolLogo: LogoPancake,
-      contractAddress: "5CiPbRSoW5bV21mEMYXPBNwamjHa5ZBnFW5mF1etPfJbtUe5",
-      redirectUrl: "pools/5CiPbRSoW5bV21mEMYXPBNwamjHa5ZBnFW5mF1etPfJbtUe5",
-      tvl: "1,711,777.500",
-      apr: "35%",
-      rewardPool: "298,093.215",
-      expiredIn: "18d : 10h : 10m : 54s",
-      myStake: "100,000",
-      isMyStake: Boolean(parseInt(Math.random().toFixed(0))),
-    },
-    {
-      poolName: "azUSD",
-      poolLogo: LogoPancake,
-      contractAddress: "5CiPbRSoW5bV21mEMYXPBNwamjHa5ZBnFW5mF1etPfJbtUe5",
-      redirectUrl: "pools/5CiPbRSoW5bV21mEMYXPBNwamjHa5ZBnFW5mF1etPfJbtUe5",
-      tvl: "1,711,777.500",
-      apr: "35%",
-      rewardPool: "298,093.215",
-      expiredIn: "18d : 10h : 10m : 54s",
-      myStake: "100,000",
-      isMyStake: Boolean(parseInt(Math.random().toFixed(0))),
-    },
-  ],
-};

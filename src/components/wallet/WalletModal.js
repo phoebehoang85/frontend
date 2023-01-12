@@ -25,6 +25,7 @@ export default function WalletModal({ isOpen, onClose, accounts }) {
 
   function onClickHandler(account) {
     dispatch(setCurrentAccount(account));
+
     onClose();
   }
   return (
@@ -50,21 +51,22 @@ export default function WalletModal({ isOpen, onClose, accounts }) {
               {accounts?.map((acct) => {
                 return (
                   <Flex
-                    onClick={() => onClickHandler(acct)}
+                    p="12px"
+                    w="full"
+                    key={acct?.address}
                     cursor="pointer"
                     borderRadius="10px"
-                    p="12px"
                     _hover={{ bg: "bg.1" }}
                     alignItems="center"
                     justifyContent="start"
-                    w="full"
+                    onClick={() => onClickHandler(acct)}
                   >
                     <Circle
-                      borderWidth="1px"
-                      borderColor="border"
-                      bg="transparent"
                       w="44px"
                       h="44px"
+                      borderWidth="1px"
+                      bg="transparent"
+                      borderColor="border"
                     >
                       <Image
                         w="26px"

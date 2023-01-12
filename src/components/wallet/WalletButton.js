@@ -205,7 +205,7 @@ const WalletNotConnect = ({ onClick }) => {
 export const WalletConnect = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const currentAccount = useSelector((state) => state.wallet?.currentAccount);
+  const { currentAccount } = useSelector((state) => state.wallet);
 
   const walletImage =
     currentAccount?.meta?.source === "polkadot-js"
@@ -247,8 +247,8 @@ export const WalletConnect = () => {
       >
         <Flex flexDirection="column" p="20px">
           {[
-            { title: "WAL Balance", content: "100,000.000" },
-            { title: "WAL Balance", content: "25,000.948" },
+            { title: "AZERO Balance", content: currentAccount?.balance?.azero },
+            { title: "WAL Balance", content: currentAccount?.balance?.wal },
           ].map(({ title, content }, idx) => {
             return (
               <IWCard

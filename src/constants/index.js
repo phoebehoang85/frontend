@@ -1,11 +1,13 @@
 export const toastMessages = {
   NO_EXTENSION: "Your browser does NOT HAVE the required plugin.",
-  NO_WALLET: "You haven't connected your wallet. Your posts will NOT be saved.",
-  NO_ACCOUNT:
-    "You DO NOT possess an account tied to your wallet. Please create a new account or import an existing one.",
+  NO_WALLET: "You haven't connected your wallet.",
+
   ERR_FETCHING_DATA: "Error during fetching data.",
   ERR_API_CONN: "Error occurred with API connection.",
   ERR_CONTRACT_DATA: "Error occurred when setting up a contract.",
+
+  INVALID_ADDRESS: "Invalid contract address. Please try again.",
+  NO_TOKEN_SELECTED: "You have not selected token yet!",
   CUSTOM: "An error occurred: ",
 };
 
@@ -34,19 +36,19 @@ export const supportWallets = [
 // }
 
 export const SCROLLBAR = {
-  '&::-webkit-scrollbar': {
-    width: '4px',
-    height: '4px',
-    borderRadius: '0px',
+  "&::-webkit-scrollbar": {
+    width: "4px",
+    height: "4px",
+    borderRadius: "0px",
     backgroundColor: `transparent`,
   },
-  '&::-webkit-scrollbar-thumb': {
+  "&::-webkit-scrollbar-thumb": {
     backgroundColor: `#7ae7ff`,
   },
-  '&::-webkit-scrollbar-thumb:hover': {
+  "&::-webkit-scrollbar-thumb:hover": {
     backgroundColor: `#7ae7ff`,
   },
-  '&::-webkit-scrollbar-track': {
+  "&::-webkit-scrollbar-track": {
     backgroundColor: `transparent`,
   },
 };

@@ -13,172 +13,17 @@ import {
   Tooltip,
   Tr,
 } from "@chakra-ui/react";
+import IWCountDown from "components/countdown/CountDown";
 import { Fragment } from "react";
 import { GoStar } from "react-icons/go";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
+import { formatBalance } from "@polkadot/util";
+import { formatNumDynDecimal } from "utils";
+import { formatChainStringToNumber } from "utils";
 
 export function IWTable({ tableHeader, tableBody, mode }) {
-  console.log("mode", mode);
   const history = useHistory();
-
-  const formatData = (itemObj, header) => {
-    switch (header) {
-      // case "order":
-      //   return itemObj[header];
-
-      // case "marketCap":
-      //   return (
-      //     <>
-      //       {useAzeroUnit ? (
-      //         <>
-      //           {formatNumDynamicDecimal(
-      //             itemObj["nft_count"] * itemObj["floorPrice"]
-      //           )}
-      //           <TagRightIcon as={AzeroIcon} />
-      //         </>
-      //       ) : (
-      //         <>
-      //           ${" "}
-      //           {formatNumDynamicDecimal(
-      //             azeroPrice * itemObj["nft_count"] * itemObj["floorPrice"],
-      //             2
-      //           )}{" "}
-      //         </>
-      //       )}
-      //     </>
-      //   );
-
-      // case "floorPrice":
-      //   return (
-      //     <>
-      //       {useAzeroUnit ? (
-      //         <>
-      //           {formatNumDynamicDecimal(itemObj[header])}
-      //           <TagRightIcon as={AzeroIcon} />
-      //         </>
-      //       ) : (
-      //         <>$ {formatNumDynamicDecimal(azeroPrice * itemObj[header], 2)}</>
-      //       )}
-      //     </>
-      //   );
-
-      // case "name":
-      //   return (
-      //     <Flex alignItems="center">
-      //       <ImageCloudFlare
-      //         h="50px"
-      //         w="50px"
-      //         mr="20px"
-      //         size="100"
-      //         src={itemObj?.avatarImage}
-      //       />
-
-      //       <Flex direction="column" alignItems="flex-start">
-      //         <Heading
-      //           fontSize="16px"
-      //           cursor="pointer"
-      //           _hover={{ color: "brand.blue" }}
-      //           onClick={() => {
-      //             history.push(`/collection/${itemObj.nftContractAddress}`);
-      //           }}
-      //         >
-      //           {itemObj[header]}
-      //         </Heading>
-      //         <Text color="#7ae7ff" fontSize="16px" mt="4px">
-      //           {itemObj["nft_count"]} NFTs
-      //         </Text>
-      //       </Flex>
-      //     </Flex>
-      //   );
-
-      // case "volume":
-      //   return (
-      //     <>
-      //       {useAzeroUnit ? (
-      //         <>
-      //           <Box>
-      //             {formatNumDynamicDecimal(itemObj[header])}{" "}
-      //             <TagRightIcon as={AzeroIcon} />
-      //           </Box>
-
-      //           {/* <Box mt="6px" color="#34B979" fontSize="16px">
-      //         +{itemObj[header]["percent"]}%
-      //       </Box> */}
-      //         </>
-      //       ) : (
-      //         <>
-      //           <Box>
-      //             $ {formatNumDynamicDecimal(azeroPrice * itemObj[header], 2)}
-      //           </Box>
-
-      //           {/* <Box mt="6px" color="#34B979" fontSize="16px">
-      //         +{itemObj[header]["percent"]}%
-      //       </Box> */}
-      //         </>
-      //       )}
-      //     </>
-      //   );
-
-      // case "stakedAmount":
-      //   return (
-      //     <Text textAlign="left">
-      //       {formatNumDynamicDecimal(itemObj[header])} NFT
-      //       {1 * itemObj[header] > 1 ? "s" : ""}{" "}
-      //     </Text>
-      //   );
-
-      case "poolName":
-        return (
-          <Td>
-            <Flex
-              w="full"
-              justify={{ base: "start" }}
-              alignItems={{ base: "center" }}
-            >
-              <Circle w="30px" h="30px" bg="white">
-                <Image src={itemObj["poolLogo"]} alt="logo-subwallet" />
-              </Circle>
-
-              <Text ml="8px">{itemObj[header]}</Text>
-            </Flex>
-          </Td>
-        );
-
-      case "poolNameNFT":
-        return (
-          <Td>
-            <Flex
-              w="full"
-              justify={{ base: "start" }}
-              alignItems={{ base: "center" }}
-            >
-              <Circle w="30px" h="30px" bg="white">
-                <Image src={itemObj["poolLogo"]} alt="logo-subwallet" />
-              </Circle>
-
-              <Text ml="8px">{itemObj[header]}</Text>
-            </Flex>
-          </Td>
-        );
-
-      case "myStake":
-        return (
-          <Td>
-            <Flex alignItems="center">
-              <Text mr="8px">{itemObj[header]}</Text>
-              {itemObj["isMyStake"] && <GoStar color="#FFB800" />}
-            </Flex>
-          </Td>
-        );
-
-      default:
-        return (
-          <Td>
-            <Text textAlign="left">{itemObj[header]}</Text>
-          </Td>
-        );
-    }
-  };
+  const location = useLocation();
 
   return (
     <TableContainer
@@ -225,18 +70,17 @@ export function IWTable({ tableHeader, tableBody, mode }) {
                   h="60px"
                   cursor="pointer"
                   _hover={{ bg: "bg.1" }}
-                  // onClick={() => history.push(`/${itemObj?.redirectUrl}`)}
                   onClick={() =>
                     history.push({
-                      state: { mode },
-                      pathname: `/${itemObj?.redirectUrl}`,
+                      state: { ...itemObj, mode },
+                      pathname: `${location.pathname}/${itemObj?.poolContract}`,
                     })
                   }
                 >
                   {tableHeader?.map((i, idx) => {
                     return (
                       <Fragment key={idx}>
-                        {formatData(itemObj, i?.name)}
+                        <Td>{formatDataCellTable(itemObj, i?.name)}</Td>
                       </Fragment>
                     );
                   })}
@@ -294,3 +138,205 @@ export function IWTable({ tableHeader, tableBody, mode }) {
     </TableContainer>
   );
 }
+
+export const formatDataCellTable = (itemObj, header) => {
+  switch (header) {
+    // case "order":
+    //   return itemObj[header];
+
+    // case "marketCap":
+    //   return (
+    //     <>
+    //       {useAzeroUnit ? (
+    //         <>
+    //           {formatNumDynamicDecimal(
+    //             itemObj["nft_count"] * itemObj["floorPrice"]
+    //           )}
+    //           <TagRightIcon as={AzeroIcon} />
+    //         </>
+    //       ) : (
+    //         <>
+    //           ${" "}
+    //           {formatNumDynamicDecimal(
+    //             azeroPrice * itemObj["nft_count"] * itemObj["floorPrice"],
+    //             2
+    //           )}{" "}
+    //         </>
+    //       )}
+    //     </>
+    //   );
+
+    // case "floorPrice":
+    //   return (
+    //     <>
+    //       {useAzeroUnit ? (
+    //         <>
+    //           {formatNumDynamicDecimal(itemObj[header])}
+    //           <TagRightIcon as={AzeroIcon} />
+    //         </>
+    //       ) : (
+    //         <>$ {formatNumDynamicDecimal(azeroPrice * itemObj[header], 2)}</>
+    //       )}
+    //     </>
+    //   );
+
+    // case "name":
+    //   return (
+    //     <Flex alignItems="center">
+    //       <ImageCloudFlare
+    //         h="50px"
+    //         w="50px"
+    //         mr="20px"
+    //         size="100"
+    //         src={itemObj?.avatarImage}
+    //       />
+
+    //       <Flex direction="column" alignItems="flex-start">
+    //         <Heading
+    //           fontSize="16px"
+    //           cursor="pointer"
+    //           _hover={{ color: "brand.blue" }}
+    //           onClick={() => {
+    //             history.push(`/collection/${itemObj.nftContractAddress}`);
+    //           }}
+    //         >
+    //           {itemObj[header]}
+    //         </Heading>
+    //         <Text color="#7ae7ff" fontSize="16px" mt="4px">
+    //           {itemObj["nft_count"]} NFTs
+    //         </Text>
+    //       </Flex>
+    //     </Flex>
+    //   );
+
+    // case "volume":
+    //   return (
+    //     <>
+    //       {useAzeroUnit ? (
+    //         <>
+    //           <Box>
+    //             {formatNumDynamicDecimal(itemObj[header])}{" "}
+    //             <TagRightIcon as={AzeroIcon} />
+    //           </Box>
+
+    //           {/* <Box mt="6px" color="#34B979" fontSize="16px">
+    //         +{itemObj[header]["percent"]}%
+    //       </Box> */}
+    //         </>
+    //       ) : (
+    //         <>
+    //           <Box>
+    //             $ {formatNumDynamicDecimal(azeroPrice * itemObj[header], 2)}
+    //           </Box>
+
+    //           {/* <Box mt="6px" color="#34B979" fontSize="16px">
+    //         +{itemObj[header]["percent"]}%
+    //       </Box> */}
+    //         </>
+    //       )}
+    //     </>
+    //   );
+
+    // case "stakedAmount":
+    //   return (
+    //     <Text textAlign="left">
+    //       {formatNumDynamicDecimal(itemObj[header])} NFT
+    //       {1 * itemObj[header] > 1 ? "s" : ""}{" "}
+    //     </Text>
+    //   );
+
+    case "totalStaked":
+      return (
+        <>
+          <Text>{formatNumDynDecimal(itemObj[header])}</Text>
+        </>
+      );
+
+    case "rewardPool":
+      return (
+        <>
+          <Text>{formatNumDynDecimal(itemObj[header])}</Text>
+        </>
+      );
+
+    case "startTime":
+      return (
+        <>
+          <IWCountDown date={itemObj[header] + itemObj["duration"] * 1000} />
+        </>
+      );
+
+    case "apy":
+      return (
+        <>
+          <Text>{itemObj[header] / 100}%</Text>
+        </>
+      );
+
+    case "poolName":
+      return (
+        <>
+          <Flex
+            w="full"
+            justify={{ base: "start" }}
+            alignItems={{ base: "center" }}
+          >
+            <Circle w="30px" h="30px" bg="white">
+              <Image src={itemObj["poolLogo"]} alt="logo-subwallet" />
+            </Circle>
+
+            <Text ml="8px">{itemObj[header]}</Text>
+          </Flex>
+        </>
+      );
+
+    case "poolNameNFT":
+      return (
+        <>
+          <Flex
+            w="full"
+            justify={{ base: "start" }}
+            alignItems={{ base: "center" }}
+          >
+            <Circle w="30px" h="30px" bg="white">
+              <Image src={itemObj["poolLogo"]} alt="logo-subwallet" />
+            </Circle>
+
+            <Text ml="8px">{itemObj[header]}</Text>
+          </Flex>
+        </>
+      );
+
+    case "stakeInfo":
+      const numberStakeInfo =
+        itemObj[header] &&
+        formatNumDynDecimal(itemObj[header].stakedValue / 10 ** 12);
+
+      return (
+        <>
+          {itemObj[header] && (
+            <Flex alignItems="center">
+              <Text mr="8px">{numberStakeInfo}</Text>
+              <GoStar color="#FFB800" />
+            </Flex>
+          )}
+        </>
+      );
+    case "myStake":
+      return (
+        <>
+          <Flex alignItems="center">
+            <Text mr="8px">{itemObj[header]}</Text>
+            {itemObj["isMyStake"] && <GoStar color="#FFB800" />}
+          </Flex>
+        </>
+      );
+
+    default:
+      return (
+        <>
+          <Text textAlign="left">{itemObj[header]} </Text>
+        </>
+      );
+  }
+};
