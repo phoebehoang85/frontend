@@ -114,7 +114,7 @@ export default function PoolDetailPage({ api }) {
             </BreadcrumbItem>
 
             <BreadcrumbItem color="text.2">
-              <BreadcrumbLink href="#">Detail</BreadcrumbLink>
+              <BreadcrumbLink>Detail</BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
         </SectionContainer>

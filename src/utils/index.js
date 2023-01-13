@@ -21,7 +21,7 @@ export const formatQueryResultToNumber = (result, chainDecimals = 12) => {
   return formattedStrBal;
 };
 
-export const addressShortener = (addr = "", digits = 4) => {
+export const addressShortener = (addr = "", digits = 5) => {
   digits = 2 * digits >= addr.length ? addr.length : digits;
   return `${addr.substring(0, digits)}...${addr.slice(-digits)}`;
 };
@@ -112,6 +112,26 @@ export const calcUnclaimedRewardNftLP = ({
   const accumSecondTillNow = (new Date().getTime() - lastRewardUpdate) / 1000;
 
   const multiplierPerSecond = multiplier / 24 / 60 / 60;
+
+  const accumRewardTillNow =
+    accumSecondTillNow * multiplierPerSecond * stakedValue;
+
+  const result =
+    unclaimedReward / 10 ** 12 + accumRewardTillNow / 10 ** tokenDecimal;
+
+  return result?.toFixed(12);
+};
+
+export const calcUnclaimedRewardTokenLP = ({
+  lastRewardUpdate = 0,
+  stakedValue = 0,
+  unclaimedReward = 0,
+  multiplier = 1,
+  tokenDecimal = 0,
+}) => {
+  const accumSecondTillNow = (new Date().getTime() - lastRewardUpdate) / 1000;
+  // WHY? / 1000000
+  const multiplierPerSecond = multiplier / 24 / 60 / 60 / 1000000;
 
   const accumRewardTillNow =
     accumSecondTillNow * multiplierPerSecond * stakedValue;
