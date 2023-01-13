@@ -220,7 +220,7 @@ export default function FaucetPage({ api }) {
     getWalMintingCapAndTotalSupply();
 
     const getWalTotalMinted = async () => {
-      if (!api) return setWalTotalMinted(0);
+      if (!currentAccount) return setWalTotalMinted(0);
 
       let result = await execContractQuery(
         currentAccount?.address,
@@ -237,7 +237,7 @@ export default function FaucetPage({ api }) {
     getWalTotalMinted();
 
     const getWalMintingFee = async () => {
-      if (!api) return setWalMintingFee(1);
+      if (!currentAccount) return setWalMintingFee(1);
 
       let result = await execContractQuery(
         currentAccount?.address,

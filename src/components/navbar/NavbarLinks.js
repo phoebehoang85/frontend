@@ -197,7 +197,7 @@ export const CreateMenuDropdown = ({ onClose }) => {
                 textDecoration="none"
                 onClick={() => {
                   history.push(item.href);
-                  onClose();
+                  // onClose();
                 }}
               >
                 <MenuItem

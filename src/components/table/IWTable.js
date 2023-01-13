@@ -19,6 +19,7 @@ import { GoStar } from "react-icons/go";
 import { useHistory, useLocation } from "react-router-dom";
 import { formatNumDynDecimal } from "utils";
 import ImageCloudFlare from "components/image-cf/ImageCF";
+import { addressShortener } from "utils";
 
 export function IWTable({ tableHeader, tableBody, mode }) {
   const history = useHistory();
@@ -225,6 +226,33 @@ export const formatDataCellTable = (itemObj, header) => {
             <Text mr="8px">{itemObj[header]}</Text>
             {itemObj["isMyStake"] && <GoStar color="#FFB800" />}
           </Flex>
+        </>
+      );
+
+    case "totalSupply":
+      return (
+        <>
+          <Text>{formatNumDynDecimal(itemObj[header] / 10 ** 12)}</Text>
+        </>
+      );
+
+    case "contractAddress":
+      return (
+        <>
+          <Text>{addressShortener(itemObj[header])}</Text>
+        </>
+      );
+    case "creator":
+      return (
+        <>
+          <Text>{addressShortener(itemObj[header])}</Text>
+        </>
+      );
+
+    case "mintTo":
+      return (
+        <>
+          <Text>{addressShortener(itemObj[header])}</Text>
         </>
       );
 
