@@ -1,6 +1,7 @@
 import { decodeAddress, encodeAddress } from "@polkadot/keyring";
 import { hexToU8a, isHex } from "@polkadot/util";
 import { formatBalance } from "@polkadot/util";
+import axios from "axios";
 import BN from "bn.js";
 import numeral from "numeral";
 
@@ -61,4 +62,62 @@ export const formatNumDynDecimal = (num = 0, dec = 4) => {
   const decPart = numStr.slice(dotIdx + 1, numStr.length);
 
   return intPart + `${dotIdx === -1 ? "" : `.${decPart}`}`;
+};
+
+// new func to getImage source from CloudFlare
+export async function getCloudFlareImage(imageHash = "", size = 500) {
+  const fallbackURL = `${
+    process.env.REACT_APP_IPFS_BASE_URL
+  }/${imageHash.replace("ipfs://", "")}`;
+
+  const ret = `${process.env.REACT_APP_ARTZERO_API_BASE_URL}/getImage?input=${imageHash}&size=${size}&url=${fallbackURL}`;
+
+  let result;
+
+  try {
+    const response = await axios.get(ret);
+    result = response?.data || fallbackURL;
+  } catch (error) {
+    console.error("getCloudFlareImage error", error.message);
+    result = fallbackURL;
+  }
+
+  return result;
+}
+
+export const calcUnclaimedReward = ({
+  lastRewardUpdate = 0,
+  stakedValue = 0,
+  unclaimedReward = 0,
+  apy = 0,
+}) => {
+  const accumSecondTillNow = (new Date().getTime() - lastRewardUpdate) / 1000;
+
+  const apyPerSecond = apy / 10000 / 365 / 24 / 60 / 60;
+
+  const accumRewardTillNow = accumSecondTillNow * apyPerSecond * stakedValue;
+
+  const result = unclaimedReward / 10 ** 12 + accumRewardTillNow / 10 ** 12;
+
+  return result?.toFixed(12);
+};
+
+export const calcUnclaimedRewardNftLP = ({
+  lastRewardUpdate = 0,
+  stakedValue = 0,
+  unclaimedReward = 0,
+  multiplier = 1,
+  tokenDecimal = 0,
+}) => {
+  const accumSecondTillNow = (new Date().getTime() - lastRewardUpdate) / 1000;
+
+  const multiplierPerSecond = multiplier / 24 / 60 / 60;
+
+  const accumRewardTillNow =
+    accumSecondTillNow * multiplierPerSecond * stakedValue;
+
+  const result =
+    unclaimedReward / 10 ** 12 + accumRewardTillNow / 10 ** tokenDecimal;
+
+  return result?.toFixed(12);
 };

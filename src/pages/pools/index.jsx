@@ -77,6 +77,7 @@ export default function PoolsPage({ api }) {
   }, [api, currentAccount?.address]);
 
   const poolsListDataFiltered = useMemo(() => {
+    //TODO; add more filter here later
     return poolsListData;
   }, [poolsListData]);
 

@@ -38,6 +38,7 @@ import azt_contract from "utils/contracts/azt_contract";
 import { formatChainStringToNumber } from "utils";
 import { useCallback } from "react";
 import { toastMessages } from "constants";
+import { calcUnclaimedReward } from "utils";
 
 export default function PoolDetailPage({ api }) {
   const { currentAccount } = useSelector((s) => s.wallet);
@@ -70,7 +71,6 @@ export default function PoolDetailPage({ api }) {
         tooltipContent: "Lorem lorem",
         label: "Reward Pool",
       },
-
       {
         name: "startTime",
         hasTooltip: false,
@@ -170,23 +170,14 @@ export default function PoolDetailPage({ api }) {
                     </Flex>
 
                     <Flex
-                      w={{ base: "55%", lg: "full" }}
                       color="text.1"
                       fontWeight="600"
-                      fontSize={{ base: "16px", lg: "20px" }}
                       lineHeight="28px"
                       justify={{ base: "start" }}
                       alignItems={{ base: "center" }}
+                      w={{ base: "55%", lg: "full" }}
+                      fontSize={{ base: "16px", lg: "20px" }}
                     >
-                      {/* {name === "poolNameToken" && (
-                        <Circle w="30px" h="30px" bg="white" mr="8px">
-                          <Image
-                            src={cardData?.cardValue?.poolLogo}
-                            alt="logo-subwallet"
-                          />
-                        </Circle>
-                      )} */}
-
                       <Text>
                         {formatDataCellTable(cardData?.cardValue, name)}
                       </Text>
@@ -207,7 +198,7 @@ export default function PoolDetailPage({ api }) {
 }
 
 const MyStakeRewardInfo = ({
-  variant = "nft-farm",
+  variant = "staking-pool",
   tokenSymbol,
   address,
   balance,
@@ -391,11 +382,6 @@ const MyStakeRewardInfo = ({
 
     if (!amount) {
       toast.error("Invalid Amount!");
-      return;
-    }
-
-    if (!rewardPool || parseInt(rewardPool) < 0) {
-      toast.error("There is no reward balance in this pool!");
       return;
     }
 
@@ -615,21 +601,4 @@ const PoolInfo = (props) => {
       />
     </Stack>
   );
-};
-
-const calcUnclaimedReward = ({
-  lastRewardUpdate = 0,
-  stakedValue = 0,
-  unclaimedReward = 0,
-  apy = 0,
-}) => {
-  const accumSecondTillNow = (new Date().getTime() - lastRewardUpdate) / 1000;
-
-  const apyPerSecond = apy / 10000 / 365 / 24 / 60 / 60;
-
-  const accumRewardTillNow = accumSecondTillNow * apyPerSecond * stakedValue;
-
-  const result = unclaimedReward / 10 ** 12 + accumRewardTillNow / 10 ** 12;
-
-  return result?.toFixed(12);
 };

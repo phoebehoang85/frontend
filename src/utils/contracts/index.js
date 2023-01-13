@@ -63,7 +63,7 @@ export async function getEstimatedGas(
 }
 
 export async function execContractQuery(
-  callerAddress, // -> currentAccount.address
+  callerAddress, // -> currentAccount?.address
   api,
   contractAbi,
   contractAddress,
