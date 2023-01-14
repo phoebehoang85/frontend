@@ -64,6 +64,14 @@ export const APICall = {
     return ret;
   },
 
+  getUserStakingPools: async ({ owner }) => {
+    const ret = await client("POST", "/getPoolByOwner", {
+      owner,
+    });
+
+    return ret;
+  },
+
   askBEupdate: async ({ type, poolContract }) => {
     const ret = await client("POST", "/update", { type, poolContract });
 

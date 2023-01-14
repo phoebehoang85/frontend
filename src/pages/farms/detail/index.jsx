@@ -28,7 +28,7 @@ import { formatDataCellTable } from "components/table/IWTable";
 import { useSelector } from "react-redux";
 import { useCallback, useState, useEffect } from "react";
 import { execContractQuery } from "utils/contracts";
-import nft_pool_contract from "utils/contracts/nft_pool";
+import nft_pool_contract from "utils/contracts/nft_pool_contract";
 import { formatChainStringToNumber } from "utils";
 import psp22_contract from "utils/contracts/psp22_contract";
 import { formatQueryResultToNumber } from "utils";
@@ -47,7 +47,7 @@ import AddressCopier from "components/address-copier/AddressCopier";
 import CardSocial from "components/card/CardSocial";
 import ImageCloudFlare from "components/image-cf/ImageCF";
 import { calcUnclaimedRewardTokenLP } from "utils";
-import lp_pool_contract from "utils/contracts/lp_pool";
+import lp_pool_contract from "utils/contracts/lp_pool_contract";
 
 export default function FarmDetailPage() {
   // const params = useParams();

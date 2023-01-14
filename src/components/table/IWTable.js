@@ -236,12 +236,40 @@ export const formatDataCellTable = (itemObj, header) => {
         </>
       );
 
+    case "duration":
+      return (
+        <>
+          <Text>{itemObj[header] / 86400} days</Text>
+        </>
+      );
+
+    case "tokenTotalSupply":
+      return (
+        <>
+          <Text>{formatNumDynDecimal(itemObj[header] / 10 ** 12)}</Text>
+        </>
+      );
+
     case "contractAddress":
       return (
         <>
           <Text>{addressShortener(itemObj[header])}</Text>
         </>
       );
+    case "owner":
+      return (
+        <>
+          <Text>{addressShortener(itemObj[header])}</Text>
+        </>
+      );
+
+    case "poolContract":
+      return (
+        <>
+          <Text>{addressShortener(itemObj[header])}</Text>
+        </>
+      );
+
     case "creator":
       return (
         <>

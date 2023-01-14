@@ -17,10 +17,10 @@ import IWTabs from "components/tabs/IWTabs";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { APICall } from "api/client";
-import nft_pool_contract from "utils/contracts/nft_pool";
+import nft_pool_contract from "utils/contracts/nft_pool_contract";
 import { execContractQuery } from "utils/contracts";
 import { formatChainStringToNumber } from "utils";
-import lp_pool_contract from "utils/contracts/lp_pool";
+import lp_pool_contract from "utils/contracts/lp_pool_contract";
 
 export default function FarmsPage() {
   const { currentAccount } = useSelector((s) => s.wallet);

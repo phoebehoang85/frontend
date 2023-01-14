@@ -1,7 +1,9 @@
 import {
   Box,
   Button,
+  Flex,
   Heading,
+  Select,
   SimpleGrid,
   Text,
   VStack,
@@ -10,11 +12,255 @@ import SectionContainer from "components/container/SectionContainer";
 import IWInput from "components/input/Input";
 import { IWTable } from "components/table/IWTable";
 
-import React from "react";
-import IWSelect from "components/select/IWSelect";
-import { AzeroLogo } from "components/icons/Icons";
+import { toastMessages } from "constants";
 
-export default function CreateStakePoolPage() {
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserBalance } from "redux/slices/walletSlice";
+import { delay } from "utils";
+import { isAddressValid } from "utils";
+import { formatNumToBN } from "utils";
+import { formatQueryResultToNumber } from "utils";
+import { execContractQuery } from "utils/contracts";
+import { execContractTx } from "utils/contracts";
+import azt_contract from "utils/contracts/azt_contract";
+import core_contract from "utils/contracts/core_contract";
+import psp22_contract from "utils/contracts/psp22_contract";
+import { APICall } from "api/client";
+import { addressShortener } from "utils";
+import DateTimePicker from "react-datetime-picker";
+import pool_generator_contract from "utils/contracts/pool_generator";
+
+export default function CreateStakePoolPage({ api }) {
+  const dispatch = useDispatch();
+  const { currentAccount } = useSelector((s) => s.wallet);
+
+  const [createTokenFee, setCreateToken] = useState(0);
+  const [faucetTokensList, setFaucetTokensList] = useState([]);
+
+  const [selectedContractAddr, setSelectedContractAddr] = useState("");
+  const [duration, setDuration] = useState(0);
+  const [apy, setApy] = useState(0);
+  const [startTime, setStartTime] = useState(new Date());
+
+  const [tokenBalance, setTokenBalance] = useState(0);
+
+  const fetchTokenBalance = useCallback(async () => {
+    if (!currentAccount) {
+      toast.error("Please connect wallet!");
+      return;
+    }
+
+    if (!isAddressValid(selectedContractAddr)) {
+      toast.error("Invalid address!");
+      return;
+    }
+
+    let queryResult = await execContractQuery(
+      currentAccount?.address,
+      "api",
+      psp22_contract.CONTRACT_ABI,
+      selectedContractAddr,
+      0,
+      "psp22::balanceOf",
+      currentAccount?.address
+    );
+
+    const bal = formatQueryResultToNumber(queryResult);
+    setTokenBalance(bal);
+  }, [currentAccount, selectedContractAddr]);
+
+  const tokenSymbol = useMemo(() => {
+    const foundItem = faucetTokensList.find(
+      (item) => item.contractAddress === selectedContractAddr
+    );
+
+    return foundItem?.symbol;
+  }, [faucetTokensList, selectedContractAddr]);
+
+  useEffect(() => {
+    fetchTokenBalance();
+  }, [fetchTokenBalance]);
+
+  useEffect(() => {
+    let isUnmounted = false;
+    const getFaucetTokensListData = async () => {
+      let { ret, status, message } = await APICall.getFaucetTokensList();
+
+      if (status === "OK") {
+        if (isUnmounted) return;
+
+        return setFaucetTokensList(ret);
+      }
+
+      toast.error(`Get faucet tokens list failed. ${message}`);
+    };
+    getFaucetTokensListData();
+    return () => (isUnmounted = true);
+  }, []);
+
+  useEffect(() => {
+    const fetchCreateTokenFee = async () => {
+      const result = await execContractQuery(
+        currentAccount?.address,
+        "api",
+        pool_generator_contract.CONTRACT_ABI,
+        pool_generator_contract.CONTRACT_ADDRESS,
+        0,
+        "genericPoolGeneratorTrait::getCreationFee"
+      );
+
+      const fee = formatQueryResultToNumber(result);
+
+      setCreateToken(fee);
+    };
+
+    fetchCreateTokenFee();
+  }, [currentAccount]);
+
+  async function createStakingPoolHandler() {
+    if (!currentAccount) {
+      toast.error(toastMessages.NO_WALLET);
+      return;
+    }
+
+    if (!selectedContractAddr || !apy || !duration || !startTime) {
+      toast.error(`Please fill in all data!`);
+      return;
+    }
+
+    if (!isAddressValid(selectedContractAddr)) {
+      return toast.error("Invalid address!");
+    }
+
+    if (parseInt(currentAccount?.balance?.wal) < createTokenFee) {
+      toast.error(
+        `You don't have enough WAL. Unstake costs ${createTokenFee} WAL`
+      );
+      return;
+    }
+
+    //Approve
+    toast.success("Step 1: Approving...");
+
+    let approve = await execContractTx(
+      currentAccount,
+      "api",
+      psp22_contract.CONTRACT_ABI,
+      azt_contract.CONTRACT_ADDRESS,
+      0, //-> value
+      "psp22::approve",
+      core_contract.CONTRACT_ADDRESS,
+      formatNumToBN(createTokenFee)
+    );
+
+    if (!approve) return;
+
+    await delay(3000);
+
+    toast.success("Step 2: Process unstaking...");
+
+    await execContractTx(
+      currentAccount,
+      "api",
+      pool_generator_contract.CONTRACT_ABI,
+      pool_generator_contract.CONTRACT_ADDRESS,
+      0, //-> value
+      "newPool",
+      currentAccount?.address,
+      selectedContractAddr,
+      parseInt(apy * 100),
+      duration * 24 * 60 * 60 * 1000,
+      startTime.getTime()
+    );
+    // TODO: check not work?
+    await APICall.askBEupdate({ type: "pool", poolContract: "new" });
+
+    setApy(0);
+    setDuration(0);
+    setStartTime(new Date());
+
+    toast.success("Please wait up to 10s for the data to be updated");
+
+    await delay(2000).then(() => {
+      currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
+      fetchTokenBalance();
+    });
+  }
+
+  const [myPoolList, setMyPoolList] = useState([]);
+
+  useEffect(() => {
+    const fetchMyPools = async () => {
+      const { status, ret } = await APICall.getUserStakingPools({
+        owner: currentAccount?.address,
+      });
+
+      if (status === "OK") {
+        console.log("ret", ret);
+        setMyPoolList(ret);
+      }
+    };
+    fetchMyPools();
+  }, [currentAccount?.address]);
+
+  const tableData = {
+    tableHeader: [
+      {
+        name: "poolContract",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Pool Address",
+      },
+
+      {
+        name: "tokenSymbol",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Symbol",
+      },
+      {
+        name: "tokenDecimal",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Decimal",
+      },
+      {
+        name: "tokenTotalSupply",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Initial Mint",
+      },
+      {
+        name: "apy",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "APY",
+      },
+      {
+        name: "rewardPool",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Reward Pool",
+      },
+      {
+        name: "totalStaked",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "TVL",
+      },
+
+      {
+        name: "duration",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "End in",
+      },
+    ],
+
+    tableBody: [...myPoolList],
+  };
   return (
     <>
       <SectionContainer
@@ -25,7 +271,7 @@ export default function CreateStakePoolPage() {
             Staker earns tokens at fixed APR. The creation costs
             <Text as="span" fontWeight="700" color="text.1">
               {" "}
-              100 WAL
+              {createTokenFee} WAL
             </Text>
           </span>
         }
@@ -39,14 +285,33 @@ export default function CreateStakePoolPage() {
             mb={{ base: "30px" }}
           >
             <Box w="full">
-              <IWSelect
-                dataList={["Token A", "Token B", "Token C"]}
+              <Heading as="h4" size="h4" mb="12px">
+                Token Contract Address
+              </Heading>
+              <Select
                 label="Token Contract Address"
-              />
+                value={selectedContractAddr}
+                // isDisabled={accountInfoLoading}
+                id="token"
+                placeholder="Select token"
+                onChange={({ target }) => {
+                  console.log("target.value", target.value);
+
+                  setSelectedContractAddr(target.value);
+                }}
+              >
+                {faucetTokensList?.map((token, idx) => (
+                  <option key={idx} value={token.contractAddress}>
+                    {token?.symbol} ({token?.name}) -{" "}
+                    {addressShortener(token?.contractAddress)}
+                  </option>
+                ))}
+              </Select>
             </Box>
             <Box w="full">
               <IWInput
-                type="number"
+                onChange={({ target }) => setSelectedContractAddr(target.value)}
+                value={selectedContractAddr}
                 placeholder="Address to check"
                 label="or enter token contract address"
               />
@@ -55,19 +320,44 @@ export default function CreateStakePoolPage() {
             <Box w="full">
               <IWInput
                 type="number"
-                placeholder="0"
+                value={duration}
                 label="Pool Length (days)"
+                onChange={({ target }) => setDuration(target.value)}
               />
             </Box>
 
             <Box w="full">
-              <IWSelect
-                dataList={[
-                  "12/29/2022 5:08 PM",
-                  "12/29/2022 5:08 PM",
-                  "12/29/2022 5:08 PM",
-                ]}
-                label="Start Date & Time"
+              <IWInput
+                isDisabled={true}
+                value={`${currentAccount?.balance?.azero || 0} AZERO`}
+                label="Your AZERO Balance"
+              />
+            </Box>
+            <Box w="full">
+              <Heading as="h4" size="h4" mb="12px">
+                Start Date & Time
+              </Heading>
+              <Flex
+                h="52px"
+                borderWidth="1px"
+                justifyContent="start"
+                borderRadius="5px"
+              >
+                <DateTimePicker
+                  disableClock
+                  disableCalendar
+                  locale="en-EN"
+                  value={startTime}
+                  onChange={setStartTime}
+                />
+              </Flex>
+            </Box>
+
+            <Box w="full">
+              <IWInput
+                isDisabled={true}
+                value={`${currentAccount?.balance?.wal || 0} WAL`}
+                label="Your WAL Balance"
               />
             </Box>
 
@@ -75,40 +365,26 @@ export default function CreateStakePoolPage() {
               <IWInput
                 type="number"
                 placeholder="0%"
-                label="Annual Percentage Yield (APR)"
+                label="Annual Percentage Yield (APR) %"
+                value={apy}
+                onChange={({ target }) => setApy(target.value)}
               />
             </Box>
 
             <Box w="full">
               <IWInput
-                type="number"
-                placeholder="25000.657"
-                label="Your AZERO Balance"
-                inputRightElementIcon={<AzeroLogo />}
-              />
-            </Box>
-            <Box w="full">
-              <IWInput
-                type="number"
-                placeholder="250.657"
-                label="Your Token Balance"
-              />
-            </Box>
-            <Box w="full">
-              <IWInput
-                type="number"
-                placeholder="99,999.000"
-                label="Your WAL Balance"
-                inputRightElementIcon={
-                  <Heading as="h5" size="h5" fontWeight="semibold">
-                    $WAL
-                  </Heading>
-                }
+                isDisabled={true}
+                value={`${tokenBalance || 0} ${tokenSymbol || ""}`}
+                label={`Your ${tokenSymbol || "Token"} Balance`}
               />
             </Box>
           </SimpleGrid>
 
-          <Button w="full" maxW={{ lg: "220px" }}>
+          <Button
+            w="full"
+            maxW={{ lg: "220px" }}
+            onClick={createStakingPoolHandler}
+          >
             Create Staking Pool{" "}
           </Button>
         </VStack>
@@ -116,96 +392,11 @@ export default function CreateStakePoolPage() {
 
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
-        title="Recent Staking Pools"
-        description={`Fugiat quis do exercitation ut consequat id consectetur.`}
+        title="My Staking Pools"
+        description=""
       >
         <IWTable {...tableData} />
       </SectionContainer>
     </>
   );
 }
-const tableData = {
-  tableHeader: [
-    {
-      name: "contractAddress",
-      hasTooltip: false,
-      tooltipContent: "",
-      label: "Contract Address",
-    },
-    {
-      name: "creatorAddress",
-      hasTooltip: false,
-      tooltipContent: "",
-      label: "Creator",
-    },
-    {
-      name: "creatorName",
-      hasTooltip: false,
-      tooltipContent: "",
-      label: "Name",
-    },
-    {
-      name: "symbol",
-      hasTooltip: false,
-      tooltipContent: "",
-      label: "Symbol",
-    },
-    {
-      name: "decimal",
-      hasTooltip: false,
-      tooltipContent: "",
-      label: "Decimal",
-    },
-    {
-      name: "initialMint",
-      hasTooltip: false,
-      tooltipContent: "",
-      label: "Initial Mint",
-    },
-    {
-      name: "mintToAddress",
-      hasTooltip: false,
-      tooltipContent: "",
-      label: "Mint To",
-    },
-  ],
-
-  tableBody: [
-    {
-      contractAddress: "5CiP...JbtUe5",
-      creatorAddress: "5CiP...JbtUe5",
-      creatorName: "Shaktiman",
-      symbol: "MNI",
-      decimal: "12",
-      initialMint: "1",
-      mintToAddress: "5CiP...JbtUe5",
-    },
-    {
-      contractAddress: "5CiP...JbtUe5",
-      creatorAddress: "5CiP...JbtUe5",
-      creatorName: "Shaktiman",
-      symbol: "MNI",
-      decimal: "12",
-      initialMint: "1",
-      mintToAddress: "5CiP...JbtUe5",
-    },
-    {
-      contractAddress: "5CiP...JbtUe5",
-      creatorAddress: "5CiP...JbtUe5",
-      creatorName: "Shaktiman",
-      symbol: "MNI",
-      decimal: "12",
-      initialMint: "1",
-      mintToAddress: "5CiP...JbtUe5",
-    },
-    {
-      contractAddress: "5CiP...JbtUe5",
-      creatorAddress: "5CiP...JbtUe5",
-      creatorName: "Shaktiman",
-      symbol: "MNI",
-      decimal: "12",
-      initialMint: "1",
-      mintToAddress: "5CiP...JbtUe5",
-    },
-  ],
-};

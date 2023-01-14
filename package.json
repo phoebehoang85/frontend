@@ -31,6 +31,7 @@
     "react-calendar": "^3.7.0",
     "react-countdown": "^2.3.5",
     "react-custom-scrollbars-2": "^4.2.1",
+    "react-datetime-picker": "^4.1.1",
     "react-dom": "17.0.2",
     "react-dropzone": "^12.0.4",
     "react-floaterjs": "^1.0.6",

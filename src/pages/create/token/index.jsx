@@ -9,12 +9,13 @@ import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserBalance } from "redux/slices/walletSlice";
 import { delay } from "utils";
+import { isAddressValid } from "utils";
 import { formatNumToBN } from "utils";
 import { formatQueryResultToNumber } from "utils";
 import { execContractQuery } from "utils/contracts";
 import { execContractTx } from "utils/contracts";
 import azt_contract from "utils/contracts/azt_contract";
-import core_contract from "utils/contracts/core";
+import core_contract from "utils/contracts/core_contract";
 import psp22_contract from "utils/contracts/psp22_contract";
 
 export default function CreateTokenPage({ api }) {
@@ -28,11 +29,9 @@ export default function CreateTokenPage({ api }) {
 
   const [createTokenFee, setCreateToken] = useState(0);
   const [tokenListData, setTokenListData] = useState([]);
-  console.log("tokenListData", tokenListData);
+
   useEffect(() => {
     const fetchCreateTokenFee = async () => {
-      if (!currentAccount?.balance) return;
-
       const result = await execContractQuery(
         currentAccount?.address,
         "api",
@@ -48,13 +47,11 @@ export default function CreateTokenPage({ api }) {
     };
 
     fetchCreateTokenFee();
-  }, [currentAccount?.address, currentAccount?.balance]);
+  }, [currentAccount]);
 
   useEffect(() => {
     const fetchDataTable = async () => {
       let ret = [];
-
-      if (!currentAccount) return;
 
       const result = await execContractQuery(
         currentAccount?.address,
@@ -93,10 +90,21 @@ export default function CreateTokenPage({ api }) {
       return;
     }
 
-    // if (parseInt(currentAccount?.balance?.wal) < unstakeFee) {
-    //   toast.error(`You don't have enough WAL. Unstake costs ${unstakeFee} WAL`);
-    //   return;
-    // }
+    if (!tokenName || !mintAddress || !tokenSymbol || !totalSupply) {
+      toast.error(`Please fill in all data!`);
+      return;
+    }
+
+    if (!isAddressValid(mintAddress)) {
+      return toast.error("Invalid address!");
+    }
+
+    if (parseInt(currentAccount?.balance?.wal) < createTokenFee) {
+      toast.error(
+        `You don't have enough WAL. Unstake costs ${createTokenFee} WAL`
+      );
+      return;
+    }
 
     //Approve
     toast.success("Step 1: Approving...");
@@ -118,7 +126,7 @@ export default function CreateTokenPage({ api }) {
 
     toast.success("Step 2: Process unstaking...");
 
-    const newToken = await execContractTx(
+    await execContractTx(
       currentAccount,
       "api",
       core_contract.CONTRACT_ABI,
@@ -136,20 +144,13 @@ export default function CreateTokenPage({ api }) {
     setMintAddress("");
     setTokenSymbol("");
     setTotalSupply(0);
-    console.log("newToken", newToken);
 
-    // await APICall.askBEupdate({ type: "nft", poolContract });
-    // await APICall.askBEupdateNFTFromArtZero({
-    //   token_id: tokenID,
-    //   collection_address: NFTtokenContract,
-    // });
+    toast.success("Please wait up to 10s for the data to be updated");
 
-    // toast.success("Please wait up to 10s for the data to be updated");
-
-    // await delay(5000).then(() => {
-    currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
-    //   fetchTokenBalance();
-    // });
+    await delay(2000).then(() => {
+      currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
+      //   fetchTokenBalance();
+    });
   }
 
   const tableData = {
@@ -254,9 +255,8 @@ export default function CreateTokenPage({ api }) {
             <Box w={{ base: "full" }}>
               <IWInput
                 isDisabled={true}
-                value={`${currentAccount?.balance?.azero} AZERO`}
+                value={`${currentAccount?.balance?.azero || 0} AZERO`}
                 label="Your Azero Balance"
-                onChange={({ target }) => setTokenSymbol(target.value)}
               />
             </Box>
             <Box w={{ base: "full" }}>
@@ -271,9 +271,8 @@ export default function CreateTokenPage({ api }) {
             <Box w={{ base: "full" }}>
               <IWInput
                 isDisabled={true}
-                value={`${currentAccount?.balance?.wal} WAL`}
+                value={`${currentAccount?.balance?.wal || 0} WAL`}
                 label="Your WAL Balance"
-                onChange={({ target }) => setTokenSymbol(target.value)}
               />
             </Box>
           </SimpleGrid>
