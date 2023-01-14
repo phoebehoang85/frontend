@@ -23,7 +23,6 @@ import { execContractQuery } from "utils/contracts";
 import { formatQueryResultToNumber } from "utils";
 import psp22_contract from "utils/contracts/psp22_contract";
 import { APICall } from "api/client";
-import nft_pool_contract from "utils/contracts/nft_pool_contract";
 import { toastMessages } from "constants";
 import { execContractTx } from "utils/contracts";
 import { fetchUserBalance } from "redux/slices/walletSlice";
@@ -173,12 +172,14 @@ export default function CreateLPPage({ api }) {
       return toast.error("Invalid address!");
     }
 
-    if (parseInt(currentAccount?.balance?.wal) < createTokenFee) {
-      toast.error(
-        `You don't have enough WAL. Unstake costs ${createTokenFee} WAL`
-      );
-      return;
-    }
+    // TODO: correct parseInt func
+    // if (parseInt(currentAccount?.balance?.wal) < createTokenFee) {
+
+    //   toast.error(parseInt(currentAccount?.balance?.wal) +
+    //     ` You don't have enough WAL. Stake costs ${createTokenFee} WAL`
+    //   );
+    //   return;
+    // }
 
     //Approve
     toast.success("Step 1: Approving...");
@@ -190,7 +191,7 @@ export default function CreateLPPage({ api }) {
       azt_contract.CONTRACT_ADDRESS,
       0, //-> value
       "psp22::approve",
-      nft_pool_contract.CONTRACT_ADDRESS,
+      nft_pool_generator_contract.CONTRACT_ADDRESS,
       formatNumToBN(createTokenFee)
     );
 

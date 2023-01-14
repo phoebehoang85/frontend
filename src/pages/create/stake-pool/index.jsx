@@ -137,7 +137,7 @@ export default function CreateStakePoolPage({ api }) {
 
     if (parseInt(currentAccount?.balance?.wal) < createTokenFee) {
       toast.error(
-        `You don't have enough WAL. Unstake costs ${createTokenFee} WAL`
+        `You don't have enough WAL. Stake costs ${createTokenFee} WAL`
       );
       return;
     }
@@ -152,7 +152,7 @@ export default function CreateStakePoolPage({ api }) {
       azt_contract.CONTRACT_ADDRESS,
       0, //-> value
       "psp22::approve",
-      lp_pool_generator_contract.CONTRACT_ADDRESS,
+      pool_generator_contract.CONTRACT_ADDRESS,
       formatNumToBN(createTokenFee)
     );
 
