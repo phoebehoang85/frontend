@@ -1,7 +1,7 @@
 import axios from "axios";
 
-//const baseURL = "https://api.inkwhale.net";
-const baseURL = "http://localhost:3412";
+const baseURL = "https://api-dev.inkwhale.net";
+//const baseURL = "http://localhost:3412";
 
 export const clientAPI = async (method, url, options) => {
   if (!options) options = {};
