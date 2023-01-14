@@ -1,9 +1,10 @@
 import {
   Box,
   Button,
+  Flex,
   Heading,
+  Select,
   SimpleGrid,
-  Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -11,12 +12,27 @@ import SectionContainer from "components/container/SectionContainer";
 import IWInput from "components/input/Input";
 import { IWTable } from "components/table/IWTable";
 
-import React from "react";
-import IWSelect from "components/select/IWSelect";
-import { AzeroLogo } from "components/icons/Icons";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
+import DateTimePicker from "react-datetime-picker";
+import { useDispatch, useSelector } from "react-redux";
+import { addressShortener } from "utils";
+import { toast } from "react-hot-toast";
+import { isAddressValid } from "utils";
+import { execContractQuery } from "utils/contracts";
+import { formatQueryResultToNumber } from "utils";
+import psp22_contract from "utils/contracts/psp22_contract";
+import { APICall } from "api/client";
+import nft_pool_contract from "utils/contracts/nft_pool_contract";
+import { toastMessages } from "constants";
+import { execContractTx } from "utils/contracts";
+import { fetchUserBalance } from "redux/slices/walletSlice";
+import { delay } from "utils";
+import { formatNumToBN } from "utils";
+import azt_contract from "utils/contracts/azt_contract";
+import nft_pool_generator_contract from "utils/contracts/nft_pool_generator_contract";
 
-export default function CreateLPPage() {
+export default function CreateLPPage({ api }) {
   const { pathname } = useLocation();
 
   const mode =
@@ -26,6 +42,268 @@ export default function CreateLPPage() {
       ? "NFT_LP"
       : "";
 
+  const dispatch = useDispatch();
+  const { currentAccount } = useSelector((s) => s.wallet);
+
+  const [createTokenFee, setCreateTokenFee] = useState(0);
+
+  const [faucetTokensList, setFaucetTokensList] = useState([]);
+  const [selectedContractAddr, setSelectedContractAddr] = useState("");
+
+  const [collectionList, setCollectionList] = useState([]);
+  const [selectedCollectionAddr, setSelectedCollectionAddr] = useState("");
+
+  const [duration, setDuration] = useState(0);
+  const [multiplier, setMultiplier] = useState(0);
+  const [startTime, setStartTime] = useState(new Date());
+
+  const [tokenBalance, setTokenBalance] = useState(0);
+
+  const fetchTokenBalance = useCallback(async () => {
+    if (!selectedContractAddr) return;
+
+    if (!currentAccount) {
+      toast.error("Please connect wallet!");
+      return;
+    }
+
+    if (!isAddressValid(selectedContractAddr)) {
+      toast.error("Invalid address!");
+      return;
+    }
+
+    let queryResult = await execContractQuery(
+      currentAccount?.address,
+      "api",
+      psp22_contract.CONTRACT_ABI,
+      selectedContractAddr,
+      0,
+      "psp22::balanceOf",
+      currentAccount?.address
+    );
+
+    const bal = formatQueryResultToNumber(queryResult);
+    setTokenBalance(bal);
+  }, [currentAccount, selectedContractAddr]);
+
+  const tokenSymbol = useMemo(() => {
+    const foundItem = faucetTokensList.find(
+      (item) => item.contractAddress === selectedContractAddr
+    );
+
+    return foundItem?.symbol;
+  }, [faucetTokensList, selectedContractAddr]);
+
+  useEffect(() => {
+    let isUnmounted = false;
+    const getFaucetTokensListData = async () => {
+      let { ret, status, message } = await APICall.getFaucetTokensList();
+
+      if (status === "OK") {
+        if (isUnmounted) return;
+
+        return setFaucetTokensList(ret);
+      }
+
+      toast.error(`Get faucet tokens list failed. ${message}`);
+    };
+    getFaucetTokensListData();
+
+    const getCollectionListData = async () => {
+      let { ret, status, message } = await APICall.getAllCollectionsFromArtZero(
+        { isActive: true, ignoreNoNFT: false }
+      );
+      console.log("getCollectionListData ret", ret);
+      if (status === "OK") {
+        if (isUnmounted) return;
+
+        return setCollectionList(ret);
+      }
+
+      toast.error(`Get Collection list failed. ${message}`);
+    };
+    getCollectionListData();
+    return () => (isUnmounted = true);
+  }, []);
+
+  useEffect(() => {
+    fetchTokenBalance();
+  }, [fetchTokenBalance]);
+
+  useEffect(() => {
+    const fetchCreateTokenFee = async () => {
+      const result = await execContractQuery(
+        currentAccount?.address,
+        "api",
+        nft_pool_generator_contract.CONTRACT_ABI,
+        nft_pool_generator_contract.CONTRACT_ADDRESS,
+        0,
+        "genericPoolGeneratorTrait::getCreationFee"
+      );
+
+      const fee = formatQueryResultToNumber(result);
+
+      setCreateTokenFee(fee);
+    };
+
+    fetchCreateTokenFee();
+  }, [currentAccount]);
+
+  async function createNFTLPHandler() {
+    if (!currentAccount) {
+      toast.error(toastMessages.NO_WALLET);
+      return;
+    }
+
+    if (
+      !selectedContractAddr ||
+      !selectedCollectionAddr ||
+      !multiplier ||
+      !duration ||
+      !startTime
+    ) {
+      toast.error(`Please fill in all data!`);
+      return;
+    }
+
+    if (
+      !isAddressValid(selectedContractAddr) ||
+      !isAddressValid(selectedCollectionAddr)
+    ) {
+      return toast.error("Invalid address!");
+    }
+
+    if (parseInt(currentAccount?.balance?.wal) < createTokenFee) {
+      toast.error(
+        `You don't have enough WAL. Unstake costs ${createTokenFee} WAL`
+      );
+      return;
+    }
+
+    //Approve
+    toast.success("Step 1: Approving...");
+
+    let approve = await execContractTx(
+      currentAccount,
+      "api",
+      psp22_contract.CONTRACT_ABI,
+      azt_contract.CONTRACT_ADDRESS,
+      0, //-> value
+      "psp22::approve",
+      nft_pool_contract.CONTRACT_ADDRESS,
+      formatNumToBN(createTokenFee)
+    );
+
+    if (!approve) return;
+
+    await delay(3000);
+
+    toast.success("Step 2: Process unstaking...");
+
+    await execContractTx(
+      currentAccount,
+      "api",
+      nft_pool_generator_contract.CONTRACT_ABI,
+      nft_pool_generator_contract.CONTRACT_ADDRESS,
+      0, //-> value
+      "newPool",
+      currentAccount?.address,
+      selectedCollectionAddr,
+      selectedContractAddr,
+      formatNumToBN(multiplier),
+      duration * 24 * 60 * 60 * 1000,
+      startTime.getTime()
+    );
+
+    await APICall.askBEupdate({ type: "nft", poolContract: "new" });
+
+    setMultiplier(0);
+    setDuration(0);
+    setStartTime(new Date());
+
+    toast.success("Please wait up to 10s for the data to be updated");
+
+    await delay(2000).then(() => {
+      currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
+      fetchTokenBalance();
+    });
+  }
+
+  const [myNFTPoolList, setMyNFTPoolList] = useState([]);
+
+  useEffect(() => {
+    let isUnmounted;
+
+    const fetchMyPools = async () => {
+      const { status, ret } = await APICall.getUserNFTLP({
+        owner: currentAccount?.address,
+      });
+
+      if (status === "OK") {
+        const nftLPListAddNftInfo = await Promise.all(
+          ret?.map(async (nftLP) => {
+            // get collection info
+            const { ret } = await APICall.getCollectionByAddressFromArtZero({
+              collection_address: nftLP?.NFTtokenContract,
+            });
+
+            if (ret[0]) {
+              nftLP = { ...nftLP, nftInfo: ret[0] };
+            }
+
+            return nftLP;
+          })
+        );
+
+        if (isUnmounted) return;
+        setMyNFTPoolList(nftLPListAddNftInfo);
+      }
+    };
+    fetchMyPools();
+  }, [currentAccount?.address]);
+
+  const tableData = {
+    tableHeader: [
+      {
+        name: "nftInfo",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Stake Collection",
+      },
+      {
+        name: "tokenSymbol",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Earn",
+      },
+      {
+        name: "totalStaked",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "TVL",
+      },
+      {
+        name: "rewardPool",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Reward Pool",
+      },
+      {
+        name: "multiplier",
+        hasTooltip: true,
+        tooltipContent: "",
+        label: "Multiplier",
+      },
+      {
+        name: "startTime",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Expired In",
+      },
+    ],
+
+    tableBody: [...myNFTPoolList],
+  };
   return (
     <>
       <SectionContainer
@@ -37,7 +315,7 @@ export default function CreateLPPage() {
             token. The creation costs
             <Text as="span" fontWeight="700" color="text.1">
               {" "}
-              100 WAL
+              {createTokenFee} WAL
             </Text>
           </span>
         }
@@ -45,61 +323,119 @@ export default function CreateLPPage() {
         <VStack w="full">
           <SimpleGrid
             w="full"
-            mb={{ base: "30px" }}
             columns={{ base: 1, lg: 2 }}
             spacingX={{ lg: "20px" }}
             spacingY={{ base: "20px", lg: "32px" }}
+            mb={{ base: "30px" }}
           >
             <Box w="full">
-              <IWSelect
-                dataList={["Token A", "Token B", "Token C"]}
-                label={`Select ${
-                  mode === "NFT_LP"
-                    ? "NFT Collection to stake"
-                    : mode === "TOKEN_LP"
-                    ? "Token to stake"
-                    : ""
-                } `}
-              />
+              <Heading as="h4" size="h4" mb="12px">
+                Select NFT Collection
+              </Heading>
+              <Select
+                value={selectedCollectionAddr}
+                // isDisabled={accountInfoLoading}
+                id="nft-collection"
+                placeholder="Select Collection"
+                onChange={({ target }) => {
+                  console.log("target.value", target.value);
+
+                  setSelectedCollectionAddr(target.value);
+                }}
+              >
+                {collectionList?.map((token, idx) => (
+                  <option key={idx} value={token.nftContractAddress}>
+                    {token?.name} -{" "}
+                    {addressShortener(token?.nftContractAddress)}
+                  </option>
+                ))}
+              </Select>
             </Box>
+
             <Box w="full">
               <IWInput
-                type="number"
-                placeholder="Address "
-                label="or enter contract address"
+                onChange={({ target }) =>
+                  setSelectedCollectionAddr(target.value)
+                }
+                value={selectedCollectionAddr}
+                placeholder="Contract Address"
+                label="or enter collection contract address"
               />
             </Box>
 
             <Box w="full">
-              <IWSelect
-                dataList={["Token A", "Token B", "Token C"]}
-                label="Select Token to reward stakers"
-              />
+              <Heading as="h4" size="h4" mb="12px">
+                Select Token To Reward Stakers
+              </Heading>
+              <Select
+                value={selectedContractAddr}
+                id="token-collection"
+                placeholder="Select token"
+                onChange={({ target }) => {
+                  console.log("target.value", target.value);
+
+                  setSelectedContractAddr(target.value);
+                }}
+              >
+                {faucetTokensList?.map((token, idx) => (
+                  <option key={idx} value={token.contractAddress}>
+                    {token?.symbol} ({token?.name}) -{" "}
+                    {addressShortener(token?.contractAddress)}
+                  </option>
+                ))}
+              </Select>
             </Box>
+
             <Box w="full">
               <IWInput
-                type="number"
-                placeholder="Address"
-                label="or enter contract address"
+                onChange={({ target }) => setSelectedContractAddr(target.value)}
+                value={selectedContractAddr}
+                placeholder="Contract Address"
+                label="or enter token contract address"
               />
             </Box>
 
             <Box w="full">
-              <IWSelect
-                dataList={[
-                  "12/29/2022 5:08 PM",
-                  "12/29/2022 5:08 PM",
-                  "12/29/2022 5:08 PM",
-                ]}
-                label="Start Date & Time"
-              />
-            </Box>
-            <Box w="full">
               <IWInput
                 type="number"
-                placeholder="25000.657"
+                value={duration}
+                label="Pool Length (days)"
+                onChange={({ target }) => setDuration(target.value)}
+              />
+            </Box>
+
+            <Box w="full">
+              <IWInput
+                isDisabled={true}
+                value={`${currentAccount?.balance?.azero || 0} AZERO`}
                 label="Your AZERO Balance"
-                inputRightElementIcon={<AzeroLogo />}
+              />
+            </Box>
+            <Box w="full">
+              <Heading as="h4" size="h4" mb="12px">
+                Start Date & Time
+              </Heading>
+              <Flex
+                h="52px"
+                borderWidth="1px"
+                justifyContent="start"
+                borderRadius="5px"
+              >
+                <DateTimePicker
+                  disableClock
+                  disableCalendar
+                  locale="en-EN"
+                  value={startTime}
+                  onChange={setStartTime}
+                />
+              </Flex>
+            </Box>
+
+            <Box w="full">
+              <IWInput
+                isDisabled={true}
+                value={`${currentAccount?.balance?.wal || 0} WAL`}
+                label="Your WAL Balance"
               />
             </Box>
 
@@ -107,164 +443,35 @@ export default function CreateLPPage() {
               <IWInput
                 type="number"
                 placeholder="0"
-                label="Pool Length (days)"
+                label="Multiplier "
+                value={multiplier}
+                onChange={({ target }) => setMultiplier(target.value)}
               />
-            </Box>
-            <Box w="full">
-              {mode === "NFT_LP" ? (
-                <IWInput
-                  type="number"
-                  placeholder="250.657"
-                  label="Your Token Balance"
-                />
-              ) : (
-                <Stack
-                  flexDirection={{ base: "column", lg: "row" }}
-                  justifyContent="space-between"
-                  alignItems="end"
-                  w="full"
-                >
-                  <IWInput
-                    type="number"
-                    placeholder="99,999.000"
-                    label="Your Token Balance"
-                    inputRightElementIcon={
-                      <Heading as="h5" size="h5" fontWeight="semibold">
-                        $BMI
-                      </Heading>
-                    }
-                  />
-                  <IWInput
-                    ml={{ lg: "20px" }}
-                    type="number"
-                    placeholder="99,999.000"
-                    inputRightElementIcon={
-                      <Heading as="h5" size="h5" fontWeight="semibold">
-                        $APK
-                      </Heading>
-                    }
-                  />
-                </Stack>
-              )}
-            </Box>
-
-            <Box w="full">
-              <IWInput type="number" placeholder="1.0" label="Multiplier" />
             </Box>
 
             <Box w="full">
               <IWInput
-                type="number"
-                placeholder="99,999.000"
-                label="Your WAL Balance"
-                inputRightElementIcon={
-                  <Heading as="h5" size="h5" fontWeight="semibold">
-                    $WAL
-                  </Heading>
-                }
+                isDisabled={true}
+                value={`${tokenBalance || 0} ${tokenSymbol || ""}`}
+                label={`Your ${tokenSymbol || "Token"} Balance`}
               />
             </Box>
           </SimpleGrid>
 
-          <Button w="full" maxW={{ lg: "260px" }}>
-            Create Token Yield Farms
+          <Button w="full" maxW={{ lg: "260px" }} onClick={createNFTLPHandler}>
+            Create NFT Yield Farms
           </Button>
         </VStack>
       </SectionContainer>
 
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
-        title="Recent ArtZero's Yield Farms Pools
+        title="My ArtZero's Yield Farms Pools
         "
-        description={`Fugiat quis do exercitation ut consequat id consectetur.`}
+        description=""
       >
         <IWTable {...tableData} />
       </SectionContainer>
     </>
   );
 }
-const tableData = {
-  tableHeader: [
-    {
-      name: "contractAddress",
-      hasTooltip: false,
-      tooltipContent: "",
-      label: "Contract Address",
-    },
-    {
-      name: "creatorAddress",
-      hasTooltip: false,
-      tooltipContent: "",
-      label: "Creator",
-    },
-    {
-      name: "creatorName",
-      hasTooltip: false,
-      tooltipContent: "",
-      label: "Name",
-    },
-    {
-      name: "symbol",
-      hasTooltip: false,
-      tooltipContent: "",
-      label: "Symbol",
-    },
-    {
-      name: "decimal",
-      hasTooltip: false,
-      tooltipContent: "",
-      label: "Decimal",
-    },
-    {
-      name: "initialMint",
-      hasTooltip: false,
-      tooltipContent: "",
-      label: "Initial Mint",
-    },
-    {
-      name: "mintToAddress",
-      hasTooltip: false,
-      tooltipContent: "",
-      label: "Mint To",
-    },
-  ],
-
-  tableBody: [
-    {
-      contractAddress: "5CiP...JbtUe5",
-      creatorAddress: "5CiP...JbtUe5",
-      creatorName: "Shaktiman",
-      symbol: "MNI",
-      decimal: "12",
-      initialMint: "1",
-      mintToAddress: "5CiP...JbtUe5",
-    },
-    {
-      contractAddress: "5CiP...JbtUe5",
-      creatorAddress: "5CiP...JbtUe5",
-      creatorName: "Shaktiman",
-      symbol: "MNI",
-      decimal: "12",
-      initialMint: "1",
-      mintToAddress: "5CiP...JbtUe5",
-    },
-    {
-      contractAddress: "5CiP...JbtUe5",
-      creatorAddress: "5CiP...JbtUe5",
-      creatorName: "Shaktiman",
-      symbol: "MNI",
-      decimal: "12",
-      initialMint: "1",
-      mintToAddress: "5CiP...JbtUe5",
-    },
-    {
-      contractAddress: "5CiP...JbtUe5",
-      creatorAddress: "5CiP...JbtUe5",
-      creatorName: "Shaktiman",
-      symbol: "MNI",
-      decimal: "12",
-      initialMint: "1",
-      mintToAddress: "5CiP...JbtUe5",
-    },
-  ],
-};

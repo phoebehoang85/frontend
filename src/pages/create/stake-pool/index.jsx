@@ -12,8 +12,6 @@ import SectionContainer from "components/container/SectionContainer";
 import IWInput from "components/input/Input";
 import { IWTable } from "components/table/IWTable";
 
-import { toastMessages } from "constants";
-
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,18 +23,19 @@ import { formatQueryResultToNumber } from "utils";
 import { execContractQuery } from "utils/contracts";
 import { execContractTx } from "utils/contracts";
 import azt_contract from "utils/contracts/azt_contract";
-import core_contract from "utils/contracts/core_contract";
 import psp22_contract from "utils/contracts/psp22_contract";
 import { APICall } from "api/client";
 import { addressShortener } from "utils";
 import DateTimePicker from "react-datetime-picker";
 import pool_generator_contract from "utils/contracts/pool_generator";
+import lp_pool_generator_contract from "utils/contracts/lp_pool_generator_contract";
+import { toastMessages } from "constants";
 
 export default function CreateStakePoolPage({ api }) {
   const dispatch = useDispatch();
   const { currentAccount } = useSelector((s) => s.wallet);
 
-  const [createTokenFee, setCreateToken] = useState(0);
+  const [createTokenFee, setCreateTokenFee] = useState(0);
   const [faucetTokensList, setFaucetTokensList] = useState([]);
 
   const [selectedContractAddr, setSelectedContractAddr] = useState("");
@@ -47,6 +46,8 @@ export default function CreateStakePoolPage({ api }) {
   const [tokenBalance, setTokenBalance] = useState(0);
 
   const fetchTokenBalance = useCallback(async () => {
+    if (!selectedContractAddr) return;
+
     if (!currentAccount) {
       toast.error("Please connect wallet!");
       return;
@@ -113,7 +114,7 @@ export default function CreateStakePoolPage({ api }) {
 
       const fee = formatQueryResultToNumber(result);
 
-      setCreateToken(fee);
+      setCreateTokenFee(fee);
     };
 
     fetchCreateTokenFee();
@@ -151,7 +152,7 @@ export default function CreateStakePoolPage({ api }) {
       azt_contract.CONTRACT_ADDRESS,
       0, //-> value
       "psp22::approve",
-      core_contract.CONTRACT_ADDRESS,
+      lp_pool_generator_contract.CONTRACT_ADDRESS,
       formatNumToBN(createTokenFee)
     );
 
@@ -174,7 +175,7 @@ export default function CreateStakePoolPage({ api }) {
       duration * 24 * 60 * 60 * 1000,
       startTime.getTime()
     );
-    // TODO: check not work?
+
     await APICall.askBEupdate({ type: "pool", poolContract: "new" });
 
     setApy(0);

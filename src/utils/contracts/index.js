@@ -19,11 +19,12 @@ export async function getEstimatedGas(
 ) {
   const fetchGas = async () => {
     let ret = -1;
+    // let gasLimit = 6946816000 * 5;
 
     try {
       const { gasRequired, result, output } = await contract.query[queryName](
         address,
-        { gasLimit: -1, storageDepositLimit: null, value },
+        { gasLimit: ret, storageDepositLimit: null, value },
         ...args
       );
 
@@ -72,6 +73,8 @@ export async function execContractQuery(
   ...args
 ) {
   const contract = new ContractPromise(wsApi, contractAbi, contractAddress);
+  console.log("execContractQuery", queryName);
+  // let gasLimit = 6946816000 * 5;
 
   try {
     const { result, output } = await contract.query[queryName](
@@ -99,11 +102,12 @@ export async function execContractTx(
 ) {
   // NOTE: amount need to convert before passing in
   // const totalAmount = new BN(token_amount * 10 ** 6).mul(new BN(10 ** 6)).toString();
+  console.log("execContractTx ", queryName);
 
   const contract = new ContractPromise(wsApi, contractAbi, contractAddress);
 
   let unsubscribe;
-  let gasLimit = -1;
+  let gasLimit = 6946816000 * 5;
 
   const { signer } = await web3FromSource(caller?.meta?.source);
 
@@ -114,7 +118,7 @@ export async function execContractTx(
     queryName,
     ...args
   );
-
+  console.log("gasLimit", gasLimit);
   const txNotSign = contract.tx[queryName]({ gasLimit, value }, ...args);
 
   await txNotSign

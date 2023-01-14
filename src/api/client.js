@@ -72,6 +72,14 @@ export const APICall = {
     return ret;
   },
 
+  getUserNFTLP: async ({ owner }) => {
+    const ret = await client("POST", "/getNFTPoolByOwner", {
+      owner,
+    });
+
+    return ret;
+  },
+
   askBEupdate: async ({ type, poolContract }) => {
     const ret = await client("POST", "/update", { type, poolContract });
 
@@ -85,6 +93,20 @@ export const APICall = {
       "/getCollectionByAddress",
       {
         collection_address,
+      },
+      process.env.REACT_APP_ARTZERO_API_BASE_URL
+    );
+
+    return ret;
+  },
+
+  getAllCollectionsFromArtZero: async ({ isActive, ignoreNoNFT }) => {
+    const ret = await client(
+      "POST",
+      "/getCollections",
+      {
+        isActive,
+        ignoreNoNFT,
       },
       process.env.REACT_APP_ARTZERO_API_BASE_URL
     );
