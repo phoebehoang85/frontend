@@ -48,6 +48,7 @@ import CardSocial from "components/card/CardSocial";
 import ImageCloudFlare from "components/image-cf/ImageCF";
 import { calcUnclaimedRewardTokenLP } from "utils";
 import lp_pool_contract from "utils/contracts/lp_pool_contract";
+import IWInput from "components/input/Input";
 
 export default function FarmDetailPage() {
   // const params = useParams();
@@ -56,7 +57,6 @@ export default function FarmDetailPage() {
   const location = useLocation();
 
   const currMode = location?.state?.mode;
-  // console.log("currMode", currMode);
   const { state } = useLocation();
 
   const cardData = {
@@ -444,7 +444,7 @@ const MyStakeRewardInfoNFT = ({
 
     //Approve
     toast.success("Step 1: Approving...");
-    console.log("nftInfo?.nftContractAddress", nftInfo?.nftContractAddress);
+
     let approve = await execContractTx(
       currentAccount,
       "api",
@@ -471,10 +471,7 @@ const MyStakeRewardInfoNFT = ({
       "stake",
       { u64: tokenID }
     );
-    console.log("poolContract", NFTtokenContract);
-    console.log(
-      "poolContract ?/ 5FTFSCemxZejGd3JmTKyuS5vGHgHcB6eiAA3vfLy9rRXZ4ep"
-    );
+
     await APICall.askBEupdate({ type: "nft", poolContract });
     await APICall.askBEupdateNFTFromArtZero({
       token_id: tokenID,
@@ -495,7 +492,9 @@ const MyStakeRewardInfoNFT = ({
       return;
     }
 
-    if (parseInt(currentAccount?.balance?.wal) < unstakeFee) {
+    if (
+      parseInt(currentAccount?.balance?.wal?.replaceAll(",", "")) < unstakeFee
+    ) {
       toast.error(`You don't have enough WAL. Unstake costs ${unstakeFee} WAL`);
       return;
     }
@@ -636,7 +635,7 @@ const MyStakeRewardInfoToken = ({
   nftInfo,
   tokenDecimal,
   multiplier,
-  NFTtokenContract,
+  lptokenContract,
   ...rest
 }) => {
   const { currentAccount } = useSelector((s) => s.wallet);
@@ -645,6 +644,10 @@ const MyStakeRewardInfoToken = ({
 
   const [stakeInfo, setStakeInfo] = useState(null);
   const [tokenBalance, setTokenBalance] = useState();
+
+  const [LPTokenAmount, setLPTokenAmount] = useState();
+
+  const [LPtokenBalance, setLPTokenBalance] = useState();
 
   const fetchUserStakeInfo = useCallback(async () => {
     if (!currentAccount?.balance) return;
@@ -688,7 +691,24 @@ const MyStakeRewardInfoToken = ({
 
     const balance = formatQueryResultToNumber(result);
     setTokenBalance(balance);
-  }, [currentAccount?.address, currentAccount?.balance, tokenContract]);
+    const resultLP = await execContractQuery(
+      currentAccount?.address,
+      "api",
+      psp22_contract.CONTRACT_ABI,
+      lptokenContract,
+      0,
+      "psp22::balanceOf",
+      currentAccount?.address
+    );
+
+    const balanceLP = formatQueryResultToNumber(resultLP);
+    setLPTokenBalance(balanceLP);
+  }, [
+    currentAccount?.address,
+    currentAccount?.balance,
+    lptokenContract,
+    tokenContract,
+  ]);
 
   useEffect(() => {
     fetchUserStakeInfo();
@@ -738,7 +758,7 @@ const MyStakeRewardInfoToken = ({
     });
   }
 
-  async function stakeTokenHandler(tokenID) {
+  async function stakeTokenLPHandler() {
     if (!currentAccount) {
       toast.error(toastMessages.NO_WALLET);
       return;
@@ -751,17 +771,16 @@ const MyStakeRewardInfoToken = ({
 
     //Approve
     toast.success("Step 1: Approving...");
-    console.log("nftInfo?.nftContractAddress", nftInfo?.nftContractAddress);
+
     let approve = await execContractTx(
       currentAccount,
       "api",
-      psp34_standard.CONTRACT_ABI,
-      NFTtokenContract,
+      psp22_contract.CONTRACT_ABI,
+      lptokenContract,
       0, //-> value
-      "psp34::approve",
+      "psp22::approve",
       poolContract,
-      { u64: tokenID },
-      true
+      formatNumToBN(LPTokenAmount)
     );
     if (!approve) return;
 
@@ -772,21 +791,15 @@ const MyStakeRewardInfoToken = ({
     await execContractTx(
       currentAccount,
       "api",
-      nft_pool_contract.CONTRACT_ABI,
+      lp_pool_contract.CONTRACT_ABI,
       poolContract,
       0, //-> value
       "stake",
-      { u64: tokenID }
+      formatNumToBN(LPTokenAmount)
     );
-    console.log("poolContract", NFTtokenContract);
-    console.log(
-      "poolContract ?/ 5FTFSCemxZejGd3JmTKyuS5vGHgHcB6eiAA3vfLy9rRXZ4ep"
-    );
-    await APICall.askBEupdate({ type: "nft", poolContract });
-    await APICall.askBEupdateNFTFromArtZero({
-      token_id: tokenID,
-      collection_address: NFTtokenContract,
-    });
+
+    await APICall.askBEupdate({ type: "lp", poolContract });
+    setLPTokenAmount(0);
 
     toast.success("Please wait up to 10s for the data to be updated");
 
@@ -796,13 +809,15 @@ const MyStakeRewardInfoToken = ({
     });
   }
 
-  async function unstakeTokenHandler(tokenID) {
+  async function unstakeTokenLPHandler(tokenID) {
     if (!currentAccount) {
       toast.error(toastMessages.NO_WALLET);
       return;
     }
 
-    if (parseInt(currentAccount?.balance?.wal) < unstakeFee) {
+    if (
+      parseInt(currentAccount?.balance?.wal?.replaceAll(",", "")) < unstakeFee
+    ) {
       toast.error(`You don't have enough WAL. Unstake costs ${unstakeFee} WAL`);
       return;
     }
@@ -830,19 +845,15 @@ const MyStakeRewardInfoToken = ({
     await execContractTx(
       currentAccount,
       "api",
-      nft_pool_contract.CONTRACT_ABI,
+      lp_pool_contract.CONTRACT_ABI,
       poolContract,
       0, //-> value
       "unstake",
-      { u64: tokenID }
+      formatNumToBN(LPTokenAmount)
     );
 
     await APICall.askBEupdate({ type: "nft", poolContract });
-    await APICall.askBEupdateNFTFromArtZero({
-      token_id: tokenID,
-      collection_address: NFTtokenContract,
-    });
-
+    setLPTokenAmount(0);
     toast.success("Please wait up to 10s for the data to be updated");
 
     await delay(5000).then(() => {
@@ -881,6 +892,10 @@ const MyStakeRewardInfoToken = ({
             {
               title: `${tokenSymbol} Balance`,
               content: `${tokenBalance || 0} ${tokenSymbol}`,
+            },
+            {
+              title: `${rest?.lptokenSymbol} Balance`,
+              content: `${LPtokenBalance || 0} ${rest?.lptokenSymbol}`,
             },
           ]}
         />
@@ -922,6 +937,53 @@ const MyStakeRewardInfoToken = ({
             onClick={handleClaimTokenLP}
             message="Claim Rewards costs 10 WAL. Continue?"
           />
+          <IWCard mt="24px" w="full" variant="solid">
+            <Flex
+              w="100%"
+              spacing="20px"
+              flexDirection={{ base: "column", lg: "row" }}
+              alignItems={{ base: "center", lg: "center" }}
+            >
+              <IWInput
+                value={LPTokenAmount}
+                onChange={({ target }) => setLPTokenAmount(target.value)}
+                type="number"
+                placeholder="Enter amount"
+                inputRightElementIcon={
+                  <Heading as="h5" size="h5">
+                    {rest?.lptokenSymbol}
+                  </Heading>
+                }
+              />
+
+              <HStack
+                ml={{ base: "0", lg: "20px" }}
+                mt={{ base: "10px", lg: "0px" }}
+                maxW={{ base: "full", lg: "245px" }}
+                w="full"
+                spacing="10px"
+                justifyContent="space-between"
+              >
+                <ConfirmModal
+                  action="stake"
+                  buttonVariant="primary"
+                  buttonLabel="Stake"
+                  onClick={stakeTokenLPHandler}
+                  message={`Stake ${LPTokenAmount || 0} ${
+                    rest?.lptokenSymbol
+                  }. Continue?`}
+                />
+
+                <ConfirmModal
+                  action="unstake"
+                  buttonVariant="primary"
+                  buttonLabel="Unstake"
+                  onClick={unstakeTokenLPHandler}
+                  message="Unstake costs 10 WAL. Continue?"
+                />
+              </HStack>
+            </Flex>
+          </IWCard>
         </CardThreeColumn>
       </Stack>
     </>

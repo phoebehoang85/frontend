@@ -38,14 +38,15 @@ export default function FarmsPage() {
           const nftLPListAddNftInfo = await Promise.all(
             ret?.map(async (nftLP) => {
               // get collection info
-              const { ret } = await APICall.getCollectionByAddressFromArtZero({
-                collection_address: nftLP?.NFTtokenContract,
-              });
+              const { status, ret } =
+                await APICall.getCollectionByAddressFromArtZero({
+                  collection_address: nftLP?.NFTtokenContract,
+                });
 
-              if (ret[0]) {
+              if (status === "OK") {
                 nftLP = { ...nftLP, nftInfo: ret[0] };
               }
-              console.log("nftLP?.poolContract", nftLP?.poolContract);
+
               // get stake info NFT LP Pool
               let queryResult = await execContractQuery(
                 currentAccount?.address,

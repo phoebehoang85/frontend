@@ -201,7 +201,6 @@ export default function CreateStakePoolPage({ api }) {
       });
 
       if (status === "OK") {
-        console.log("ret", ret);
         setMyPoolList(ret);
       }
     };
@@ -298,7 +297,6 @@ export default function CreateStakePoolPage({ api }) {
                 id="token"
                 placeholder="Select token"
                 onChange={({ target }) => {
-                  console.log("target.value", target.value);
 
                   setSelectedContractAddr(target.value);
                 }}

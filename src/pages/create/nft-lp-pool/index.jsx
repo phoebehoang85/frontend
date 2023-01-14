@@ -102,7 +102,7 @@ export default function CreateNFTLPPage({ api }) {
       let { ret, status, message } = await APICall.getAllCollectionsFromArtZero(
         { isActive: true, ignoreNoNFT: false }
       );
-      console.log("getCollectionListData ret", ret);
+
       if (status === "OK") {
         if (isUnmounted) return;
 
@@ -335,8 +335,6 @@ export default function CreateNFTLPPage({ api }) {
                 id="nft-collection"
                 placeholder="Select Collection"
                 onChange={({ target }) => {
-                  console.log("target.value", target.value);
-
                   setSelectedCollectionAddr(target.value);
                 }}
               >
@@ -369,8 +367,6 @@ export default function CreateNFTLPPage({ api }) {
                 id="token-collection"
                 placeholder="Select token"
                 onChange={({ target }) => {
-                  console.log("target.value", target.value);
-
                   setSelectedContractAddr(target.value);
                 }}
               >

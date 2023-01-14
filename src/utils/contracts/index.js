@@ -73,7 +73,7 @@ export async function execContractQuery(
   ...args
 ) {
   const contract = new ContractPromise(wsApi, contractAbi, contractAddress);
-  console.log("execContractQuery", queryName);
+  // console.log("execContractQuery", queryName);
   // let gasLimit = 6946816000 * 5;
 
   try {
@@ -118,7 +118,7 @@ export async function execContractTx(
     queryName,
     ...args
   );
-  console.log("gasLimit", gasLimit);
+  // console.log("gasLimit", gasLimit);
   const txNotSign = contract.tx[queryName]({ gasLimit, value }, ...args);
 
   await txNotSign

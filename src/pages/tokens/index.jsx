@@ -161,8 +161,6 @@ export default function TokensPage() {
                   id="token"
                   placeholder="Select token"
                   onChange={({ target }) => {
-                    console.log("target.value", target.value);
-
                     setSelectedContractAddr(target.value);
                   }}
                 >
@@ -352,7 +350,7 @@ const TokensTabTransferToken = ({
       toast.error("Low Azero balance!");
       return;
     }
-    console.log("asd");
+
     await execContractTx(
       currentAccount,
       "api",

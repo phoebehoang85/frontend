@@ -258,7 +258,6 @@ export default function CreateTokenLPPage({ api }) {
       });
 
       if (status === "OK") {
-        console.log("ret", ret);
         if (isUnmounted) return;
         setMyTokenPoolList(ret);
       }
@@ -347,8 +346,6 @@ export default function CreateTokenLPPage({ api }) {
                 id="token-collection"
                 placeholder="Select token"
                 onChange={({ target }) => {
-                  console.log("target.value", target.value);
-
                   setLPTokenContract(target.value);
                 }}
               >
@@ -379,8 +376,6 @@ export default function CreateTokenLPPage({ api }) {
                 id="token-collection"
                 placeholder="Select token"
                 onChange={({ target }) => {
-                  console.log("target.value", target.value);
-
                   setSelectedContractAddr(target.value);
                 }}
               >
