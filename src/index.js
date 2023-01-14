@@ -24,12 +24,13 @@ import FarmDetailPage from "pages/farms/detail";
 import TokensPage from "pages/tokens";
 import CreateTokenPage from "pages/create/token";
 import CreateStakePoolPage from "pages/create/stake-pool";
-import CreateLPPage from "pages/create/lp-pool";
 import MyBalancePage from "pages/account/my-balance";
 import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
 // import { setCurrentApi } from "redux/slices/walletSlice";
 import { fetchUserBalance } from "redux/slices/walletSlice";
 import { initialApi } from "utils/contracts";
+import CreateNFTLPPage from "pages/create/nft-lp-pool";
+import CreateTokenLPPage from "pages/create/token-lp-pool";
 
 const providerUrl = process.env.REACT_APP_PROVIDER_URL;
 
@@ -112,8 +113,8 @@ const App = () => {
             path={`/create/stake-pool`}
             component={CreateStakePoolPage}
           />
-          <Route exact path={`/create/nft-lp`} component={CreateLPPage} />
-          <Route exact path={`/create/token-lp`} component={CreateLPPage} />
+          <Route exact path={`/create/nft-lp`} component={CreateNFTLPPage} />
+          <Route exact path={`/create/token-lp`} component={CreateTokenLPPage} />
           <Redirect from="/create" to="/create/token" />
 
           <Route exact path={`/account`} component={MyBalancePage} />

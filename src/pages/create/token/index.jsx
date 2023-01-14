@@ -99,7 +99,7 @@ export default function CreateTokenPage({ api }) {
       return toast.error("Invalid address!");
     }
 
-    if (parseInt(currentAccount?.balance?.wal) < createTokenFee) {
+    if (parseInt(currentAccount?.balance?.wal?.replaceAll(",", "")) < createTokenFee) {
       toast.error(
         `You don't have enough WAL. Unstake costs ${createTokenFee} WAL`
       );

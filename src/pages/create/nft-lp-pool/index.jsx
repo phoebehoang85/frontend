@@ -13,7 +13,6 @@ import IWInput from "components/input/Input";
 import { IWTable } from "components/table/IWTable";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
 import DateTimePicker from "react-datetime-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { addressShortener } from "utils";
@@ -31,16 +30,7 @@ import { formatNumToBN } from "utils";
 import azt_contract from "utils/contracts/azt_contract";
 import nft_pool_generator_contract from "utils/contracts/nft_pool_generator_contract";
 
-export default function CreateLPPage({ api }) {
-  const { pathname } = useLocation();
-
-  const mode =
-    pathname === "/create/token-lp"
-      ? "TOKEN_LP"
-      : pathname === "/create/nft-lp"
-      ? "NFT_LP"
-      : "";
-
+export default function CreateNFTLPPage({ api }) {
   const dispatch = useDispatch();
   const { currentAccount } = useSelector((s) => s.wallet);
 
@@ -172,14 +162,15 @@ export default function CreateLPPage({ api }) {
       return toast.error("Invalid address!");
     }
 
-    // TODO: correct parseInt func
-    // if (parseInt(currentAccount?.balance?.wal) < createTokenFee) {
-
-    //   toast.error(parseInt(currentAccount?.balance?.wal) +
-    //     ` You don't have enough WAL. Stake costs ${createTokenFee} WAL`
-    //   );
-    //   return;
-    // }
+    if (
+      parseInt(currentAccount?.balance?.wal?.replaceAll(",", "")) <
+      createTokenFee
+    ) {
+      toast.error(
+        `You don't have enough WAL. Stake costs ${createTokenFee} WAL`
+      );
+      return;
+    }
 
     //Approve
     toast.success("Step 1: Approving...");
@@ -224,18 +215,17 @@ export default function CreateLPPage({ api }) {
 
     toast.success("Please wait up to 10s for the data to be updated");
 
-    await delay(2000).then(() => {
+    await delay(5000).then(() => {
       currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
       fetchTokenBalance();
+      fetchMyPoolsList();
     });
   }
 
   const [myNFTPoolList, setMyNFTPoolList] = useState([]);
 
-  useEffect(() => {
-    let isUnmounted;
-
-    const fetchMyPools = async () => {
+  const fetchMyPoolsList = useCallback(
+    async (isUnmounted) => {
       const { status, ret } = await APICall.getUserNFTLP({
         owner: currentAccount?.address,
       });
@@ -259,9 +249,15 @@ export default function CreateLPPage({ api }) {
         if (isUnmounted) return;
         setMyNFTPoolList(nftLPListAddNftInfo);
       }
-    };
-    fetchMyPools();
-  }, [currentAccount?.address]);
+    },
+    [currentAccount?.address]
+  );
+
+  useEffect(() => {
+    let isUnmounted;
+
+    fetchMyPoolsList(isUnmounted);
+  }, [currentAccount?.address, fetchMyPoolsList]);
 
   const tableData = {
     tableHeader: [
@@ -305,6 +301,7 @@ export default function CreateLPPage({ api }) {
 
     tableBody: [...myNFTPoolList],
   };
+
   return (
     <>
       <SectionContainer
@@ -312,8 +309,7 @@ export default function CreateLPPage({ api }) {
         title="Create ArtZero's NFT Yield Farms"
         description={
           <span>
-            {mode === "NFT_LP" ? "NFT" : ""} Stakers get rewards in selected
-            token. The creation costs
+            NFT Stakers get rewards in selected token. The creation costs
             <Text as="span" fontWeight="700" color="text.1">
               {" "}
               {createTokenFee} WAL

@@ -80,6 +80,14 @@ export const APICall = {
     return ret;
   },
 
+  getUserTokenLP: async ({ owner }) => {
+    const ret = await client("POST", "/getLPPoolByOwner", {
+      owner,
+    });
+
+    return ret;
+  },
+
   askBEupdate: async ({ type, poolContract }) => {
     const ret = await client("POST", "/update", { type, poolContract });
 
