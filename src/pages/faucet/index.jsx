@@ -295,9 +295,9 @@ export default function FaucetPage({ api }) {
             <Link
               isExternal
               color="text.1"
-              href="https://faucet.test.azero.dev"
+              href="https://faucet-smartnet.test.azero.dev"
             >
-              https://faucet.test.azero.dev
+              https://faucet-smartnet.test.azero.dev
             </Link>
           </span>
         }

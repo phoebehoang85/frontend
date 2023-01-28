@@ -162,7 +162,7 @@ export default function CreateStakePoolPage({ api }) {
 
     await delay(3000);
 
-    toast.success("Step 2: Process unstaking...");
+    toast.success("Step 2: Process create new staking pool...");
 
     await execContractTx(
       currentAccount,
