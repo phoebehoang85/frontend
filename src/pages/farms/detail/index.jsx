@@ -5,11 +5,9 @@ import {
   BreadcrumbLink,
   Flex,
   Heading,
-  Hide,
   HStack,
   Link,
   Show,
-  Square,
   Stack,
   Text,
   Tooltip,
@@ -43,12 +41,10 @@ import { APICall } from "api/client";
 import { formatNumToBN } from "utils";
 import psp34_standard from "utils/contracts/psp34_standard";
 import azt_contract from "utils/contracts/azt_contract";
-import AddressCopier from "components/address-copier/AddressCopier";
-import CardSocial from "components/card/CardSocial";
-import ImageCloudFlare from "components/image-cf/ImageCF";
 import { calcUnclaimedRewardTokenLP } from "utils";
 import lp_pool_contract from "utils/contracts/lp_pool_contract";
 import IWInput from "components/input/Input";
+import { NFTBannerCard } from "components/card/Card";
 
 export default function FarmDetailPage() {
   // const params = useParams();
@@ -211,7 +207,11 @@ export default function FarmDetailPage() {
                         fontSize={{ base: "16px", lg: "20px" }}
                       >
                         <Text>
-                          {formatDataCellTable(cardData?.cardValue, name)}
+                          {formatDataCellTable(
+                            cardData?.cardValue,
+                            name,
+                            currMode
+                          )}
                         </Text>{" "}
                       </Flex>
                     </Flex>
@@ -924,7 +924,7 @@ const MyStakeRewardInfoToken = ({
               title: "My Unclaimed Rewards (FOD)",
               content: `${calcUnclaimedRewardTokenLP({
                 ...stakeInfo,
-                multiplier,
+                multiplier: multiplier / 10 ** 12,
                 tokenDecimal,
               })}`,
             },
@@ -980,7 +980,8 @@ const MyStakeRewardInfoToken = ({
                   buttonLabel="Unstake"
                   onClick={unstakeTokenLPHandler}
                   message={`Unstake costs ${unstakeFee} INW. Continue?`}
-                />{}
+                />
+                {}
               </HStack>
             </Flex>
           </IWCard>
@@ -1049,131 +1050,16 @@ const PoolInfo = ({
       ),
       volume: `${nftInfo?.volume} AZERO`,
       totalSupply: `${nftInfo?.nft_count} NFT${nftInfo?.nft_count > 1 && "s"}`,
-      royaltyFee: `${nftInfo?.royalFee / 100}%`,
+      royaltyFee: `${(nftInfo?.royaltyFee / 100).toFixed(2)}%`,
     },
   };
 
   return (
     <>
       {mode === "NFT_FARM" ? (
-        <IWCard
-          mb={{ base: "24px", lg: "30px" }}
-          pt={{ lg: "10px" }}
-          pb={{ lg: "24px" }}
-        >
-          <Flex flexDirection={{ base: "column", md: "row" }}>
-            <Square
-              mr={{ lg: "24px" }}
-              maxW={{ base: "300px", sm: "320px", lg: "160" }}
-              maxH={{ base: "300px", sm: "320px", lg: "160" }}
-              borderRadius="10px"
-              overflow="hidden"
-            >
-              <ImageCloudFlare
-                borderWidth="1px"
-                w="full"
-                h="full"
-                size="500"
-                alt={nftInfo?.name}
-                borderRadius="5px"
-                src={nftInfo?.avatarImage}
-              />
-            </Square>
-
-            <Stack w="full" alignItems="start">
-              <HStack
-                alignItems="center"
-                justifyContent="space-between"
-                w="full"
-              >
-                <Heading as="h2" size="h2" lineHeight="38px">
-                  {nftInfo?.name}{" "}
-                </Heading>
-
-                {/* Big screen card */}
-                <Show above="md">
-                  <CardSocial
-                    twitterUrl={nftInfo?.twitter}
-                    discordUrl={nftInfo?.discord}
-                    telegramUrl={nftInfo?.telegram}
-                  />
-                </Show>
-              </HStack>
-
-              <HStack justifyContent={{ base: "start" }} w="full">
-                <Heading as="h4" size="h4" fontWeight="600" lineHeight="25px">
-                  <AddressCopier address={nftInfo?.nftContractAddress} />
-                </Heading>
-              </HStack>
-
-              {/* Small screen card */}
-              <Hide above="md">
-                <CardSocial
-                  twitterUrl={nftInfo?.twitter}
-                  discordUrl={nftInfo?.discord}
-                  telegramUrl={nftInfo?.telegram}
-                />
-              </Hide>
-
-              <HStack
-                justifyContent="space-between"
-                w="full"
-                pb={{ base: "24px", lg: "0px" }}
-              >
-                <Flex
-                  w="full"
-                  minH="70px"
-                  flexDirection={{ base: "column", lg: "row" }}
-                  justifyContent={{ base: "space-between" }}
-                >
-                  {cardDataPoolInfo?.cardHeaderList?.map(
-                    ({ name, hasTooltip, label, tooltipContent }) => {
-                      return name === "myStake" ? null : (
-                        <Flex
-                          key={name}
-                          w={{ lg: "fit-content" }}
-                          justifyContent="center"
-                          mt={{ base: "15px", lg: "0px" }}
-                          flexDirection={{ base: "column", lg: "column" }}
-                        >
-                          <Flex
-                            w={{ base: "full" }}
-                            color="text.2"
-                            fontWeight="400"
-                            fontSize="16px"
-                            lineHeight="28px"
-                            alignItems="center"
-                          >
-                            {label}
-                            {hasTooltip && (
-                              <Tooltip fontSize="md" label={tooltipContent}>
-                                <QuestionOutlineIcon ml="6px" color="text.2" />
-                              </Tooltip>
-                            )}
-                          </Flex>
-
-                          <Flex
-                            w={{ base: "full" }}
-                            color="text.1"
-                            fontWeight="600"
-                            fontSize={{ base: "16px", lg: "20px" }}
-                            lineHeight="28px"
-                            justify={{ base: "start" }}
-                            alignItems={{ base: "center" }}
-                          >
-                            <Text> {cardDataPoolInfo?.cardValue[name]}</Text>{" "}
-                          </Flex>
-                        </Flex>
-                      );
-                    }
-                  )}
-                </Flex>
-              </HStack>
-            </Stack>
-          </Flex>
-        </IWCard>
+        <NFTBannerCard cardData={cardDataPoolInfo} nftInfo={nftInfo} />
       ) : null}
-
+      {console.log("multiplier", multiplier)}{" "}
       <Stack
         w="full"
         spacing="30px"

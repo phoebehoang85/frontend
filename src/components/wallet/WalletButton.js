@@ -416,6 +416,7 @@ const myMenuList = [
     iconColorHover: "#57527E",
     icon: <MyPoolsIcon />,
     title: "My pools",
+    href: "/my-staking-pools",
   },
   {
     borderColor: "#93F0F5",
@@ -426,6 +427,7 @@ const myMenuList = [
     iconColorHover: "#57527E",
     icon: <MyNFTFarmsIcon />,
     title: "My NFT Farms",
+    href: "/my-nft-pool",
   },
   {
     borderColor: "#93F0F5",
@@ -436,5 +438,6 @@ const myMenuList = [
     iconColorHover: "#57527E",
     icon: <MyLPFarmsIcon />,
     title: "My LP Farms",
+    href: "/my-token-pools",
   },
 ];

@@ -25,6 +25,9 @@ export default function PoolsPage({ api }) {
 
   const [poolsListData, setPoolsListData] = useState([]);
 
+  const [showMyStakedPools, setShowMyStakedPools] = useState(false);
+  const [hideZeroRewardPools, setHideZeroRewardPools] = useState(false);
+
   useEffect(() => {
     let isUnmounted = false;
 
@@ -76,9 +79,19 @@ export default function PoolsPage({ api }) {
   }, [api, currentAccount?.address]);
 
   const poolsListDataFiltered = useMemo(() => {
-    //TODO; add more filter here later
-    return poolsListData;
-  }, [poolsListData]);
+    //TODO; add filter OR ? AND?
+
+    let ret = poolsListData;
+
+    if (showMyStakedPools) {
+      ret = poolsListData.filter((p) => p.stakeInfo);
+    }
+
+    if (hideZeroRewardPools) {
+      ret = poolsListData.filter((p) => p.rewardPool > 0);
+    }
+    return ret;
+  }, [hideZeroRewardPools, poolsListData, showMyStakedPools]);
 
   const tableData = {
     tableHeader: [
@@ -168,14 +181,24 @@ export default function PoolsPage({ api }) {
             spacing={{ base: "0px", lg: "20px" }}
           >
             <FormControl maxW="135px" display="flex" alignItems="center">
-              <Switch id="my-stake" />
+              <Switch
+                id="my-stake"
+                isDisabled={!currentAccount?.address}
+                isChecked={showMyStakedPools}
+                onChange={() => setShowMyStakedPools(!showMyStakedPools)}
+              />
               <FormLabel htmlFor="my-stake" mb="0" ml="10px" fontWeight="400">
                 My Stake
               </FormLabel>
             </FormControl>
 
             <FormControl maxW="200px" display="flex" alignItems="center">
-              <Switch id="zero-reward-pools" />
+              <Switch
+                id="zero-reward-pools"
+                isDisabled={!currentAccount?.address}
+                isChecked={hideZeroRewardPools}
+                onChange={() => setHideZeroRewardPools(!hideZeroRewardPools)}
+              />
               <FormLabel
                 mb="0"
                 ml="10px"

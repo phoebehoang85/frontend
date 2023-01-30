@@ -1,4 +1,4 @@
-import { ChevronRightIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,7 +9,6 @@ import {
   Show,
   Stack,
   Text,
-  Tooltip,
   VStack,
 } from "@chakra-ui/react";
 import SectionContainer from "components/container/SectionContainer";
@@ -20,8 +19,7 @@ import ConfirmModal from "components/modal/ConfirmModal";
 import IWCardOneColumn from "components/card/CardOneColumn";
 import CardThreeColumn from "components/card/CardThreeColumn";
 import CardTwoColumn from "components/card/CardTwoColumn";
-import { useLocation } from "react-router-dom";
-import { formatDataCellTable } from "components/table/IWTable";
+import { Link, useLocation } from "react-router-dom";
 import { addressShortener } from "utils";
 import { formatNumDynDecimal } from "utils";
 import { useSelector } from "react-redux";
@@ -39,6 +37,11 @@ import { formatChainStringToNumber } from "utils";
 import { useCallback } from "react";
 import { toastMessages } from "constants";
 import { APICall } from "api/client";
+import { BannerCard } from "components/card/Card";
+import { NFTBannerCard } from "components/card/Card";
+import nft_pool_contract from "utils/contracts/nft_pool_contract";
+import { useMemo } from "react";
+import lp_pool_contract from "utils/contracts/lp_pool_contract";
 
 export default function MyPoolDetailPage({ api }) {
   const { currentAccount } = useSelector((s) => s.wallet);
@@ -84,6 +87,95 @@ export default function MyPoolDetailPage({ api }) {
     },
   };
 
+  const lpPoolCardData = {
+    cardHeaderList: [
+      {
+        name: state?.mode === "NFT_FARM" ? "nftInfo" : "lptokenName",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Stake",
+      },
+      {
+        name: "tokenName",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Earn",
+      },
+      {
+        name: "totalStaked",
+        hasTooltip: true,
+        tooltipContent: `Total Value Locked: Total tokens staked into this pool`,
+        label: "TVL",
+      },
+      {
+        name: "rewardPool",
+        hasTooltip: true,
+        tooltipContent: `Available tokens to pay for stakers`,
+        label: "Reward Pool",
+      },
+      {
+        name: "multiplier",
+        hasTooltip: true,
+        tooltipContent: `Multiplier determines how many reward tokens will the staker receive per 1 NFT in 24 hours.`,
+        label: "Multiplier",
+      },
+      {
+        name: "startTime",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Expired In",
+      },
+    ],
+
+    cardValue: {
+      ...state,
+    },
+  };
+
+  const nftCardData = {
+    cardHeaderList: [
+      {
+        name: "collectionLink",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "ArtZero Collection Link",
+      },
+      {
+        name: "totalSupply",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "NFT Supply",
+      },
+      {
+        name: "royaltyFee",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Royalty Fee",
+      },
+      {
+        name: "volume",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Volume",
+      },
+    ],
+
+    cardValue: {
+      collectionLink: (
+        <Link
+          isExternal
+          href={`https://artzero.io/demotestnet/#/collection/${state?.nftInfo?.nftContractAddress}`}
+        >
+          {state?.nftInfo?.name}
+        </Link>
+      ),
+      volume: `${state?.nftInfo?.volume} AZERO`,
+      totalSupply: `${state?.nftInfo?.nft_count} NFT${
+        state?.nftInfo?.nft_count > 1 && "s"
+      }`,
+      royaltyFee: `${(state?.nftInfo?.royaltyFee / 100).toFixed(2)}%`,
+    },
+  };
   return (
     <>
       <Show above="md">
@@ -109,70 +201,17 @@ export default function MyPoolDetailPage({ api }) {
         mt={{ base: "0px", xl: "20px" }}
         title="Staking Pool Detail"
       >
-        <Stack
-          w="full"
-          spacing="30px"
-          alignItems="start"
-          direction={{ base: "column" }}
-        >
-          <IWCard
-            mt="16px"
-            w="full"
-            variant="solid"
-            border="1px solid #E3DFF3"
-            bg="bg.1"
-          >
-            <Flex
-              minH="70px"
-              flexDirection={{ base: "column", lg: "row" }}
-              justifyContent={{ base: "space-between" }}
-            >
-              {cardData?.cardHeaderList?.map((item) => {
-                const { name, hasTooltip, label, tooltipContent } = item;
+        {state?.mode === "STAKING_POOL" ? (
+          <BannerCard cardData={cardData} mode={state?.mode} />
+        ) : (
+          <BannerCard cardData={lpPoolCardData} mode={state?.mode} />
+        )}
+      </SectionContainer>
 
-                return (
-                  <Flex
-                    mt={{ base: "15px", lg: "0px" }}
-                    w="full"
-                    key={name}
-                    justifyContent="center"
-                    flexDirection={{ base: "row", lg: "column" }}
-                  >
-                    <Flex
-                      w={{ base: "45%", lg: "full" }}
-                      color="text.2"
-                      fontWeight="400"
-                      fontSize="16px"
-                      lineHeight="28px"
-                      alignItems="center"
-                    >
-                      {label}
-                      {hasTooltip && (
-                        <Tooltip fontSize="md" label={tooltipContent}>
-                          <QuestionOutlineIcon ml="6px" color="text.2" />
-                        </Tooltip>
-                      )}
-                    </Flex>
-
-                    <Flex
-                      color="text.1"
-                      fontWeight="600"
-                      lineHeight="28px"
-                      justify={{ base: "start" }}
-                      alignItems={{ base: "center" }}
-                      w={{ base: "55%", lg: "full" }}
-                      fontSize={{ base: "16px", lg: "20px" }}
-                    >
-                      <Text>
-                        {formatDataCellTable(cardData?.cardValue, name)}
-                      </Text>
-                    </Flex>
-                  </Flex>
-                );
-              })}
-            </Flex>
-          </IWCard>
-        </Stack>
+      <SectionContainer mt={{ base: "-28px", xl: "-48px" }}>
+        {state?.mode === "NFT_FARM" ? (
+          <NFTBannerCard cardData={nftCardData} nftInfo={state?.nftInfo} />
+        ) : null}
       </SectionContainer>
 
       <SectionContainer mt={{ base: "-28px", xl: "-48px" }}>
@@ -183,7 +222,6 @@ export default function MyPoolDetailPage({ api }) {
 }
 
 const MyStakeStakingPoolInfo = ({
-  variant = "my-staking-pool",
   tokenSymbol,
   address,
   balance,
@@ -196,42 +234,20 @@ const MyStakeStakingPoolInfo = ({
   rewardPool,
   tokenName,
   tokenTotalSupply,
+  mode,
+  multiplier,
+  nftInfo,
+  lptokenContract,
+  lptokenSymbol,
+  lptokenName,
+  lptokenTotalSupply,
   ...rest
 }) => {
   const { currentAccount, api } = useSelector((s) => s.wallet);
 
-  const [unstakeFee, setUnstakeFee] = useState(0);
-  const [stakeInfo, setStakeInfo] = useState(null);
   const [tokenBalance, setTokenBalance] = useState();
 
-  const [amount, setAmount] = useState(0);
-
-  const fetchUserStakeInfo = useCallback(async () => {
-    if (!currentAccount?.balance) return;
-
-    let queryResult = await execContractQuery(
-      currentAccount?.address,
-      api,
-      pool_contract.CONTRACT_ABI,
-      poolContract,
-      0,
-      "genericPoolContractTrait::getStakeInfo",
-      currentAccount?.address
-    );
-
-    let info = queryResult?.toHuman();
-
-    if (info) {
-      info = {
-        ...info,
-        lastRewardUpdate: formatChainStringToNumber(info.lastRewardUpdate),
-        stakedValue: formatChainStringToNumber(info.stakedValue),
-        unclaimedReward: formatChainStringToNumber(info.unclaimedReward),
-      };
-    }
-
-    setStakeInfo(info);
-  }, [api, currentAccount?.address, currentAccount?.balance, poolContract]);
+  const [amount, setAmount] = useState("");
 
   const fetchTokenBalance = useCallback(async () => {
     if (!currentAccount?.balance) return;
@@ -248,40 +264,96 @@ const MyStakeStakingPoolInfo = ({
 
     const balance = formatQueryResultToNumber(result);
     setTokenBalance(balance);
-
   }, [api, currentAccount?.address, currentAccount?.balance, tokenContract]);
 
   useEffect(() => {
-    fetchUserStakeInfo();
+    // fetchUserStakeInfo();
     fetchTokenBalance();
   }, [
     api,
     currentAccount?.address,
     currentAccount?.balance,
     fetchTokenBalance,
-    fetchUserStakeInfo,
     poolContract,
   ]);
 
+  const [LPtokenBalance, setLPTokenBalance] = useState();
+
+  const fetchLPTokenBalance = useCallback(async () => {
+    if (!currentAccount?.balance) return;
+
+    const result = await execContractQuery(
+      currentAccount?.address,
+      "api",
+      psp22_contract.CONTRACT_ABI,
+      tokenContract,
+      0,
+      "psp22::balanceOf",
+      currentAccount?.address
+    );
+
+    const balance = formatQueryResultToNumber(result);
+    setTokenBalance(balance);
+    const resultLP = await execContractQuery(
+      currentAccount?.address,
+      "api",
+      psp22_contract.CONTRACT_ABI,
+      lptokenContract,
+      0,
+      "psp22::balanceOf",
+      currentAccount?.address
+    );
+
+    const balanceLP = formatQueryResultToNumber(resultLP);
+    setLPTokenBalance(balanceLP);
+  }, [
+    currentAccount?.address,
+    currentAccount?.balance,
+    lptokenContract,
+    tokenContract,
+  ]);
+
   useEffect(() => {
-    const fetchFee = async () => {
-      if (!currentAccount?.balance) return;
+    fetchLPTokenBalance();
+  }, [fetchLPTokenBalance]);
 
-      const result = await execContractQuery(
-        currentAccount?.address,
-        api,
-        pool_contract.CONTRACT_ABI,
-        poolContract,
-        0,
-        "genericPoolContractTrait::unstakeFee"
-      );
+  const cardData = useMemo(() => {
+    let ret = [
+      {
+        title: "Account Address",
+        content: address ? addressShortener(address) : "No account selected",
+      },
+      {
+        title: "AZERO Balance",
+        content: `${balance?.azero || 0} AZERO`,
+      },
+      {
+        title: "INW Balance",
+        content: `${balance?.inw || 0} INW`,
+      },
+      {
+        title: `${tokenSymbol} Balance`,
+        content: `${tokenBalance || 0} ${tokenSymbol}`,
+      },
+    ];
 
-      const fee = formatQueryResultToNumber(result);
-      setUnstakeFee(fee);
-    };
-
-    fetchFee();
-  }, [api, currentAccount?.address, currentAccount?.balance, poolContract]);
+    if (mode === "TOKEN_FARM") {
+      ret.push({
+        title: `${lptokenSymbol} Balance`,
+        content: `${LPtokenBalance || 0} ${lptokenSymbol}`,
+      });
+    }
+    return ret;
+  }, [
+    LPtokenBalance,
+    address,
+    balance?.azero,
+    balance?.inw,
+    lptokenSymbol,
+    mode,
+    tokenBalance,
+    tokenSymbol,
+  ]);
 
   async function handleAddRewards() {
     if (!currentAccount) {
@@ -299,43 +371,125 @@ const MyStakeStakingPoolInfo = ({
       return;
     }
 
-    //Approve
-    toast.success("Step 1: Approving...");
+    if (mode === "STAKING_POOL") {
+      //Approve
+      toast.success("Step 1: Approving...");
 
-    let approve = await execContractTx(
-      currentAccount,
-      api,
-      psp22_contract.CONTRACT_ABI,
-      tokenContract,
-      0, //-> value
-      "psp22::approve",
-      poolContract,
-      formatNumToBN(amount)
-    );
-    if (!approve) return;
+      let approve = await execContractTx(
+        currentAccount,
+        api,
+        psp22_contract.CONTRACT_ABI,
+        tokenContract,
+        0, //-> value
+        "psp22::approve",
+        poolContract,
+        formatNumToBN(amount)
+      );
+      if (!approve) return;
 
-    await delay(3000);
+      await delay(3000);
 
-    toast.success("Step 2: Process...");
+      toast.success("Step 2: Process...");
 
-    await execContractTx(
-      currentAccount,
-      api,
-      pool_contract.CONTRACT_ABI,
-      poolContract,
-      0, //-> value
-      "genericPoolContractTrait::topupRewardPool",
-      formatNumToBN(amount)
-    );
+      await execContractTx(
+        currentAccount,
+        api,
+        pool_contract.CONTRACT_ABI,
+        poolContract,
+        0, //-> value
+        "genericPoolContractTrait::topupRewardPool",
+        formatNumToBN(amount)
+      );
 
-    // TODO: x2 check ask BE update is needed?
-    await APICall.askBEupdate({ type: "pool", poolContract });
+      // TODO: x2 check ask BE update is needed?
+      await APICall.askBEupdate({ type: "pool", poolContract });
 
-    await delay(2000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-      setAmount(0);
-    });
+      await delay(2000).then(() => {
+        // fetchUserStakeInfo();
+        fetchTokenBalance();
+        setAmount(0);
+      });
+    }
+
+    if (mode === "NFT_FARM") {
+      //Approve
+      toast.success("Step 1: Approving...");
+
+      let approve = await execContractTx(
+        currentAccount,
+        api,
+        psp22_contract.CONTRACT_ABI,
+        tokenContract,
+        0, //-> value
+        "psp22::approve",
+        poolContract,
+        formatNumToBN(amount)
+      );
+      if (!approve) return;
+
+      await delay(3000);
+
+      toast.success("Step 2: Process...");
+
+      await execContractTx(
+        currentAccount,
+        api,
+        nft_pool_contract.CONTRACT_ABI,
+        poolContract,
+        0, //-> value
+        "genericPoolContractTrait::topupRewardPool",
+        formatNumToBN(amount)
+      );
+
+      // TODO: x2 check ask BE update is needed?
+      await APICall.askBEupdate({ type: "pool", poolContract });
+
+      await delay(2000).then(() => {
+        // fetchUserStakeInfo();
+        fetchTokenBalance();
+        setAmount(0);
+      });
+    }
+
+    if (mode === "TOKEN_FARM") {
+      //Approve
+      toast.success("Step 1: Approving...");
+
+      let approve = await execContractTx(
+        currentAccount,
+        api,
+        psp22_contract.CONTRACT_ABI,
+        tokenContract,
+        0, //-> value
+        "psp22::approve",
+        poolContract,
+        formatNumToBN(amount)
+      );
+      if (!approve) return;
+
+      await delay(3000);
+
+      toast.success("Step 2: Process...");
+
+      await execContractTx(
+        currentAccount,
+        api,
+        lp_pool_contract.CONTRACT_ABI,
+        poolContract,
+        0, //-> value
+        "genericPoolContractTrait::topupRewardPool",
+        formatNumToBN(amount)
+      );
+
+      // TODO: x2 check ask BE update is needed?
+      await APICall.askBEupdate({ type: "pool", poolContract });
+
+      await delay(2000).then(() => {
+        // fetchUserStakeInfo();
+        fetchTokenBalance();
+        setAmount(0);
+      });
+    }
   }
 
   async function handleRemoveRewards() {
@@ -343,7 +497,6 @@ const MyStakeStakingPoolInfo = ({
       toast.error(toastMessages.NO_WALLET);
       return;
     }
-    
 
     if (!amount) {
       toast.error("Invalid Amount!");
@@ -362,148 +515,251 @@ const MyStakeStakingPoolInfo = ({
       return;
     }
 
-    toast.success("Process...");
+    if (mode === "STAKING_POOL") {
+      toast.success("Process...");
 
-    await execContractTx(
-      currentAccount,
-      api,
-      pool_contract.CONTRACT_ABI,
-      poolContract,
-      0, //-> value
-      "genericPoolContractTrait::withdrawRewardPool",
-      formatNumToBN(amount)
-    );
+      await execContractTx(
+        currentAccount,
+        api,
+        pool_contract.CONTRACT_ABI,
+        poolContract,
+        0, //-> value
+        "genericPoolContractTrait::withdrawRewardPool",
+        formatNumToBN(amount)
+      );
 
-    // TODO: x2 check ask BE update is needed?
-    await APICall.askBEupdate({ type: "pool", poolContract });
+      // TODO: x2 check ask BE update is needed?
+      await APICall.askBEupdate({ type: "pool", poolContract });
 
-    await delay(2000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-      setAmount(0);
-    });
+      await delay(2000).then(() => {
+        // fetchUserStakeInfo();
+        fetchTokenBalance();
+        setAmount(0);
+      });
+    }
+
+    if (mode === "NFT_FARM") {
+      toast.success("Process...");
+
+      await execContractTx(
+        currentAccount,
+        api,
+        nft_pool_contract.CONTRACT_ABI,
+        poolContract,
+        0, //-> value
+        "genericPoolContractTrait::withdrawRewardPool",
+        formatNumToBN(amount)
+      );
+
+      // TODO: x2 check ask BE update is needed?
+      await APICall.askBEupdate({ type: "pool", poolContract });
+
+      await delay(2000).then(() => {
+        // fetchUserStakeInfo();
+        fetchTokenBalance();
+        setAmount(0);
+      });
+    }
+
+    if (mode === "TOKEN_FARM") {
+      toast.success("Process...");
+
+      await execContractTx(
+        currentAccount,
+        api,
+        lp_pool_contract.CONTRACT_ABI,
+        poolContract,
+        0, //-> value
+        "genericPoolContractTrait::withdrawRewardPool",
+        formatNumToBN(amount)
+      );
+
+      // TODO: x2 check ask BE update is needed?
+      await APICall.askBEupdate({ type: "pool", poolContract });
+
+      await delay(2000).then(() => {
+        // fetchUserStakeInfo();
+        fetchTokenBalance();
+        setAmount(0);
+      });
+    }
   }
-
   return (
-    <Stack
-      w="full"
-      spacing="30px"
-      alignItems="start"
-      direction={{ base: "column", lg: "row" }}
-    >
-      <IWCardOneColumn
-        title="My Account"
-        data={[
-          {
-            title: "Account Address",
-            content: address
-              ? addressShortener(address)
-              : "No account selected",
-          },
-          {
-            title: "Account Balance",
-            content: `${balance?.azero || 0} AZERO`,
-          },
-          {
-            title: `${tokenSymbol} Balance`,
-            content: `${tokenBalance || 0} ${tokenSymbol}`,
-          },
-        ]}
-      />
+    <>
+      <Stack
+        w="full"
+        spacing="30px"
+        alignItems="start"
+        direction={{ base: "column", lg: "row" }}
+      >
+        <IWCardOneColumn title="My Account" data={cardData} />
 
-      <VStack flexDirection="column" spacing="30px">
-        <CardThreeColumn
-          title="General Information"
-          data={[
-            {
-              title: "Pool Contract Address",
-              content: addressShortener(poolContract),
-            },
-            { title: "APR", content: `${apy / 100}%` },
-            {
-              title: "Start Date",
-              content: `${new Date(startTime).toLocaleString("en-US")}`,
-            },
-            {
-              title: "Pool Length (days)",
-              content: `${duration / 86400}`,
-            },
-            {
-              title: "Reward Pool",
-              content: `${formatNumDynDecimal(rewardPool)} ${tokenSymbol}`,
-            },
-            {
-              title: "Total Value Locked",
-              content: `${formatNumDynDecimal(totalStaked)} ${tokenSymbol}`,
-            },
-          ]}
-        >
-          <IWCard mt="24px" w="full" variant="solid">
-            <Flex
-              w="100%"
-              spacing="20px"
-              flexDirection={{ base: "column", lg: "row" }}
-              alignItems={{ base: "center", lg: "center" }}
-            >
-              <IWInput
-                value={amount}
-                onChange={({ target }) => setAmount(target.value)}
-                type="number"
-                placeholder="Enter amount to stake or unstake"
-                inputRightElementIcon={
-                  <Heading as="h5" size="h5">
-                    {tokenSymbol}
-                  </Heading>
-                }
-              />
-
-              <HStack
-                ml={{ base: "0", lg: "20px" }}
-                mt={{ base: "10px", lg: "0px" }}
-                maxW={{ base: "full", lg: "50%" }}
-                w="full"
-                spacing="10px"
-                justifyContent="space-between"
+        <VStack flexDirection="column" spacing="30px">
+          <CardThreeColumn
+            title="General Information"
+            data={[
+              {
+                title: "Pool Contract Address",
+                content: addressShortener(poolContract),
+              },
+              {
+                title: mode === "STAKING_POOL" ? "APR" : "Multiplier",
+                content:
+                  mode === "STAKING_POOL"
+                    ? `${apy / 100}%`
+                    : mode === "NFT_FARM"
+                    ? `${(multiplier / 10 ** 12).toFixed(2)}`
+                    : mode === "TOKEN_FARM"
+                    ? `${(multiplier / 10 ** 18).toFixed(2)}`
+                    : `${apy / 100}%`,
+              },
+              {
+                title: "Start Date",
+                content: `${new Date(startTime).toLocaleString("en-US")}`,
+              },
+              {
+                title: "Pool Length (days)",
+                content: `${duration / 86400}`,
+              },
+              {
+                title: "Reward Pool",
+                content: `${formatNumDynDecimal(rewardPool)} ${tokenSymbol}`,
+              },
+              {
+                title: "Total Value Locked",
+                content: `${formatNumDynDecimal(totalStaked)} ${
+                  mode === "NFT_FARM"
+                    ? `NFT`
+                    : mode === "TOKEN_FARM"
+                    ? lptokenSymbol
+                    : tokenSymbol
+                }`,
+              },
+            ]}
+          >
+            <IWCard mt="24px" w="full" variant="solid">
+              <Flex
+                w="100%"
+                spacing="20px"
+                flexDirection={{ base: "column", lg: "row" }}
+                alignItems={{ base: "center", lg: "center" }}
               >
-                <ConfirmModal
-                  action="stake"
-                  buttonVariant="primary"
-                  buttonLabel="Add Rewards"
-                  onClick={handleAddRewards}
-                  message={`Add to reward pool ${amount} ${tokenSymbol}. Continue?`}
+                <IWInput
+                  value={amount}
+                  onChange={({ target }) => setAmount(target.value)}
+                  type="number"
+                  placeholder="Enter amount to stake or unstake"
+                  inputRightElementIcon={
+                    <Heading as="h5" size="h5">
+                      {tokenSymbol}
+                    </Heading>
+                  }
                 />
 
-                <ConfirmModal
-                  action="unstake"
-                  buttonVariant="primary"
-                  buttonLabel="Remove Rewards"
-                  onClick={handleRemoveRewards}
-                  message={`Remove from reward pool ${amount} ${tokenSymbol}. Continue?`}
-                />
-              </HStack>
-            </Flex>
-          </IWCard>
-        </CardThreeColumn>
+                <HStack
+                  ml={{ base: "0", lg: "20px" }}
+                  mt={{ base: "10px", lg: "0px" }}
+                  maxW={{ base: "full", lg: "50%" }}
+                  w="full"
+                  spacing="10px"
+                  justifyContent="space-between"
+                >
+                  <ConfirmModal
+                    action="stake"
+                    buttonVariant="primary"
+                    buttonLabel="Add Rewards"
+                    onClick={handleAddRewards}
+                    message={`Add to reward pool ${amount} ${tokenSymbol}. Continue?`}
+                  />
 
-        <CardTwoColumn
-          title="Staking Information"
-          data={[
-            { title: "Token Name", content: tokenName },
-            {
-              title: "Contract Address",
-              content: addressShortener(tokenContract),
-            },
-            {
-              title: "Total Supply",
-              content: `${formatNumDynDecimal(
-                tokenTotalSupply,
-                0
-              )} ${tokenSymbol}`,
-            },
-            { title: "Token Symbol", content: tokenSymbol },
-          ]}
-        />
-      </VStack>
-    </Stack>
+                  <ConfirmModal
+                    action="unstake"
+                    buttonVariant="primary"
+                    buttonLabel="Remove Rewards"
+                    onClick={handleRemoveRewards}
+                    message={`Remove from reward pool ${amount} ${tokenSymbol}. Continue?`}
+                  />
+                </HStack>
+              </Flex>
+            </IWCard>
+
+            <Text
+              mt="10px"
+              textAlign="left"
+              w="full"
+              fontSize="md"
+              lineHeight="28px"
+            >
+              Note: You will be able to withdraw undistributed rewards after
+              Pool is expired on{" "}
+              <Text as="span" color="black">
+                {new Date(startTime + duration * 1000).toLocaleString("en-US")}
+              </Text>
+            </Text>
+          </CardThreeColumn>
+
+          {mode === "TOKEN_FARM" ? (
+            <>
+              {" "}
+              <CardTwoColumn
+                title="Staking Token Information"
+                data={[
+                  { title: "Token Name", content: lptokenName },
+                  {
+                    title: "Contract Address",
+                    content: addressShortener(lptokenContract),
+                  },
+                  {
+                    title: "Total Supply",
+                    content: `${formatNumDynDecimal(
+                      lptokenTotalSupply,
+                      0
+                    )} ${lptokenSymbol}`,
+                  },
+                  { title: "Token Symbol", content: lptokenSymbol },
+                ]}
+              />
+              <CardTwoColumn
+                title="Reward Token Information"
+                data={[
+                  { title: "Token Name", content: tokenName },
+                  {
+                    title: "Contract Address",
+                    content: addressShortener(tokenContract),
+                  },
+                  {
+                    title: "Total Supply",
+                    content: `${formatNumDynDecimal(
+                      tokenTotalSupply,
+                      0
+                    )} ${tokenSymbol}`,
+                  },
+                  { title: "Token Symbol", content: tokenSymbol },
+                ]}
+              />
+            </>
+          ) : (
+            <CardTwoColumn
+              title="Staking Information"
+              data={[
+                { title: "Token Name", content: tokenName },
+                {
+                  title: "Contract Address",
+                  content: addressShortener(tokenContract),
+                },
+                {
+                  title: "Total Supply",
+                  content: `${formatNumDynDecimal(
+                    tokenTotalSupply,
+                    0
+                  )} ${tokenSymbol}`,
+                },
+                { title: "Token Symbol", content: tokenSymbol },
+              ]}
+            />
+          )}
+        </VStack>
+      </Stack>
+    </>
   );
 };

@@ -21,11 +21,15 @@ import nft_pool_contract from "utils/contracts/nft_pool_contract";
 import { execContractQuery } from "utils/contracts";
 import { formatChainStringToNumber } from "utils";
 import lp_pool_contract from "utils/contracts/lp_pool_contract";
+import { useMemo } from "react";
 
 export default function FarmsPage() {
   const { currentAccount } = useSelector((s) => s.wallet);
   const [nftLPList, setNftLPList] = useState([]);
   const [tokenLPList, setTokenLPList] = useState([]);
+
+  const [showMyStakedPools, setShowMyStakedPools] = useState(false);
+  const [hideZeroRewardPools, setHideZeroRewardPools] = useState(false);
 
   useEffect(() => {
     let isUnmounted = false;
@@ -142,6 +146,36 @@ export default function FarmsPage() {
     return () => (isUnmounted = true);
   }, [currentAccount?.address]);
 
+  const nftLPListFiltered = useMemo(() => {
+    //TODO; add filter OR ? AND?
+
+    let ret = nftLPList;
+
+    if (showMyStakedPools) {
+      ret = nftLPList.filter((p) => p.stakeInfo);
+    }
+
+    if (hideZeroRewardPools) {
+      ret = nftLPList.filter((p) => p.rewardPool > 0);
+    }
+    return ret;
+  }, [hideZeroRewardPools, nftLPList, showMyStakedPools]);
+
+  const tokenLPListFiltered = useMemo(() => {
+    //TODO; add filter OR ? AND?
+
+    let ret = tokenLPList;
+
+    if (showMyStakedPools) {
+      ret = tokenLPList.filter((p) => p.stakeInfo);
+    }
+
+    if (hideZeroRewardPools) {
+      ret = tokenLPList.filter((p) => p.rewardPool > 0);
+    }
+    return ret;
+  }, [hideZeroRewardPools, tokenLPList, showMyStakedPools]);
+
   const tableDataNFT = {
     tableHeader: [
       {
@@ -188,7 +222,7 @@ export default function FarmsPage() {
       },
     ],
 
-    tableBody: nftLPList,
+    tableBody: nftLPListFiltered,
   };
 
   const tableDataToken = {
@@ -238,7 +272,7 @@ export default function FarmsPage() {
       },
     ],
 
-    tableBody: tokenLPList,
+    tableBody: tokenLPListFiltered,
   };
 
   const tabsData = [
@@ -297,14 +331,24 @@ export default function FarmsPage() {
             spacing={{ base: "0px", lg: "20px" }}
           >
             <FormControl maxW="135px" display="flex" alignItems="center">
-              <Switch id="my-stake" />
+              <Switch
+                id="my-stake"
+                isDisabled={!currentAccount?.address}
+                isChecked={showMyStakedPools}
+                onChange={() => setShowMyStakedPools(!showMyStakedPools)}
+              />{" "}
               <FormLabel htmlFor="my-stake" mb="0" ml="10px" fontWeight="400">
                 My Stake
               </FormLabel>
             </FormControl>
 
             <FormControl maxW="200px" display="flex" alignItems="center">
-              <Switch id="zero-reward-pools" />
+              <Switch
+                id="zero-reward-pools"
+                isDisabled={!currentAccount?.address}
+                isChecked={hideZeroRewardPools}
+                onChange={() => setHideZeroRewardPools(!hideZeroRewardPools)}
+              />{" "}
               <FormLabel
                 mb="0"
                 ml="10px"
