@@ -135,11 +135,11 @@ export default function CreateStakePoolPage({ api }) {
     }
 
     if (
-      parseInt(currentAccount?.balance?.wal?.replaceAll(",", "")) <
+      parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) <
       createTokenFee
     ) {
       toast.error(
-        `You don't have enough WAL. Stake costs ${createTokenFee} WAL`
+        `You don't have enough INW. Create Stake Pool costs ${createTokenFee} INW`
       );
       return;
     }
@@ -162,7 +162,7 @@ export default function CreateStakePoolPage({ api }) {
 
     await delay(3000);
 
-    toast.success("Step 2: Process create new staking pool...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -186,7 +186,7 @@ export default function CreateStakePoolPage({ api }) {
 
     toast.success("Please wait up to 10s for the data to be updated");
 
-    await delay(2000).then(() => {
+    await delay(6000).then(() => {
       currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
       fetchTokenBalance();
     });
@@ -228,28 +228,23 @@ export default function CreateStakePoolPage({ api }) {
         tooltipContent: "",
         label: "Decimal",
       },
-      {
-        name: "tokenTotalSupply",
-        hasTooltip: false,
-        tooltipContent: "",
-        label: "Initial Mint",
-      },
+
       {
         name: "apy",
         hasTooltip: false,
         tooltipContent: "",
-        label: "APY",
+        label: "APR",
       },
       {
         name: "rewardPool",
-        hasTooltip: false,
-        tooltipContent: "",
+        hasTooltip: true,
+        tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
       },
       {
         name: "totalStaked",
-        hasTooltip: false,
-        tooltipContent: "",
+        hasTooltip: true,
+        tooltipContent: `Total Value Locked: Total tokens staked into this pool`,
         label: "TVL",
       },
 
@@ -273,7 +268,7 @@ export default function CreateStakePoolPage({ api }) {
             Staker earns tokens at fixed APR. The creation costs
             <Text as="span" fontWeight="700" color="text.1">
               {" "}
-              {createTokenFee} WAL
+              {createTokenFee} INW
             </Text>
           </span>
         }
@@ -297,7 +292,6 @@ export default function CreateStakePoolPage({ api }) {
                 id="token"
                 placeholder="Select token"
                 onChange={({ target }) => {
-
                   setSelectedContractAddr(target.value);
                 }}
               >
@@ -357,8 +351,8 @@ export default function CreateStakePoolPage({ api }) {
             <Box w="full">
               <IWInput
                 isDisabled={true}
-                value={`${currentAccount?.balance?.wal || 0} WAL`}
-                label="Your WAL Balance"
+                value={`${currentAccount?.balance?.inw || 0} INW`}
+                label="Your INW Balance"
               />
             </Box>
 

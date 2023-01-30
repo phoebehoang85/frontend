@@ -31,6 +31,8 @@ import { fetchUserBalance } from "redux/slices/walletSlice";
 import { initialApi } from "utils/contracts";
 import CreateNFTLPPage from "pages/create/nft-lp-pool";
 import CreateTokenLPPage from "pages/create/token-lp-pool";
+import MyPoolsPage from "pages/account/my-pools";
+import MyPoolDetailPage from "pages/account/my-pools/detail";
 
 const providerUrl = process.env.REACT_APP_PROVIDER_URL;
 
@@ -114,13 +116,23 @@ const App = () => {
             component={CreateStakePoolPage}
           />
           <Route exact path={`/create/nft-lp`} component={CreateNFTLPPage} />
-          <Route exact path={`/create/token-lp`} component={CreateTokenLPPage} />
+          <Route
+            exact
+            path={`/create/token-lp`}
+            component={CreateTokenLPPage}
+          />
           <Redirect from="/create" to="/create/token" />
 
           <Route exact path={`/account`} component={MyBalancePage} />
           <Route exact path={`/account/my-balance`} component={MyBalancePage} />
           <Redirect from="/account" to="/account/my-balance" />
 
+          <Route exact path={`/my-pools`} component={MyPoolsPage} />
+          <Route
+            exact
+            path={`/my-pools/:contractAddress`}
+            component={MyPoolDetailPage}
+          />
           <Redirect from="/" to="/faucet" />
         </DefaultLayout>
       </Switch>

@@ -80,7 +80,7 @@ export function IWTable({ tableHeader, tableBody, mode }) {
                   {tableHeader?.map((i, idx) => {
                     return (
                       <Fragment key={idx}>
-                        <Td>{formatDataCellTable(itemObj, i?.name)}</Td>
+                        <Td>{formatDataCellTable(itemObj, i?.name, mode)}</Td>
                       </Fragment>
                     );
                   })}
@@ -94,7 +94,7 @@ export function IWTable({ tableHeader, tableBody, mode }) {
   );
 }
 
-export const formatDataCellTable = (itemObj, header) => {
+export const formatDataCellTable = (itemObj, header, mode) => {
   switch (header) {
     case "totalStaked":
       const extPart = `NFT${itemObj[header] > 1 ? "s" : ""}`;
@@ -108,10 +108,12 @@ export const formatDataCellTable = (itemObj, header) => {
       );
 
     case "multiplier":
-      return (
-        <>
-          <Text>{(itemObj[header] / 10 ** 12).toFixed(6)}</Text>
-        </>
+      return mode === "TOKEN_FARM" ? (
+        <Text>{(itemObj[header] / 10 ** 18).toFixed(2)}</Text>
+      ) : mode === "NFT_FARM" ? (
+        <Text>{(itemObj[header] / 10 ** 12).toFixed(2)}</Text>
+      ) : (
+        <></>
       );
 
     case "rewardPool":
@@ -230,9 +232,11 @@ export const formatDataCellTable = (itemObj, header) => {
       );
 
     case "totalSupply":
+      const totalSupply = itemObj[header].replaceAll(",", "");
+
       return (
         <>
-          <Text>{formatNumDynDecimal(itemObj[header] / 10 ** 12)}</Text>
+          <Text>{formatNumDynDecimal(totalSupply / 10 ** 12)}</Text>
         </>
       );
 
@@ -244,9 +248,10 @@ export const formatDataCellTable = (itemObj, header) => {
       );
 
     case "tokenTotalSupply":
+      const tokenTotalSupply = itemObj[header].replaceAll(",", "");
       return (
         <>
-          <Text>{formatNumDynDecimal(itemObj[header] / 10 ** 12)}</Text>
+          <Text>{formatNumDynDecimal(tokenTotalSupply / 10 ** 12)}</Text>
         </>
       );
 

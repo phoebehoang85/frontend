@@ -5,8 +5,8 @@ export default function IWCard(props) {
   const styles = useStyleConfig("IWCard", { variant });
   // const tabsStyles = useStyleConfig("Tabs", { variant });
 
-  // console.log(" tabsStyles", tabsStyles);
 
+  
   return (
     <Box id="iw-card" __css={styles} {...rest}>
       {title && (

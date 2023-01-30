@@ -260,7 +260,7 @@ const TokensTabCheckBalance = ({
             title: "Azero Balance",
             content: `${balance?.azero || 0} AZERO`,
           },
-          { title: "WAL Balance", content: `${balance?.wal || 0} WAL` },
+          { title: "INW Balance", content: `${balance?.inw || 0} INW` },
           {
             title: !tokenInfo?.title ? "" : `${tokenInfo?.title} Balance`,
             content: `${tokenInfo?.content} ${tokenInfo?.title}`,
@@ -390,7 +390,7 @@ const TokensTabTransferToken = ({
             title: "Azero Balance",
             content: `${balance?.azero || 0} AZERO`,
           },
-          { title: "WAL Balance", content: `${balance?.wal || 0} WAL` },
+          { title: "INW Balance", content: `${balance?.inw || 0} INW` },
           {
             title: !tokenInfo?.title ? "" : `${tokenInfo?.title} Balance`,
             content: `${tokenInfo?.content} ${tokenInfo?.title}`,
@@ -513,7 +513,7 @@ const TokensTabBurnToken = ({
             title: "Azero Balance",
             content: `${balance?.azero || 0} AZERO`,
           },
-          { title: "WAL Balance", content: `${balance?.wal || 0} WAL` },
+          { title: "INW Balance", content: `${balance?.inw || 0} INW` },
           {
             title: !tokenInfo?.title ? "" : `${tokenInfo?.title} Balance`,
             content: `${tokenInfo?.content} ${tokenInfo?.title}`,

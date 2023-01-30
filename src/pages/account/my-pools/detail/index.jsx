@@ -4,17 +4,18 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   Flex,
+  Heading,
   HStack,
   Show,
   Stack,
   Text,
   Tooltip,
+  VStack,
 } from "@chakra-ui/react";
 import SectionContainer from "components/container/SectionContainer";
 import IWInput from "components/input/Input";
 
 import IWCard from "components/card/Card";
-import IWTabs from "components/tabs/IWTabs";
 import ConfirmModal from "components/modal/ConfirmModal";
 import IWCardOneColumn from "components/card/CardOneColumn";
 import CardThreeColumn from "components/card/CardThreeColumn";
@@ -34,13 +35,12 @@ import pool_contract from "utils/contracts/pool_contract";
 import { delay } from "utils";
 import { formatNumToBN } from "utils";
 import { toast } from "react-hot-toast";
-import azt_contract from "utils/contracts/azt_contract";
 import { formatChainStringToNumber } from "utils";
 import { useCallback } from "react";
 import { toastMessages } from "constants";
-import { calcUnclaimedReward } from "utils";
+import { APICall } from "api/client";
 
-export default function PoolDetailPage({ api }) {
+export default function MyPoolDetailPage({ api }) {
   const { currentAccount } = useSelector((s) => s.wallet);
 
   const { state } = useLocation();
@@ -84,23 +84,6 @@ export default function PoolDetailPage({ api }) {
     },
   };
 
-  const tabsData = [
-    {
-      label: "My Stakes & Rewards",
-      component: <MyStakeRewardInfo {...state} {...currentAccount} />,
-      isDisabled: false,
-    },
-    {
-      label: (
-        <span>
-          Pool Info<Show above="md">rmation</Show>
-        </span>
-      ),
-      component: <PoolInfo {...state} />,
-      isDisabled: false,
-    },
-  ];
-
   return (
     <>
       <Show above="md">
@@ -110,7 +93,9 @@ export default function PoolDetailPage({ api }) {
             separator={<ChevronRightIcon color="gray.500" />}
           >
             <BreadcrumbItem color="text.1">
-              <BreadcrumbLink href="#/pools">Staking Pools</BreadcrumbLink>
+              <BreadcrumbLink href="#/my-pools">
+                My Staking Pools
+              </BreadcrumbLink>
             </BreadcrumbItem>
 
             <BreadcrumbItem color="text.2">
@@ -191,21 +176,27 @@ export default function PoolDetailPage({ api }) {
       </SectionContainer>
 
       <SectionContainer mt={{ base: "-28px", xl: "-48px" }}>
-        <IWTabs tabsData={tabsData} />
+        <MyStakeStakingPoolInfo {...state} {...currentAccount} />
       </SectionContainer>
     </>
   );
 }
 
-const MyStakeRewardInfo = ({
-  variant = "staking-pool",
+const MyStakeStakingPoolInfo = ({
+  variant = "my-staking-pool",
   tokenSymbol,
   address,
   balance,
   apy,
   poolContract,
   tokenContract,
+  startTime,
+  duration,
+  totalStaked,
   rewardPool,
+  tokenName,
+  tokenTotalSupply,
+  ...rest
 }) => {
   const { currentAccount, api } = useSelector((s) => s.wallet);
 
@@ -257,6 +248,7 @@ const MyStakeRewardInfo = ({
 
     const balance = formatQueryResultToNumber(result);
     setTokenBalance(balance);
+
   }, [api, currentAccount?.address, currentAccount?.balance, tokenContract]);
 
   useEffect(() => {
@@ -291,31 +283,7 @@ const MyStakeRewardInfo = ({
     fetchFee();
   }, [api, currentAccount?.address, currentAccount?.balance, poolContract]);
 
-  async function handleClaimRewards() {
-    if (!currentAccount) {
-      toast.error(toastMessages.NO_WALLET);
-      return;
-    }
-    if (stakeInfo?.unclaimedReward <= amount) {
-      toast.error("Not enough tokens!");
-      return;
-    }
-    await execContractTx(
-      currentAccount,
-      api,
-      pool_contract.CONTRACT_ABI,
-      poolContract,
-      0, //-> value
-      "claimReward"
-    );
-
-    await delay(2000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-    });
-  }
-
-  async function handleStake() {
+  async function handleAddRewards() {
     if (!currentAccount) {
       toast.error(toastMessages.NO_WALLET);
       return;
@@ -326,11 +294,6 @@ const MyStakeRewardInfo = ({
       return;
     }
 
-    if (!rewardPool || parseInt(rewardPool) < 0) {
-      toast.error("There is no reward balance in this pool!");
-      return;
-    }
- 
     if (formatChainStringToNumber(tokenBalance) < amount) {
       toast.error("Not enough tokens!");
       return;
@@ -361,11 +324,12 @@ const MyStakeRewardInfo = ({
       pool_contract.CONTRACT_ABI,
       poolContract,
       0, //-> value
-      "stake",
+      "genericPoolContractTrait::topupRewardPool",
       formatNumToBN(amount)
     );
 
     // TODO: x2 check ask BE update is needed?
+    await APICall.askBEupdate({ type: "pool", poolContract });
 
     await delay(2000).then(() => {
       fetchUserStakeInfo();
@@ -374,41 +338,31 @@ const MyStakeRewardInfo = ({
     });
   }
 
-  async function handleUnstake() {
+  async function handleRemoveRewards() {
     if (!currentAccount) {
       toast.error(toastMessages.NO_WALLET);
       return;
     }
+    
 
     if (!amount) {
       toast.error("Invalid Amount!");
       return;
     }
 
-    if (stakeInfo?.stakedValue / 10 ** 12 < amount) {
-      toast.error("Not enough tokens!");
+    let currentTime = new Date().getTime();
+
+    if (currentTime < parseInt(startTime) + duration * 1000) {
+      toast.error("You have to wait until pool ends to withdraw!");
       return;
     }
 
-    //Approve
-    toast.success("Step 1: Approving...");
+    if (rewardPool < amount) {
+      toast.error("Not enough reward tokens!");
+      return;
+    }
 
-    let approve = await execContractTx(
-      currentAccount,
-      api,
-      psp22_contract.CONTRACT_ABI,
-      azt_contract.CONTRACT_ADDRESS,
-      0, //-> value
-      "psp22::approve",
-      poolContract,
-      formatNumToBN(unstakeFee)
-    );
-
-    if (!approve) return;
-
-    await delay(3000);
-
-    toast.success("Step 2: Process...");
+    toast.success("Process...");
 
     await execContractTx(
       currentAccount,
@@ -416,11 +370,12 @@ const MyStakeRewardInfo = ({
       pool_contract.CONTRACT_ABI,
       poolContract,
       0, //-> value
-      "unstake",
+      "genericPoolContractTrait::withdrawRewardPool",
       formatNumToBN(amount)
     );
 
     // TODO: x2 check ask BE update is needed?
+    await APICall.askBEupdate({ type: "pool", poolContract });
 
     await delay(2000).then(() => {
       fetchUserStakeInfo();
@@ -456,149 +411,99 @@ const MyStakeRewardInfo = ({
         ]}
       />
 
-      <CardThreeColumn
-        title="Staking Information"
-        data={[
-          {
-            title: "My Stakes (FOD)",
-            content: `${formatNumDynDecimal(
-              stakeInfo?.stakedValue / 10 ** 12
-            )} ${tokenSymbol}`,
-          },
-          {
-            title: "Last Claim",
-            content: `${
-              !currentAccount
-                ? "No account selected"
-                : !stakeInfo?.lastRewardUpdate
-                ? "Not claimed yet"
-                : new Date(stakeInfo?.lastRewardUpdate).toLocaleString("en-US")
-            }`,
-          },
-          {
-            title: "My Unclaimed Rewards (FOD)",
-            content: `${calcUnclaimedReward({ ...stakeInfo, apy })}`,
-          },
-        ]}
-      >
-        <ConfirmModal
-          action="claim"
-          buttonVariant="outline"
-          buttonLabel="Claim Rewards"
-          onClick={handleClaimRewards}
-          message="Claim Rewards costs 10 INW. Continue?"
-        />
-
-        <IWCard mt="24px" w="full" variant="solid">
-          <Flex
-            w="100%"
-            spacing="20px"
-            flexDirection={{ base: "column", lg: "row" }}
-            alignItems={{ base: "center", lg: "center" }}
-          >
-            <IWInput
-              value={amount}
-              onChange={({ target }) => setAmount(target.value)}
-              type="number"
-              placeholder="Enter amount to stake or unstake"
-              // inputRightElementIcon={
-              //   <Heading as="h5" size="h5">
-              //     $WAL
-              //   </Heading>
-              // }
-            />
-
-            <HStack
-              ml={{ base: "0", lg: "20px" }}
-              mt={{ base: "10px", lg: "0px" }}
-              maxW={{ base: "full", lg: "245px" }}
-              w="full"
-              spacing="10px"
-              justifyContent="space-between"
+      <VStack flexDirection="column" spacing="30px">
+        <CardThreeColumn
+          title="General Information"
+          data={[
+            {
+              title: "Pool Contract Address",
+              content: addressShortener(poolContract),
+            },
+            { title: "APR", content: `${apy / 100}%` },
+            {
+              title: "Start Date",
+              content: `${new Date(startTime).toLocaleString("en-US")}`,
+            },
+            {
+              title: "Pool Length (days)",
+              content: `${duration / 86400}`,
+            },
+            {
+              title: "Reward Pool",
+              content: `${formatNumDynDecimal(rewardPool)} ${tokenSymbol}`,
+            },
+            {
+              title: "Total Value Locked",
+              content: `${formatNumDynDecimal(totalStaked)} ${tokenSymbol}`,
+            },
+          ]}
+        >
+          <IWCard mt="24px" w="full" variant="solid">
+            <Flex
+              w="100%"
+              spacing="20px"
+              flexDirection={{ base: "column", lg: "row" }}
+              alignItems={{ base: "center", lg: "center" }}
             >
-              <ConfirmModal
-                action="stake"
-                buttonVariant="primary"
-                buttonLabel="Stake"
-                onClick={handleStake}
-                message={`Stake ${amount} ${tokenSymbol}. Continue?`}
+              <IWInput
+                value={amount}
+                onChange={({ target }) => setAmount(target.value)}
+                type="number"
+                placeholder="Enter amount to stake or unstake"
+                inputRightElementIcon={
+                  <Heading as="h5" size="h5">
+                    {tokenSymbol}
+                  </Heading>
+                }
               />
 
-              <ConfirmModal
-                action="unstake"
-                buttonVariant="primary"
-                buttonLabel="Unstake"
-                onClick={handleUnstake}
-                message="Unstake costs 10 INW. Continue?"
-              />
-            </HStack>
-          </Flex>
-        </IWCard>
-      </CardThreeColumn>
-    </Stack>
-  );
-};
+              <HStack
+                ml={{ base: "0", lg: "20px" }}
+                mt={{ base: "10px", lg: "0px" }}
+                maxW={{ base: "full", lg: "50%" }}
+                w="full"
+                spacing="10px"
+                justifyContent="space-between"
+              >
+                <ConfirmModal
+                  action="stake"
+                  buttonVariant="primary"
+                  buttonLabel="Add Rewards"
+                  onClick={handleAddRewards}
+                  message={`Add to reward pool ${amount} ${tokenSymbol}. Continue?`}
+                />
 
-const PoolInfo = (props) => {
-  const {
-    poolContract,
-    apy,
-    startTime,
-    duration,
-    rewardPool,
-    totalStaked,
-    tokenContract,
-    tokenName,
-    tokenTotalSupply,
-    tokenSymbol,
-  } = props;
+                <ConfirmModal
+                  action="unstake"
+                  buttonVariant="primary"
+                  buttonLabel="Remove Rewards"
+                  onClick={handleRemoveRewards}
+                  message={`Remove from reward pool ${amount} ${tokenSymbol}. Continue?`}
+                />
+              </HStack>
+            </Flex>
+          </IWCard>
+        </CardThreeColumn>
 
-  return (
-    <Stack
-      w="full"
-      spacing="30px"
-      alignItems="start"
-      direction={{ base: "column", lg: "row" }}
-    >
-      <CardTwoColumn
-        title="Staking Token Information"
-        data={[
-          {
-            title: "Pool Contract Address",
-            content: addressShortener(poolContract),
-          },
-          { title: "APR", content: `${apy / 100}%` },
-          {
-            title: "Start Date",
-            content: `${new Date(startTime).toLocaleString("en-US")}`,
-          },
-          { title: "Pool Length (days)", content: duration / 86400 },
-          {
-            title: "Reward Pool",
-            content: `${formatNumDynDecimal(rewardPool)} ${tokenSymbol}`,
-          },
-          {
-            title: "Total Value Locked",
-            content: `${formatNumDynDecimal(totalStaked)} ${tokenSymbol}`,
-          },
-        ]}
-      />
-
-      <CardTwoColumn
-        title="General Information"
-        data={[
-          { title: "Token Name", content: tokenName },
-          {
-            title: "Contract Address",
-            content: addressShortener(tokenContract),
-          },
-          {
-            title: "Total Supply",
-            content: `${formatNumDynDecimal(tokenTotalSupply)} ${tokenSymbol}`,
-          },
-          { title: "Token Symbol", content: tokenSymbol },
-        ]}
-      />
+        <CardTwoColumn
+          title="Staking Information"
+          data={[
+            { title: "Token Name", content: tokenName },
+            {
+              title: "Contract Address",
+              content: addressShortener(tokenContract),
+            },
+            {
+              title: "Total Supply",
+              content: `${formatNumDynDecimal(
+                tokenTotalSupply,
+                0
+              )} ${tokenSymbol}`,
+            },
+            { title: "Token Symbol", content: tokenSymbol },
+          ]}
+        />
+      </VStack>
     </Stack>
   );
 };

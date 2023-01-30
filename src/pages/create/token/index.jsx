@@ -99,9 +99,12 @@ export default function CreateTokenPage({ api }) {
       return toast.error("Invalid address!");
     }
 
-    if (parseInt(currentAccount?.balance?.wal?.replaceAll(",", "")) < createTokenFee) {
+    if (
+      parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) <
+      createTokenFee
+    ) {
       toast.error(
-        `You don't have enough WAL. Unstake costs ${createTokenFee} WAL`
+        `You don't have enough INW. Create Token costs ${createTokenFee} INW`
       );
       return;
     }
@@ -124,7 +127,7 @@ export default function CreateTokenPage({ api }) {
 
     await delay(3000);
 
-    toast.success("Step 2: Process unstaking...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -134,7 +137,7 @@ export default function CreateTokenPage({ api }) {
       0, //-> value
       "newToken",
       mintAddress,
-      totalSupply,
+      formatNumToBN(totalSupply),
       tokenName,
       tokenSymbol,
       12 // tokenDecimal
@@ -147,7 +150,7 @@ export default function CreateTokenPage({ api }) {
 
     toast.success("Please wait up to 10s for the data to be updated");
 
-    await delay(2000).then(() => {
+    await delay(6000).then(() => {
       currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
       //   fetchTokenBalance();
     });
@@ -212,7 +215,7 @@ export default function CreateTokenPage({ api }) {
             specific address. The creation requires
             <Text as="span" fontWeight="700" color="text.1">
               {" "}
-              {createTokenFee} WAL
+              {createTokenFee} INW
             </Text>
           </span>
         }
@@ -271,8 +274,8 @@ export default function CreateTokenPage({ api }) {
             <Box w={{ base: "full" }}>
               <IWInput
                 isDisabled={true}
-                value={`${currentAccount?.balance?.wal || 0} WAL`}
-                label="Your WAL Balance"
+                value={`${currentAccount?.balance?.inw || 0} INW`}
+                label="Your INW Balance"
               />
             </Box>
           </SimpleGrid>
@@ -286,7 +289,7 @@ export default function CreateTokenPage({ api }) {
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
         title="Recent Tokens"
-        description={`Fugiat quis do exercitation ut consequat id consectetur.`}
+        description={`do exercitation ut id consectetur.`}
       >
         <IWTable {...tableData} />
       </SectionContainer>

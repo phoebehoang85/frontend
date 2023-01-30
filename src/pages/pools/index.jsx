@@ -44,7 +44,6 @@ export default function PoolsPage({ api }) {
                 "genericPoolContractTrait::getStakeInfo",
                 currentAccount?.address
               );
-
               let stakeInfo = queryResult?.toHuman();
 
               if (stakeInfo) {
@@ -86,37 +85,37 @@ export default function PoolsPage({ api }) {
       {
         name: "tokenName",
         hasTooltip: false,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: "",
         label: "Stake & Earn",
       },
       {
         name: "totalStaked",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Total Value Locked: Total tokens staked into this pool`,
         label: "TVL",
       },
       {
         name: "apy",
         hasTooltip: false,
-        tooltipContent: "Lorem lorem",
-        label: "APY",
+        tooltipContent: "",
+        label: "APR",
       },
       {
         name: "rewardPool",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
       },
       {
         name: "startTime",
         hasTooltip: false,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: "",
         label: "Expired In",
       },
       {
         name: "stakeInfo",
         hasTooltip: false,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: "",
         label: "My Stake",
       },
     ],

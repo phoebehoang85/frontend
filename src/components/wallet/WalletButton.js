@@ -248,7 +248,7 @@ export const WalletConnect = () => {
         <Flex flexDirection="column" p="20px">
           {[
             { title: "AZERO Balance", content: currentAccount?.balance?.azero },
-            { title: "WAL Balance", content: currentAccount?.balance?.wal },
+            { title: "INW Balance", content: currentAccount?.balance?.inw },
           ].map(({ title, content }, idx) => {
             return (
               <IWCard

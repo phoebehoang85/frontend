@@ -159,19 +159,19 @@ export default function FarmsPage() {
       {
         name: "totalStaked",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Total Value Locked: Total tokens staked into this pool`,
         label: "TVL",
       },
       {
         name: "rewardPool",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
       },
       {
         name: "multiplier",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Multiplier determines how many reward tokens will the staker receive per 1 NFTs in 24 hours.`,
         label: "Multiplier",
       },
       {
@@ -183,7 +183,7 @@ export default function FarmsPage() {
       {
         name: "stakeInfo",
         hasTooltip: false,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: "",
         label: "My Stake",
       },
     ],
@@ -208,19 +208,19 @@ export default function FarmsPage() {
       {
         name: "totalStaked",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Total Value Locked: Total tokens staked into this pool`,
         label: "TVL",
       },
       {
         name: "rewardPool",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
       },
       {
         name: "multiplier",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Multiplier determines how many reward tokens will the staker receive per 1 token in 24 hours.`,
         label: "Multiplier",
       },
 

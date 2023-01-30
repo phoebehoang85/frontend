@@ -85,19 +85,19 @@ export default function NavbarLinks(props) {
             <Flex
               _hover={{ textDecoration: "none", bg: "bg.1" }}
               p="6px 10px"
-              bg={currentAnchor === "/account" ? "bg.1" : "transparent"}
+              bg={currentAnchor === "/my-pools" ? "bg.1" : "transparent"}
               borderRadius="5px"
               ml={{ base: "20px", md: "20px" }}
             >
               <Link
-                to="/account"
+                to="/my-pools"
                 as={RouterLink}
                 color={"text.1"}
                 fontWeight="600"
                 bg="transparent"
                 textDecoration="none"
                 _hover={{ textDecoration: "none", bg: "bg.1" }}
-                onClick={() => setCurrentAnchor('"/account"')}
+                onClick={() => setCurrentAnchor("/my-pools")}
               >
                 <Text bg="transparent" fontSize="md">
                   My Account
@@ -106,7 +106,10 @@ export default function NavbarLinks(props) {
             </Flex>
           )}
 
-          <CreateMenuDropdown />
+          <CreateMenuDropdown
+            setCurrentAnchor={setCurrentAnchor}
+            currentAnchor={currentAnchor}
+          />
         </Flex>
       </Show>
 
@@ -145,15 +148,19 @@ export const menuListData = [
   },
 ];
 
-export const CreateMenuDropdown = ({ onClose }) => {
+export const CreateMenuDropdown = ({
+  onClose,
+  setCurrentAnchor,
+  currentAnchor,
+}) => {
   const history = useHistory();
 
   return (
     <Menu placement="bottom-end">
       <MenuButton
         p="0px"
-        bg="transparent"
         _hover={{ bg: "bg.1" }}
+        bg={currentAnchor === "/create" ? "bg.1" : "transparent"}
         borderRadius="5px"
         ml={{ base: "20px", md: "20px" }}
       >
@@ -197,6 +204,7 @@ export const CreateMenuDropdown = ({ onClose }) => {
                 textDecoration="none"
                 onClick={() => {
                   history.push(item.href);
+                  setCurrentAnchor("/create");
                   // onClose();
                 }}
               >
@@ -254,8 +262,8 @@ export const CreateMenuDropdown = ({ onClose }) => {
 //       >
 //         <Flex flexDirection="column" p="20px">
 //           {[
-//             { title: "WAL Balance", content: "100,000.000" },
-//             { title: "WAL Balance", content: "25,000.948" },
+//             { title: "INW Balance", content: "100,000.000" },
+//             { title: "INW Balance", content: "25,000.948" },
 //           ].map(({ title, content }, idx) => {
 //             return (
 //               <IWCard

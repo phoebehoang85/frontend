@@ -76,19 +76,19 @@ export default function FarmDetailPage() {
       {
         name: "totalStaked",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Total Value Locked: Total tokens staked into this pool`,
         label: "TVL",
       },
       {
         name: "rewardPool",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
       },
       {
         name: "multiplier",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Multiplier determines how many reward tokens will the staker receive per 1 NFT in 24 hours.`,
         label: "Multiplier",
       },
       {
@@ -460,7 +460,7 @@ const MyStakeRewardInfoNFT = ({
 
     await delay(3000);
 
-    toast.success("Step 2: Process staking...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -480,7 +480,7 @@ const MyStakeRewardInfoNFT = ({
 
     toast.success("Please wait up to 10s for the data to be updated");
 
-    await delay(5000).then(() => {
+    await delay(6000).then(() => {
       fetchUserStakeInfo();
       fetchTokenBalance();
     });
@@ -493,9 +493,9 @@ const MyStakeRewardInfoNFT = ({
     }
 
     if (
-      parseInt(currentAccount?.balance?.wal?.replaceAll(",", "")) < unstakeFee
+      parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) < unstakeFee
     ) {
-      toast.error(`You don't have enough WAL. Unstake costs ${unstakeFee} WAL`);
+      toast.error(`You don't have enough INW. Unstake costs ${unstakeFee} INW`);
       return;
     }
 
@@ -517,7 +517,7 @@ const MyStakeRewardInfoNFT = ({
 
     await delay(3000);
 
-    toast.success("Step 2: Process unstaking...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -537,7 +537,7 @@ const MyStakeRewardInfoNFT = ({
 
     toast.success("Please wait up to 10s for the data to be updated");
 
-    await delay(5000).then(() => {
+    await delay(6000).then(() => {
       fetchUserStakeInfo();
       fetchTokenBalance();
     });
@@ -606,7 +606,7 @@ const MyStakeRewardInfoNFT = ({
             buttonVariant="outline"
             buttonLabel="Claim Rewards"
             onClick={handleClaimNFTLP}
-            message="Claim Rewards costs 10 WAL. Continue?"
+            message="Claim Rewards costs 10 INW. Continue?"
           />
         </CardThreeColumn>
       </Stack>
@@ -786,7 +786,7 @@ const MyStakeRewardInfoToken = ({
 
     await delay(3000);
 
-    toast.success("Step 2: Process staking...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -803,7 +803,7 @@ const MyStakeRewardInfoToken = ({
 
     toast.success("Please wait up to 10s for the data to be updated");
 
-    await delay(5000).then(() => {
+    await delay(6000).then(() => {
       fetchUserStakeInfo();
       fetchTokenBalance();
     });
@@ -816,9 +816,9 @@ const MyStakeRewardInfoToken = ({
     }
 
     if (
-      parseInt(currentAccount?.balance?.wal?.replaceAll(",", "")) < unstakeFee
+      parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) < unstakeFee
     ) {
-      toast.error(`You don't have enough WAL. Unstake costs ${unstakeFee} WAL`);
+      toast.error(`You don't have enough INW. Unstake costs ${unstakeFee} INW`);
       return;
     }
 
@@ -840,7 +840,7 @@ const MyStakeRewardInfoToken = ({
 
     await delay(3000);
 
-    toast.success("Step 2: Process unstaking...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -856,7 +856,7 @@ const MyStakeRewardInfoToken = ({
     setLPTokenAmount(0);
     toast.success("Please wait up to 10s for the data to be updated");
 
-    await delay(5000).then(() => {
+    await delay(6000).then(() => {
       fetchUserStakeInfo();
       fetchTokenBalance();
     });
@@ -886,8 +886,8 @@ const MyStakeRewardInfoToken = ({
               content: `${balance?.azero || 0} AZERO`,
             },
             {
-              title: "WAL Balance",
-              content: `${balance?.wal || 0} WAL`,
+              title: "INW Balance",
+              content: `${balance?.inw || 0} INW`,
             },
             {
               title: `${tokenSymbol} Balance`,
@@ -935,7 +935,7 @@ const MyStakeRewardInfoToken = ({
             buttonVariant="outline"
             buttonLabel="Claim Rewards"
             onClick={handleClaimTokenLP}
-            message="Claim Rewards costs 10 WAL. Continue?"
+            message="Claim Rewards costs 10 INW. Continue?"
           />
           <IWCard mt="24px" w="full" variant="solid">
             <Flex
@@ -979,8 +979,8 @@ const MyStakeRewardInfoToken = ({
                   buttonVariant="primary"
                   buttonLabel="Unstake"
                   onClick={unstakeTokenLPHandler}
-                  message="Unstake costs 10 WAL. Continue?"
-                />
+                  message={`Unstake costs ${unstakeFee} INW. Continue?`}
+                />{}
               </HStack>
             </Flex>
           </IWCard>
@@ -1027,13 +1027,13 @@ const PoolInfo = ({
       {
         name: "royaltyFee",
         hasTooltip: false,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: "",
         label: "Royalty Fee",
       },
       {
         name: "volume",
         hasTooltip: false,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: "",
         label: "Volume",
       },
     ],
@@ -1195,7 +1195,10 @@ const PoolInfo = ({
               title: "Start Date",
               content: `${new Date(startTime).toLocaleString("en-US")}`,
             },
-            { title: "Pool Length", content: `${duration / 86400} days` },
+            {
+              title: "Pool Length (days)",
+              content: `${duration / 86400} days`,
+            },
             {
               title: "Reward Pool",
               content: `${formatNumDynDecimal(rewardPool)} ${tokenSymbol}`,
