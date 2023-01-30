@@ -18,8 +18,14 @@ export const globalStyles = {
       "body::-webkit-scrollbar": {
         display: "none",
       },
-
       html: { scrollBehavior: "smooth" },
+      ".react-datetime-picker__wrapper": {
+        display: "flex",
+        flexGrow: 1,
+        flexShrink: 0,
+        border: "0px solid #ffffff00",
+        paddingLeft: "10px",
+      },
     }),
   },
   colors: {

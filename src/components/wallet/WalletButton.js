@@ -283,7 +283,7 @@ export const WalletConnect = () => {
                   w="32px"
                   h="32px"
                   bg="bg.5"
-                  onClick={() => history.push("/account/my-balance")}
+                  onClick={() => history.push("/my-pools")}
                 >
                   <MenuArrowRightIcon color="text.1" />
                 </Circle>
@@ -306,7 +306,7 @@ export const WalletConnect = () => {
                 key={idx}
                 alignItems="start"
                 width={{ base: "33%" }}
-                onClick={() => history.push("/account/my-balance")}
+                onClick={() => history.push("/my-pools")}
               >
                 <MenuCardIcon {...item} />
               </MenuItem>
