@@ -24,7 +24,7 @@ export default function PoolsPage({ api }) {
   const { currentAccount } = useSelector((s) => s.wallet);
 
   const [poolsListData, setPoolsListData] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const [showMyStakedPools, setShowMyStakedPools] = useState(false);
   const [hideZeroRewardPools, setHideZeroRewardPools] = useState(false);
 
@@ -32,6 +32,8 @@ export default function PoolsPage({ api }) {
     let isUnmounted = false;
 
     const fetchPoolsList = async () => {
+      setLoading(true);
+
       try {
         const { status, ret } = await APICall.getPoolsList();
 
@@ -68,9 +70,11 @@ export default function PoolsPage({ api }) {
 
           if (isUnmounted) return;
           setPoolsListData(poolsListAddMyStake);
+          setLoading(false);
         }
       } catch (error) {
         console.log("error", error.message);
+        setLoading(false);
       }
     };
     fetchPoolsList();
@@ -229,7 +233,7 @@ export default function PoolsPage({ api }) {
           </Box>
         </HStack>
 
-        <IWTable {...tableData} />
+        <IWTable {...tableData} loading={loading} />
       </Stack>
     </SectionContainer>
   );

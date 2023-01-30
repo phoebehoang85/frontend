@@ -3,6 +3,7 @@ import {
   Circle,
   Flex,
   Image,
+  Skeleton,
   Table,
   TableContainer,
   Tbody,
@@ -21,7 +22,7 @@ import { formatNumDynDecimal } from "utils";
 import ImageCloudFlare from "components/image-cf/ImageCF";
 import { addressShortener } from "utils";
 
-export function IWTable({ tableHeader, tableBody, mode }) {
+export function IWTable({ tableHeader, tableBody, mode, loading }) {
   const history = useHistory();
   const location = useLocation();
 
@@ -63,31 +64,57 @@ export function IWTable({ tableHeader, tableBody, mode }) {
         </Thead>
 
         <Tbody>
-          {tableBody?.map((itemObj, idx) => {
-            return (
-              <Fragment key={idx}>
-                <Tr
-                  h="60px"
-                  cursor="pointer"
-                  _hover={{ bg: "bg.1" }}
-                  onClick={() =>
-                    history.push({
-                      state: { ...itemObj, mode },
-                      pathname: `${location.pathname}/${itemObj?.poolContract}`,
-                    })
-                  }
-                >
-                  {tableHeader?.map((i, idx) => {
-                    return (
-                      <Fragment key={idx}>
-                        <Td>{formatDataCellTable(itemObj, i?.name, mode)}</Td>
-                      </Fragment>
-                    );
-                  })}
-                </Tr>
-              </Fragment>
-            );
-          })}
+          {loading ? (
+            <>
+              <Tr>
+                {tableHeader?.map((_, idx) => (
+                  <Td p="0" key={idx}>
+                    <Skeleton height="60px" />
+                  </Td>
+                ))}
+              </Tr>
+              <Tr>
+                {tableHeader?.map((_, idx) => (
+                  <Td p="0" key={idx}>
+                    <Skeleton height="60px" />
+                  </Td>
+                ))}
+              </Tr>
+              <Tr>
+                {tableHeader?.map((_, idx) => (
+                  <Td p="0" key={idx}>
+                    <Skeleton height="60px" />
+                  </Td>
+                ))}
+              </Tr>
+            </>
+          ) : (
+            tableBody?.map((itemObj, idx) => {
+              return (
+                <Fragment key={idx}>
+                  <Tr
+                    h="60px"
+                    cursor="pointer"
+                    _hover={{ bg: "bg.1" }}
+                    onClick={() =>
+                      history.push({
+                        state: { ...itemObj, mode },
+                        pathname: `${location.pathname}/${itemObj?.poolContract}`,
+                      })
+                    }
+                  >
+                    {tableHeader?.map((i, idx) => {
+                      return (
+                        <Fragment key={idx}>
+                          <Td>{formatDataCellTable(itemObj, i?.name, mode)}</Td>
+                        </Fragment>
+                      );
+                    })}
+                  </Tr>
+                </Fragment>
+              );
+            })
+          )}
         </Tbody>
       </Table>
     </TableContainer>
