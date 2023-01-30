@@ -213,7 +213,7 @@ const MyStakeRewardInfo = ({
   const [stakeInfo, setStakeInfo] = useState(null);
   const [tokenBalance, setTokenBalance] = useState();
 
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState("");
 
   const fetchUserStakeInfo = useCallback(async () => {
     if (!currentAccount?.balance) return;
@@ -330,7 +330,7 @@ const MyStakeRewardInfo = ({
       toast.error("There is no reward balance in this pool!");
       return;
     }
- 
+
     if (formatChainStringToNumber(tokenBalance) < amount) {
       toast.error("Not enough tokens!");
       return;

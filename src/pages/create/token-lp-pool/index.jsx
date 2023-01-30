@@ -42,8 +42,8 @@ export default function CreateTokenLPPage({ api }) {
 
   const [LPtokenContract, setLPTokenContract] = useState("");
 
-  const [duration, setDuration] = useState(0);
-  const [multiplier, setMultiplier] = useState(0);
+  const [duration, setDuration] = useState("");
+  const [multiplier, setMultiplier] = useState("");
   const [startTime, setStartTime] = useState(new Date());
 
   const [tokenBalance, setTokenBalance] = useState(0);
@@ -399,6 +399,7 @@ export default function CreateTokenLPPage({ api }) {
 
             <Box w="full">
               <IWInput
+                placeholder="0"
                 type="number"
                 value={duration}
                 label="Pool Length (days)"

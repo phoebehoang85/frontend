@@ -576,7 +576,7 @@ const MyStakeRewardInfoNFT = ({
           title="Staking Information"
           data={[
             {
-              title: `My Stakes (${nftInfo?.name})`,
+              title: `My Stakes ${nftInfo?.name ? `(${nftInfo?.name})` : ""}`,
               content: `${formatNumDynDecimal(stakeInfo?.stakedValue)}`,
             },
             {
@@ -764,6 +764,16 @@ const MyStakeRewardInfoToken = ({
       return;
     }
 
+    if (!LPTokenAmount || LPTokenAmount < 0 || LPTokenAmount === "0") {
+      toast.error("Invalid Amount!");
+      return;
+    }
+
+    if (formatChainStringToNumber(LPtokenBalance) < LPTokenAmount) {
+      toast.error("There is not enough balance!");
+      return;
+    }
+
     if (!rewardPool || parseInt(rewardPool) < 0) {
       toast.error("There is no reward balance in this pool!");
       return;
@@ -812,6 +822,16 @@ const MyStakeRewardInfoToken = ({
   async function unstakeTokenLPHandler(tokenID) {
     if (!currentAccount) {
       toast.error(toastMessages.NO_WALLET);
+      return;
+    }
+
+    if (!LPTokenAmount || LPTokenAmount < 0 || LPTokenAmount === "0") {
+      toast.error("Invalid Amount!");
+      return;
+    }
+
+    if (stakeInfo?.stakedValue / 10 ** 12 < LPTokenAmount) {
+      toast.error("There is not enough balance!");
       return;
     }
 
@@ -903,7 +923,7 @@ const MyStakeRewardInfoToken = ({
           title="Staking Information"
           data={[
             {
-              title: `My Stakes (${nftInfo?.name})`,
+              title: `My Stakes ${nftInfo?.name ? `(${nftInfo?.name})` : ""}`,
               content: `${formatNumDynDecimal(
                 stakeInfo?.stakedValue / 10 ** 12
               )}`,
@@ -1075,7 +1095,7 @@ const PoolInfo = ({
             },
             {
               title: "Multiplier",
-              content: (multiplier / 10 ** 12).toFixed(6),
+              content: (multiplier / 10 ** 12).toFixed(2),
             },
             {
               title: "Start Date",
@@ -1091,13 +1111,13 @@ const PoolInfo = ({
             },
             {
               title: "Total Value Locked",
-              content: `${formatNumDynDecimal(totalStaked)} NFT${
-                totalStaked > 1 ? "s" : ""
-              }`,
+              content: `${formatNumDynDecimal(totalStaked)} ${
+                mode === "NFT_FARM" ? "NFT" : ""
+              }${mode === "NFT_FARM" && totalStaked > 1 ? "s" : ""}`,
             },
           ]}
         />
-
+        {console.log("mode", mode)}
         <Stack w="full" spacing="30px">
           {mode === "TOKEN_FARM" ? (
             <CardTwoColumn
@@ -1141,27 +1161,65 @@ const PoolInfo = ({
   );
 };
 
-const AvailableNFTs = (props) => (
+const AvailableNFTs = (props) => {
   // { data, action, actionHandler }
-  <>
+  const { currentAccount } = useSelector((s) => s.wallet);
+
+  if (!currentAccount?.address) {
+    // return <Text>Please connect wallet!<Text/>
+    return (
+      <Heading size="h5" textAlign="center">
+        Please connect wallet!
+      </Heading>
+    );
+  }
+
+  return (
+    <>
+      <Stack
+        w="full"
+        spacing="30px"
+        alignItems="start"
+        direction={{ base: "column", lg: "row" }}
+      >
+        {props?.data?.length === 0 ? (
+          <Text textAlign="center" w="full">
+            There is no available NFTs
+          </Text>
+        ) : (
+          <IWCardNFTWrapper {...props} />
+        )}
+      </Stack>
+    </>
+  );
+};
+
+const StakedNFTs = (props) => {
+  const { currentAccount } = useSelector((s) => s.wallet);
+
+  if (!currentAccount?.address) {
+    // return <Text>Please connect wallet!<Text/>
+    return (
+      <Heading size="h5" textAlign="center">
+        Please connect wallet!
+      </Heading>
+    );
+  }
+
+  return (
     <Stack
       w="full"
       spacing="30px"
       alignItems="start"
       direction={{ base: "column", lg: "row" }}
     >
-      <IWCardNFTWrapper {...props} />
+      {props?.data?.length === 0 ? (
+        <Text textAlign="center" w="full">
+          There is no staked NFTs
+        </Text>
+      ) : (
+        <IWCardNFTWrapper {...props} />
+      )}
     </Stack>
-  </>
-);
-
-const StakedNFTs = (props) => (
-  <Stack
-    w="full"
-    spacing="30px"
-    alignItems="start"
-    direction={{ base: "column", lg: "row" }}
-  >
-    <IWCardNFTWrapper {...props} />
-  </Stack>
-);
+  );
+};

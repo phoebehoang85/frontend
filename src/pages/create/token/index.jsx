@@ -25,7 +25,7 @@ export default function CreateTokenPage({ api }) {
   const [tokenName, setTokenName] = useState("");
   const [mintAddress, setMintAddress] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("");
-  const [totalSupply, setTotalSupply] = useState(0);
+  const [totalSupply, setTotalSupply] = useState('');
 
   const [createTokenFee, setCreateToken] = useState(0);
   const [tokenListData, setTokenListData] = useState([]);
@@ -267,7 +267,7 @@ export default function CreateTokenPage({ api }) {
                 type="text"
                 value={totalSupply}
                 label="Total Supply"
-                placeholder="Total Supply"
+                placeholder="0"
                 onChange={({ target }) => setTotalSupply(target.value)}
               />
             </Box>

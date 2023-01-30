@@ -449,7 +449,7 @@ const TokensTabBurnToken = ({
 }) => {
   const { currentAccount } = useSelector((s) => s.wallet);
 
-  const [burnAmount, setBurnAmount] = useState(0);
+  const [burnAmount, setBurnAmount] = useState("");
 
   async function burnTokenHandler() {
     if (!currentAccount) {
@@ -534,6 +534,7 @@ const TokensTabBurnToken = ({
             align={{ base: "column", xl: "center" }}
           >
             <IWInput
+              type="number"
               value={burnAmount}
               onChange={({ target }) => setBurnAmount(target.value)}
               placeholder="Amount to burn"

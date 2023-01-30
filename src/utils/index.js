@@ -107,7 +107,7 @@ export const calcUnclaimedRewardNftLP = ({
   stakedValue = 0,
   unclaimedReward = 0,
   multiplier = 1,
-  tokenDecimal = 0,
+  tokenDecimal = 12,
 }) => {
   const accumSecondTillNow = (new Date().getTime() - lastRewardUpdate) / 1000;
 
@@ -117,9 +117,9 @@ export const calcUnclaimedRewardNftLP = ({
     accumSecondTillNow * multiplierPerSecond * stakedValue;
 
   const result =
-    unclaimedReward / 10 ** 12 + accumRewardTillNow / 10 ** tokenDecimal;
+    unclaimedReward / 10 ** tokenDecimal + accumRewardTillNow / 10 ** tokenDecimal;
 
-  return result?.toFixed(12);
+  return result?.toFixed(tokenDecimal);
 };
 
 export const calcUnclaimedRewardTokenLP = ({
@@ -127,7 +127,7 @@ export const calcUnclaimedRewardTokenLP = ({
   stakedValue = 0,
   unclaimedReward = 0,
   multiplier = 1,
-  tokenDecimal = 0,
+  tokenDecimal = 12,
 }) => {
   const accumSecondTillNow = (new Date().getTime() - lastRewardUpdate) / 1000;
   // WHY? / 1000000
@@ -137,7 +137,7 @@ export const calcUnclaimedRewardTokenLP = ({
     accumSecondTillNow * multiplierPerSecond * stakedValue;
 
   const result =
-    unclaimedReward / 10 ** 12 + accumRewardTillNow / 10 ** tokenDecimal;
+    unclaimedReward / 10 ** tokenDecimal + accumRewardTillNow / 10 ** tokenDecimal;
 
-  return result?.toFixed(12);
+  return result?.toFixed(tokenDecimal);
 };

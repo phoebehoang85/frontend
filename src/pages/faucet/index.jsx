@@ -37,7 +37,7 @@ export default function FaucetPage({ api }) {
 
   const [faucetTokensList, setFaucetTokensList] = useState([]);
 
-  // TODO: double checking booking data
+  // TODO: double checking booking data is correct
   // eslint-disable-next-line no-unused-vars
   const [walMaxCap, setWalMaxCap] = useState(0);
   // eslint-disable-next-line no-unused-vars
@@ -47,7 +47,7 @@ export default function FaucetPage({ api }) {
 
   const [inwTotalSupply, setInwTotalSupply] = useState(0);
   const [availableMint, setAvailableMint] = useState(0);
-  const [inwBuyAmount, setInwBuyAmount] = useState(0);
+  const [inwBuyAmount, setInwBuyAmount] = useState('');
 
   useEffect(() => {
     const getFaucetTokensListData = async () => {
@@ -166,14 +166,14 @@ export default function FaucetPage({ api }) {
   };
 
   const getInwMintingCapAndTotalSupply = useCallback(async () => {
-    if (!currentAccount) {
+    if (!api) {
       setInwTotalSupply(0);
       setWalMintingCap(0);
       return;
     }
 
     let result = await execContractQuery(
-      currentAccount?.address,
+      process.env.REACT_APP_PUBLIC_ADDRESS,
       api,
       azt_contract.CONTRACT_ABI,
       azt_contract.CONTRACT_ADDRESS,
@@ -184,10 +184,8 @@ export default function FaucetPage({ api }) {
 
     setWalMintingCap(walMintingCap);
 
-    if (!api) return setInwTotalSupply(0);
-
     let result1 = await execContractQuery(
-      currentAccount?.address,
+      process.env.REACT_APP_PUBLIC_ADDRESS,
       api,
       azt_contract.CONTRACT_ABI,
       azt_contract.CONTRACT_ADDRESS,
@@ -201,7 +199,7 @@ export default function FaucetPage({ api }) {
     const availableMint = ((result - result1) / 10 ** 12).toFixed(4);
 
     setAvailableMint(availableMint);
-  }, [api, currentAccount]);
+  }, [api]);
 
   const [inwMintingFee, setInwMintingFee] = useState(0);
 
@@ -243,10 +241,10 @@ export default function FaucetPage({ api }) {
     getInwTotalMinted();
 
     const getInwMintingFee = async () => {
-      if (!currentAccount) return setInwMintingFee(1);
+      if (!api) return setInwMintingFee(1);
 
       let result = await execContractQuery(
-        currentAccount?.address,
+        process.env.REACT_APP_PUBLIC_ADDRESS,
         api,
         azt_contract.CONTRACT_ABI,
         azt_contract.CONTRACT_ADDRESS,

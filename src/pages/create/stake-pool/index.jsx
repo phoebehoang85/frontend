@@ -38,8 +38,8 @@ export default function CreateStakePoolPage({ api }) {
   const [faucetTokensList, setFaucetTokensList] = useState([]);
 
   const [selectedContractAddr, setSelectedContractAddr] = useState("");
-  const [duration, setDuration] = useState(0);
-  const [apy, setApy] = useState(0);
+  const [duration, setDuration] = useState("");
+  const [apy, setApy] = useState("");
   const [startTime, setStartTime] = useState(new Date());
 
   const [tokenBalance, setTokenBalance] = useState(0);
@@ -307,13 +307,14 @@ export default function CreateStakePoolPage({ api }) {
               <IWInput
                 onChange={({ target }) => setSelectedContractAddr(target.value)}
                 value={selectedContractAddr}
-                placeholder="Address to check"
+                placeholder="Contract Address"
                 label="or enter token contract address"
               />
             </Box>
 
             <Box w="full">
               <IWInput
+                placeholder="0"
                 type="number"
                 value={duration}
                 label="Pool Length (days)"
@@ -359,7 +360,7 @@ export default function CreateStakePoolPage({ api }) {
             <Box w="full">
               <IWInput
                 type="number"
-                placeholder="0%"
+                placeholder="0"
                 label="Annual Percentage Yield (APR) %"
                 value={apy}
                 onChange={({ target }) => setApy(target.value)}
