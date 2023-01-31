@@ -648,7 +648,7 @@ const MyStakeStakingPoolInfo = ({
                   value={amount}
                   onChange={({ target }) => setAmount(target.value)}
                   type="number"
-                  placeholder="Enter amount to stake or unstake"
+                  placeholder="Enter amount to add or remove"
                   inputRightElementIcon={
                     <Heading as="h5" size="h5">
                       {tokenSymbol}
