@@ -1,4 +1,3 @@
-import { mode } from "@chakra-ui/theme-tools";
 export const badgeStyles = {
   components: {
     Badge: {
@@ -14,17 +13,11 @@ export const badgeStyles = {
           borderRadius: "16px",
         }),
         brand: (props) => ({
-          bg: mode("brand.500", "brand.400")(props),
+          bg: "brand.500",
           color: "white",
-          _focus: {
-            bg: mode("brand.500", "brand.400")(props),
-          },
-          _active: {
-            bg: mode("brand.500", "brand.400")(props),
-          },
-          _hover: {
-            bg: mode("brand.600", "brand.400")(props),
-          },
+          _focus: { bg: "brand.500" },
+          _active: { bg: "brand.500" },
+          _hover: { bg: "brand.600" },
         }),
       },
     },

@@ -1,4 +1,4 @@
-// import { mode } from "@chakra-ui/theme-tools";
+//
 
 export const CardComponent = {
   components: {
@@ -9,7 +9,6 @@ export const CardComponent = {
         py: { base: "20px" },
         borderRadius: "10px",
         border: "1px solid #E3DFF3",
-        // bg: mode("#ffffff", "navy.800")(props),
       }),
       variants: {
         outline: () => ({}),

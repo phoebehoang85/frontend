@@ -1,4 +1,3 @@
-import { mode } from "@chakra-ui/theme-tools";
 export const sliderStyles = {
   components: {
     RangeSlider: {
@@ -14,7 +13,7 @@ export const sliderStyles = {
       variants: {
         main: (props) => ({
           thumb: {
-            bg: mode("brand.500", "brand.400")(props),
+            bg: "brand.500",
           },
         }),
       },
