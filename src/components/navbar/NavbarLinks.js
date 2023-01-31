@@ -71,6 +71,7 @@ export default function NavbarLinks(props) {
                 fontWeight="600"
                 bg="transparent"
                 textDecoration="none"
+                _focus={{ borderWidth: "0px" }}
                 _hover={{ textDecoration: "none", bg: "bg.1" }}
                 onClick={() => setCurrentAnchor(href)}
               >
@@ -96,6 +97,7 @@ export default function NavbarLinks(props) {
                 fontWeight="600"
                 bg="transparent"
                 textDecoration="none"
+                _focus={{ borderWidth: "0px" }}
                 _hover={{ textDecoration: "none", bg: "bg.1" }}
                 onClick={() => setCurrentAnchor("/my-pools")}
               >

@@ -1,4 +1,7 @@
 export const globalStyles = {
+  useSystemColorMode: false,
+  initialColorMode: "light",
+
   styles: {
     global: (props) => ({
       "*": {
