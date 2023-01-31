@@ -55,6 +55,10 @@ export default function FarmDetailPage() {
   const currMode = location?.state?.mode;
   const { state } = useLocation();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const cardData = {
     cardHeaderList: [
       {
@@ -1095,7 +1099,10 @@ const PoolInfo = ({
             },
             {
               title: "Multiplier",
-              content: (multiplier / 10 ** 12).toFixed(2),
+              content:
+                mode === "TOKEN_FARM"
+                  ? (multiplier / 10 ** 18).toFixed(2)
+                  : (multiplier / 10 ** 12).toFixed(2),
             },
             {
               title: "Start Date",

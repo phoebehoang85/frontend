@@ -46,6 +46,10 @@ export default function PoolDetailPage({ api }) {
 
   const { state } = useLocation();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const cardData = {
     cardHeaderList: [
       {

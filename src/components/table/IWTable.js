@@ -37,7 +37,11 @@ export function IWTable({
     if (isDisableRowClick) return;
 
     if (customURLRowClick) {
-      // do something on redirect
+      history.push({
+        state: { ...itemObj, mode },
+        pathname: `${customURLRowClick}/${itemObj?.poolContract}`,
+      });
+
       return;
     }
 

@@ -391,7 +391,11 @@ export default function CreateStakePoolPage({ api }) {
         title="My Staking Pools"
         description=""
       >
-        <IWTable {...tableData} />
+        <IWTable
+          {...tableData}
+          mode="STAKING_POOL"
+          customURLRowClick="/my-pools"
+        />
       </SectionContainer>
     </>
   );

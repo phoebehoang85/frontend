@@ -498,10 +498,14 @@ export default function CreateTokenLPPage({ api }) {
 
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
-        title="My Yield Farms Pools"
+        title="My Yield Farm Pools"
         description=""
       >
-        <IWTable {...tableData} mode="TOKEN_FARM" />
+        <IWTable
+          {...tableData}
+          mode="TOKEN_FARM"
+          customURLRowClick="/my-pools"
+        />
       </SectionContainer>
     </>
   );

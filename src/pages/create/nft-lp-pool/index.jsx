@@ -460,11 +460,10 @@ export default function CreateNFTLPPage({ api }) {
 
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
-        title="My ArtZero's Yield Farms Pools
-        "
+        title="My ArtZero's Yield Farm Pools"
         description=""
       >
-        <IWTable {...tableData} mode="NFT_FARM" />
+        <IWTable {...tableData} mode="NFT_FARM" customURLRowClick="/my-pools" />
       </SectionContainer>
     </>
   );

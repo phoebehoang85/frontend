@@ -332,7 +332,7 @@ const MyNFTPools = () => {
   return (
     <SectionContainer
       mt={{ base: "0px", xl: "20px" }}
-      title="My Yield Farms Pools"
+      title="My Yield Farm Pools"
       description={<span>Stake NFT or Tokens to earn more</span>}
     >
       <Stack
