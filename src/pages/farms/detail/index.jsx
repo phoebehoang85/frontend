@@ -606,7 +606,7 @@ const MyStakeRewardInfoNFT = ({
             buttonVariant="outline"
             buttonLabel="Claim Rewards"
             onClick={handleClaimNFTLP}
-            message="Claim Rewards costs 10 INW. Continue?"
+            message="Claim All Rewards. Continue?"
           />
         </CardThreeColumn>
       </Stack>
@@ -955,7 +955,7 @@ const MyStakeRewardInfoToken = ({
             buttonVariant="outline"
             buttonLabel="Claim Rewards"
             onClick={handleClaimTokenLP}
-            message="Claim Rewards costs 10 INW. Continue?"
+            message="Claim All Rewards. Continue?"
           />
           <IWCard mt="24px" w="full" variant="solid">
             <Flex

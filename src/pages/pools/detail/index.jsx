@@ -39,6 +39,7 @@ import { formatChainStringToNumber } from "utils";
 import { useCallback } from "react";
 import { toastMessages } from "constants";
 import { calcUnclaimedReward } from "utils";
+import { APICall } from "api/client";
 
 export default function PoolDetailPage({ api }) {
   const { currentAccount } = useSelector((s) => s.wallet);
@@ -296,10 +297,12 @@ const MyStakeRewardInfo = ({
       toast.error(toastMessages.NO_WALLET);
       return;
     }
-    if (stakeInfo?.unclaimedReward <= amount) {
-      toast.error("Not enough tokens!");
-      return;
-    }
+
+    // if (stakeInfo?.unclaimedReward < 0) {
+    //   toast.error("No reward tokens!");
+    //   return;
+    // }
+
     await execContractTx(
       currentAccount,
       api,
@@ -308,6 +311,8 @@ const MyStakeRewardInfo = ({
       0, //-> value
       "claimReward"
     );
+
+    await APICall.askBEupdate({ type: "pool", poolContract });
 
     await delay(2000).then(() => {
       fetchUserStakeInfo();
@@ -486,7 +491,7 @@ const MyStakeRewardInfo = ({
           buttonVariant="outline"
           buttonLabel="Claim Rewards"
           onClick={handleClaimRewards}
-          message="Claim Rewards costs 10 INW. Continue?"
+          message="Claim All Rewards. Continue?"
         />
 
         <IWCard mt="24px" w="full" variant="solid">

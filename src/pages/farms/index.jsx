@@ -228,13 +228,13 @@ export default function FarmsPage() {
   const tableDataToken = {
     tableHeader: [
       {
-        name: "tokenName",
+        name: "lptokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Stake",
       },
       {
-        name: "lptokenSymbol",
+        name: "tokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Earn",
