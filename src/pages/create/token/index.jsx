@@ -25,10 +25,11 @@ export default function CreateTokenPage({ api }) {
   const [tokenName, setTokenName] = useState("");
   const [mintAddress, setMintAddress] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("");
-  const [totalSupply, setTotalSupply] = useState('');
+  const [totalSupply, setTotalSupply] = useState("");
 
   const [createTokenFee, setCreateToken] = useState(0);
   const [tokenListData, setTokenListData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchCreateTokenFee = async () => {
@@ -50,35 +51,47 @@ export default function CreateTokenPage({ api }) {
   }, [currentAccount]);
 
   useEffect(() => {
+    let isUnmounted = false;
+
     const fetchDataTable = async () => {
-      let ret = [];
+      setLoading(true);
 
-      const result = await execContractQuery(
-        currentAccount?.address,
-        "api",
-        core_contract.CONTRACT_ABI,
-        core_contract.CONTRACT_ADDRESS,
-        0,
-        "tokenManagerTrait::getTokenCount"
-      );
+      try {
+        let ret = [];
 
-      const tokenCount = result.toHuman();
-
-      for (let index = tokenCount; index > 0; index--) {
-        const info = await execContractQuery(
+        const result = await execContractQuery(
           currentAccount?.address,
           "api",
           core_contract.CONTRACT_ABI,
           core_contract.CONTRACT_ADDRESS,
           0,
-          "tokenManagerTrait::getTokenInfo",
-          index
+          "tokenManagerTrait::getTokenCount"
         );
-        if (info) {
-          ret.push(info.toHuman());
+
+        const tokenCount = result.toHuman();
+
+        for (let index = tokenCount; index > 0; index--) {
+          const info = await execContractQuery(
+            currentAccount?.address,
+            "api",
+            core_contract.CONTRACT_ABI,
+            core_contract.CONTRACT_ADDRESS,
+            0,
+            "tokenManagerTrait::getTokenInfo",
+            index
+          );
+          if (info) {
+            ret.push(info.toHuman());
+          }
         }
+        if (isUnmounted) return;
+
+        setTokenListData(ret);
+        setLoading(false);
+      } catch (error) {
+        console.log("error", error.message);
+        setLoading(false);
       }
-      setTokenListData(ret);
     };
 
     fetchDataTable();
@@ -291,7 +304,7 @@ export default function CreateTokenPage({ api }) {
         title="Recent Tokens"
         description={`do exercitation ut id consectetur.`}
       >
-        <IWTable {...tableData} />
+        <IWTable {...tableData} isDisableRowClick={true} loading={loading}/>
       </SectionContainer>
     </>
   );

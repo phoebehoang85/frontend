@@ -22,10 +22,30 @@ import { formatNumDynDecimal } from "utils";
 import ImageCloudFlare from "components/image-cf/ImageCF";
 import { addressShortener } from "utils";
 
-export function IWTable({ tableHeader, tableBody, mode, loading }) {
+export function IWTable({
+  tableHeader,
+  tableBody,
+  mode,
+  loading,
+  isDisableRowClick = false,
+  customURLRowClick = "",
+}) {
   const history = useHistory();
   const location = useLocation();
 
+  function onClickRowHandler(itemObj) {
+    if (isDisableRowClick) return;
+
+    if (customURLRowClick) {
+      // do something on redirect
+      return;
+    }
+
+    history.push({
+      state: { ...itemObj, mode },
+      pathname: `${location.pathname}/${itemObj?.poolContract}`,
+    });
+  }
   return (
     <TableContainer
       w="full"
@@ -96,12 +116,7 @@ export function IWTable({ tableHeader, tableBody, mode, loading }) {
                     h="60px"
                     cursor="pointer"
                     _hover={{ bg: "bg.1" }}
-                    onClick={() =>
-                      history.push({
-                        state: { ...itemObj, mode },
-                        pathname: `${location.pathname}/${itemObj?.poolContract}`,
-                      })
-                    }
+                    onClick={() => onClickRowHandler(itemObj)}
                   >
                     {tableHeader?.map((i, idx) => {
                       return (
