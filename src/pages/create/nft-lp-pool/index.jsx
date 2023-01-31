@@ -306,7 +306,7 @@ export default function CreateNFTLPPage({ api }) {
     <>
       <SectionContainer
         mt={{ base: "0px", xl: "20px" }}
-        title="Create ArtZero's NFT Yield Farms"
+        title="Create ArtZero's NFT Yield Farm"
         description={
           <span>
             NFT Stakers get rewards in selected token. The creation costs
@@ -453,7 +453,7 @@ export default function CreateNFTLPPage({ api }) {
           </SimpleGrid>
 
           <Button w="full" maxW={{ lg: "260px" }} onClick={createNFTLPHandler}>
-            Create NFT Yield Farms
+            Create NFT Yield Farm
           </Button>
         </VStack>
       </SectionContainer>

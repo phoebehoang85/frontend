@@ -112,6 +112,30 @@ export default function NavbarLinks(props) {
             setCurrentAnchor={setCurrentAnchor}
             currentAnchor={currentAnchor}
           />
+
+          <Flex
+            _hover={{ textDecoration: "none", bg: "bg.1" }}
+            p="6px 10px"
+            bg={"transparent"}
+            borderRadius="5px"
+            ml={{ base: "20px", md: "20px" }}
+          >
+            <Link
+              color={"text.1"}
+              fontWeight="600"
+              bg="transparent"
+              textDecoration="none"
+              _focus={{ borderWidth: "0px" }}
+              _hover={{ textDecoration: "none", bg: "bg.1" }}
+              onClick={() =>
+                window.open("https://docs.inkwhale.net/", "_blank")
+              }
+            >
+              <Text bg="transparent" fontSize="md">
+                Docs
+              </Text>
+            </Link>
+          </Flex>
         </Flex>
       </Show>
 

@@ -302,7 +302,7 @@ export default function CreateTokenPage({ api }) {
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
         title="Recent Tokens"
-        description={`do exercitation ut id consectetur.`}
+        description={``}
       >
         <IWTable {...tableData} isDisableRowClick={true} loading={loading}/>
       </SectionContainer>

@@ -185,9 +185,7 @@ export default function MyPoolDetailPage({ api }) {
             separator={<ChevronRightIcon color="gray.500" />}
           >
             <BreadcrumbItem color="text.1">
-              <BreadcrumbLink href="#/my-pools">
-                My Staking Pools
-              </BreadcrumbLink>
+              <BreadcrumbLink href="#/my-pools">My Pools</BreadcrumbLink>
             </BreadcrumbItem>
 
             <BreadcrumbItem color="text.2">
@@ -199,7 +197,16 @@ export default function MyPoolDetailPage({ api }) {
 
       <SectionContainer
         mt={{ base: "0px", xl: "20px" }}
-        title="Staking Pool Detail"
+        title={`${
+          state?.mode === "STAKING_POOL"
+            ? "Staking Pool Detail"
+            : state?.mode === "NFT_FARM"
+            ? "NFT Yield Farm"
+            : state?.mode === "TOKEN_FARM"
+            ? "Token Yield Farm"
+            : "Pools"
+        }`}
+        // "Staking Pool Detail"
       >
         {state?.mode === "STAKING_POOL" ? (
           <BannerCard cardData={cardData} mode={state?.mode} />
