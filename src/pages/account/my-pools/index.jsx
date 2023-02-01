@@ -21,7 +21,7 @@ export default function MyPoolsPage({ api }) {
 
     const fetchPoolsList = async () => {
       try {
-        const { status, ret } = await APICall.getStakingPoolsList();
+        const { status, ret } = await APICall.getPoolsList();
 
         if (status === "OK") {
           const poolsListFiltered = ret.filter(

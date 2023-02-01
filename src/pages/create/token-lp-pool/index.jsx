@@ -130,7 +130,7 @@ export default function CreateTokenLPPage({ api }) {
   useEffect(() => {
     let isUnmounted = false;
     const getFaucetTokensListData = async () => {
-      let { ret, status, message } = await APICall.getTokensList();
+      let { ret, status, message } = await APICall.getFaucetTokensList();
 
       if (status === "OK") {
         if (isUnmounted) return;
@@ -253,7 +253,7 @@ export default function CreateTokenLPPage({ api }) {
 
   const fetchMyTokenPoolsList = useCallback(
     async (isUnmounted) => {
-      const { status, ret } = await APICall.getTokenLPListByOwner({
+      const { status, ret } = await APICall.getUserTokenLP({
         owner: currentAccount?.address,
       });
 

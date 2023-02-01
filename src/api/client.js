@@ -1,5 +1,7 @@
 import axios from "axios";
 
+//const baseURL = "http://localhost:3412";
+
 const client = async (
   method,
   url,
@@ -32,107 +34,59 @@ const client = async (
 };
 
 export const APICall = {
-  // Get list of tokens
-  getTokensList: async ({ limit = 1000, offset = 0, sort = -1 }) => {
-    return await client("POST", "/getTokens", { limit, offset, sort });
+  getFaucetTokensList: async () => {
+    return await client("POST", "/getTokens", {});
   },
 
-  // Get list of staking pools
-  getStakingPoolsList: async ({
-    limit = 1000,
-    offset = 0,
-    sort = -1,
-    showZeroPool = true,
-  }) => {
-    return await client("POST", "/getPools", {
-      limit,
-      offset,
-      sort,
-      showZeroPool,
-    });
+  getPoolsList: async () => {
+    return await client("POST", "/getPools", {});
   },
 
-  // Get list of staking pools by owner
-  getStakingPoolsListByOwner: async ({ owner }) => {
-    return await client("POST", "/getPoolByOwner", {
-      owner,
-    });
-  },
-
-  // Get staking pool by address
-  getStakingPoolByAddress: async ({ poolContract }) => {
-    return await client("POST", "/getPools", {
-      poolContract,
-    });
-  },
-
-  //  Get list of NFT pools
-  getNFTLPList: async ({
-    limit = 1000,
-    offset = 0,
-    sort = -1,
-    showZeroPool = true,
-  }) => {
+  getNftLPList: async () => {
     const ret = await client("POST", "/getNFTPools", {
-      limit,
-      offset,
-      sort,
-      showZeroPool,
+      // sort: 1,
+      // limit: 5,
+      // offset: 5,
+      // showZeroPool: true,
     });
 
     return ret;
   },
 
-  // Get list of NFT pools by owner
-  getNFTPoolsListByOwner: async ({ owner }) => {
-    return await client("POST", "/getNFTPoolByOwner", {
-      owner,
-    });
-  },
-
-  // Get NFT pool by address
-  getNFTPoolByAddress: async ({ poolContract }) => {
-    return await client("POST", "/getNFTPoolByAddress", {
-      poolContract,
-    });
-  },
-
-  //  Get list of NFT pools
-  getTokenLPList: async ({
-    limit = 1000,
-    offset = 0,
-    sort = -1,
-    showZeroPool = true,
-  }) => {
+  getTokenLPList: async () => {
     const ret = await client("POST", "/getLPPools", {
-      limit,
-      offset,
-      sort,
-      showZeroPool,
+      // sort: 1,
+      // limit: 5,
+      // offset: 5,
+      // showZeroPool: true,
     });
 
     return ret;
   },
 
-  // Get list of NFT pools by owner
-  getTokenLPListByOwner: async ({ owner }) => {
-    return await client("POST", "/getLPPoolByOwner", {
+  getUserStakingPools: async ({ owner }) => {
+    const ret = await client("POST", "/getPoolByOwner", {
       owner,
     });
+
+    return ret;
   },
 
-  // Get NFT pool by address
-  getTokenLPByAddress: async ({ poolContract }) => {
-    return await client("POST", "/getLPPoolByAddress", {
-      poolContract,
+  getUserNFTLP: async ({ owner }) => {
+    const ret = await client("POST", "/getNFTPoolByOwner", {
+      owner,
     });
+
+    return ret;
   },
 
-  /*
-   * Request to update data for token/staking pool/lp pool/nft pool
-   * type: "token"|"pool"|"lp"|"nft"
-   * poolContract:"new" | address
-   */
+  getUserTokenLP: async ({ owner }) => {
+    const ret = await client("POST", "/getLPPoolByOwner", {
+      owner,
+    });
+
+    return ret;
+  },
 
   askBEupdate: async ({ type, poolContract }) => {
     const ret = await client("POST", "/update", { type, poolContract });

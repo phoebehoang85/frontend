@@ -86,7 +86,7 @@ export default function CreateStakePoolPage({ api }) {
   useEffect(() => {
     let isUnmounted = false;
     const getFaucetTokensListData = async () => {
-      let { ret, status, message } = await APICall.getTokensList();
+      let { ret, status, message } = await APICall.getFaucetTokensList();
 
       if (status === "OK") {
         if (isUnmounted) return;
@@ -196,7 +196,7 @@ export default function CreateStakePoolPage({ api }) {
 
   useEffect(() => {
     const fetchMyPools = async () => {
-      const { status, ret } = await APICall.getStakingPoolsListByOwner({
+      const { status, ret } = await APICall.getUserStakingPools({
         owner: currentAccount?.address,
       });
 

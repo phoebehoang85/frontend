@@ -94,7 +94,7 @@ export default function CreateNFTLPPage({ api }) {
   useEffect(() => {
     let isUnmounted = false;
     const getFaucetTokensListData = async () => {
-      let { ret, status, message } = await APICall.getTokensList();
+      let { ret, status, message } = await APICall.getFaucetTokensList();
 
       if (status === "OK") {
         if (isUnmounted) return;
@@ -240,7 +240,7 @@ export default function CreateNFTLPPage({ api }) {
 
   const fetchMyPoolsList = useCallback(
     async (isUnmounted) => {
-      const { status, ret } = await APICall.getNFTPoolsListByOwner({
+      const { status, ret } = await APICall.getUserNFTLP({
         owner: currentAccount?.address,
       });
 
