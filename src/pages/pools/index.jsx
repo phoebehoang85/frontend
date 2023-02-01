@@ -35,7 +35,7 @@ export default function PoolsPage({ api }) {
       setLoading(true);
 
       try {
-        const { status, ret } = await APICall.getPoolsList();
+        const { status, ret } = await APICall.getStakingPoolsList();
 
         if (status === "OK") {
           const poolsListAddMyStake = await Promise.all(

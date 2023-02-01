@@ -51,7 +51,7 @@ export default function FaucetPage({ api }) {
 
   useEffect(() => {
     const getFaucetTokensListData = async () => {
-      let { ret, status, message } = await APICall.getFaucetTokensList();
+      let { ret, status, message } = await APICall.getTokensList();
 
       if (status === "OK") {
         setFaucetTokensList(ret);
