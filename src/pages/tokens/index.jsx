@@ -73,7 +73,7 @@ export default function TokensPage() {
       0,
       "psp22Metadata::tokenSymbol"
     );
-    const tokenSymbol = queryResult1.toHuman();
+    const tokenSymbol = queryResult1.toHuman().Ok;
 
     setTokenInfo((prev) => {
       return { ...prev, title: tokenSymbol, content: balance };

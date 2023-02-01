@@ -49,7 +49,7 @@ export default function PoolsPage({ api }) {
                 "genericPoolContractTrait::getStakeInfo",
                 currentAccount?.address
               );
-              let stakeInfo = queryResult?.toHuman();
+              let stakeInfo = queryResult?.toHuman().Ok;
 
               if (stakeInfo) {
                 stakeInfo = {

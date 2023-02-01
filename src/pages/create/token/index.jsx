@@ -65,7 +65,7 @@ export default function CreateTokenPage({ api }) {
           "tokenManagerTrait::getTokenCount"
         );
 
-        const tokenCount = result.toHuman();
+        const tokenCount = result.toHuman().Ok;
 
         for (let index = tokenCount; index > 0; index--) {
           const info = await execContractQuery(
@@ -78,7 +78,7 @@ export default function CreateTokenPage({ api }) {
             index
           );
           if (info) {
-            ret.push(info.toHuman());
+            ret.push(info.toHuman().Ok);
           }
         }
         if (isUnmounted) return;

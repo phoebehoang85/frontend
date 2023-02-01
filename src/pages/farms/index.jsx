@@ -62,7 +62,7 @@ export default function FarmsPage() {
                 currentAccount?.address
               );
 
-              let stakeInfo = queryResult?.toHuman();
+              let stakeInfo = queryResult?.toHuman().Ok;
 
               if (stakeInfo) {
                 stakeInfo = {
@@ -114,7 +114,7 @@ export default function FarmsPage() {
                 currentAccount?.address
               );
 
-              let stakeInfo = queryResult?.toHuman();
+              let stakeInfo = queryResult?.toHuman().Ok;
 
               if (stakeInfo) {
                 stakeInfo = {

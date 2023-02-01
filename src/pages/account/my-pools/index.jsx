@@ -139,7 +139,7 @@ const MyNFTPools = () => {
                   currentAccount?.address
                 );
 
-                let stakeInfo = queryResult?.toHuman();
+                let stakeInfo = queryResult?.toHuman().Ok;
 
                 if (stakeInfo) {
                   stakeInfo = {
@@ -195,7 +195,7 @@ const MyNFTPools = () => {
                   currentAccount?.address
                 );
 
-                let stakeInfo = queryResult?.toHuman();
+                let stakeInfo = queryResult?.toHuman().Ok;
 
                 if (stakeInfo) {
                   stakeInfo = {
