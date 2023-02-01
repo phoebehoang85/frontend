@@ -27,16 +27,6 @@ export default function Navbar(props) {
     }
   };
 
-  const [scroll, setScroll] = useState(false);
-
-  const changeScroll = () => {
-    document.body.scrollTop > 52 || document.documentElement.scrollTop > 52
-      ? setScroll(true)
-      : setScroll(false);
-  };
-
-  window.addEventListener("scroll", changeScroll);
-
   return (
     <Box
       borderBottomWidth="1px"
@@ -56,7 +46,7 @@ export default function Navbar(props) {
       justifyContent={{ base: "space-between", xl: "center" }}
       bg="#fff"
       px={{ base: "20px", xl: "130px" }}
-      boxShadow={scroll ? "0px 10px 10px #F9F1FF50" : ""}
+      boxShadow="0px 10px 10px #F9F1FF50"
       transitionDelay="0s, 0s, 0s, 0s"
       transitionDuration=" 0.25s, 0.25s, 0.25s, 0s"
       transition-property="box-shadow, background-color, filter, border"

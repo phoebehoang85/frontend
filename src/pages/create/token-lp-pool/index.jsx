@@ -228,7 +228,7 @@ export default function CreateTokenLPPage({ api }) {
       currentAccount?.address,
       LPtokenContract,
       selectedContractAddr,
-      formatNumToBN(multiplier * 1000000),
+      formatNumToBN(multiplier, 6),
       duration * 24 * 60 * 60 * 1000,
       startTime.getTime()
     );

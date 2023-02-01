@@ -45,8 +45,8 @@ export function delay(sec) {
   return new Promise((res) => setTimeout(res, sec));
 }
 
-export const formatNumToBN = (number = 0) => {
-  return new BN(number * 10 ** 6).mul(new BN(10 ** 6)).toString();
+export const formatNumToBN = (number = 0, decimal = 12) => {
+  return new BN(number * 10 ** 6).mul(new BN(10 ** (decimal - 6))).toString();
 };
 
 export const formatNumDynDecimal = (num = 0, dec = 4) => {
