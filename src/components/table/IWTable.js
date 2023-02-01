@@ -93,21 +93,33 @@ export function IWTable({
               <Tr>
                 {tableHeader?.map((_, idx) => (
                   <Td p="0" key={idx}>
-                    <Skeleton height="60px" />
+                    <Skeleton
+                      startColor="#E8FDFF"
+                      endColor="#93F0F5"
+                      height="60px"
+                    />
                   </Td>
                 ))}
               </Tr>
               <Tr>
                 {tableHeader?.map((_, idx) => (
                   <Td p="0" key={idx}>
-                    <Skeleton height="60px" />
+                    <Skeleton
+                      startColor="#E8FDFF"
+                      endColor="#93F0F5"
+                      height="60px"
+                    />
                   </Td>
                 ))}
               </Tr>
               <Tr>
                 {tableHeader?.map((_, idx) => (
                   <Td p="0" key={idx}>
-                    <Skeleton height="60px" />
+                    <Skeleton
+                      startColor="#E8FDFF"
+                      endColor="#93F0F5"
+                      height="60px"
+                    />
                   </Td>
                 ))}
               </Tr>
