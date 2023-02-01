@@ -1,10 +1,13 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
 import walletReducer from "./slices/walletSlice";
+import myPoolsReducer from "./slices/myPoolsSlice";
+import allPoolsReducer from "./slices/allPoolsSlice";
 
 const rootReducer = combineReducers({
   wallet: walletReducer,
-  // posts: postsReducer,
+  myPools: myPoolsReducer,
+  allPools: allPoolsReducer,
 });
 
 const store = configureStore({

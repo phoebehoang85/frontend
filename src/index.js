@@ -26,13 +26,20 @@ import CreateTokenPage from "pages/create/token";
 import CreateStakePoolPage from "pages/create/stake-pool";
 import MyBalancePage from "pages/account/my-balance";
 import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
-// import { setCurrentApi } from "redux/slices/walletSlice";
 import { fetchUserBalance } from "redux/slices/walletSlice";
 import { initialApi } from "utils/contracts";
 import CreateNFTLPPage from "pages/create/nft-lp-pool";
 import CreateTokenLPPage from "pages/create/token-lp-pool";
 import MyPoolsPage from "pages/account/my-pools";
 import MyPoolDetailPage from "pages/account/my-pools/detail";
+import { delay } from "utils";
+import { fetchMyStakingPools } from "redux/slices/myPoolsSlice";
+import { fetchMyTokenPools } from "redux/slices/myPoolsSlice";
+import { fetchMyNFTPools } from "redux/slices/myPoolsSlice";
+import { fetchAllTokensList } from "redux/slices/allPoolsSlice";
+import { fetchAllStakingPools } from "redux/slices/allPoolsSlice";
+import { fetchAllNFTPools } from "redux/slices/allPoolsSlice";
+import { fetchAllTokenPools } from "redux/slices/allPoolsSlice";
 
 const providerUrl = process.env.REACT_APP_PROVIDER_URL;
 
@@ -40,6 +47,15 @@ const App = () => {
   const dispatch = useDispatch();
 
   const { currentAccount } = useSelector((s) => s.wallet);
+  const { myStakingPoolsList, myNFTPoolsList, myTokenPoolsList } = useSelector(
+    (s) => s.myPools
+  );
+  const {
+    allTokensList,
+    allStakingPoolsList,
+    allNFTPoolsList,
+    allTokenPoolsList,
+  } = useSelector((s) => s.allPools);
 
   const [api, setApi] = useState(null);
   const [, setLastChainBlock] = useState(null);
@@ -86,10 +102,43 @@ const App = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!currentAccount?.balance) {
-      currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
+    delay(1000);
+
+    if (!allNFTPoolsList) {
+      dispatch(fetchAllNFTPools({ currentAccount }));
     }
-  }, [api, currentAccount, dispatch]);
+
+    if (!allTokensList) {
+      dispatch(fetchAllTokensList({}));
+    }
+
+    if (!allStakingPoolsList) {
+      dispatch(fetchAllStakingPools({ currentAccount }));
+    }
+
+    if (!allTokenPoolsList) {
+      dispatch(fetchAllTokenPools({ currentAccount }));
+    }
+
+    if (!currentAccount?.address) return;
+
+    if (!myNFTPoolsList) {
+      dispatch(fetchMyNFTPools({ currentAccount }));
+    }
+
+    if (!myStakingPoolsList) {
+      dispatch(fetchMyStakingPools({ currentAccount }));
+    }
+
+    if (!myTokenPoolsList) {
+      dispatch(fetchMyTokenPools({ currentAccount }));
+    }
+
+    if (!currentAccount?.balance) {
+      dispatch(fetchUserBalance({ currentAccount, api }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api, currentAccount?.address]);
 
   return (
     <HashRouter>

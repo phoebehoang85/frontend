@@ -9,93 +9,48 @@ import {
   Stack,
   Switch,
 } from "@chakra-ui/react";
+import { delay } from "utils";
 import SectionContainer from "components/container/SectionContainer";
 import IWInput from "components/input/Input";
 
 import { IWTable } from "components/table/IWTable";
-import { APICall } from "api/client";
-import { useEffect, useState, useMemo } from "react";
-import { execContractQuery } from "utils/contracts";
-import { useSelector } from "react-redux";
-import pool_contract from "utils/contracts/pool_contract";
-import { formatChainStringToNumber } from "utils";
+import { useEffect } from "react";
+import { useState, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllStakingPools } from "redux/slices/allPoolsSlice";
 
 export default function PoolsPage({ api }) {
-  const { currentAccount } = useSelector((s) => s.wallet);
+  const dispatch = useDispatch();
 
-  const [poolsListData, setPoolsListData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { currentAccount } = useSelector((s) => s.wallet);
+  const { allStakingPoolsList } = useSelector((s) => s.allPools);
+
   const [showMyStakedPools, setShowMyStakedPools] = useState(false);
-  const [hideZeroRewardPools, setHideZeroRewardPools] = useState(false);
+
+  const [sortPools, setSortPools] = useState(-1);
+  const [hideZeroRewardPools, setHideZeroRewardPools] = useState(true);
 
   useEffect(() => {
-    let isUnmounted = false;
+    delay(500);
 
-    const fetchPoolsList = async () => {
-      setLoading(true);
-
-      try {
-        const { status, ret } = await APICall.getStakingPoolsList();
-
-        if (status === "OK") {
-          const poolsListAddMyStake = await Promise.all(
-            ret?.map(async (pool) => {
-              let queryResult = await execContractQuery(
-                currentAccount?.address,
-                api,
-                pool_contract.CONTRACT_ABI,
-                pool?.poolContract,
-                0,
-                "genericPoolContractTrait::getStakeInfo",
-                currentAccount?.address
-              );
-              let stakeInfo = queryResult?.toHuman();
-
-              if (stakeInfo) {
-                stakeInfo = {
-                  ...stakeInfo,
-                  lastRewardUpdate: formatChainStringToNumber(
-                    stakeInfo.lastRewardUpdate
-                  ),
-                  stakedValue: formatChainStringToNumber(stakeInfo.stakedValue),
-                  unclaimedReward: formatChainStringToNumber(
-                    stakeInfo.unclaimedReward
-                  ),
-                };
-              }
-
-              return { ...pool, stakeInfo };
-            })
-          );
-
-          if (isUnmounted) return;
-          setPoolsListData(poolsListAddMyStake);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.log("error", error.message);
-        setLoading(false);
-      }
-    };
-    fetchPoolsList();
-
-    return () => (isUnmounted = true);
-  }, [api, currentAccount?.address]);
+    dispatch(
+      fetchAllStakingPools({
+        sort: sortPools,
+        showZeroPool: hideZeroRewardPools,
+        currentAccount,
+      })
+    );
+  }, [currentAccount, dispatch, hideZeroRewardPools, sortPools]);
 
   const poolsListDataFiltered = useMemo(() => {
-    //TODO; add filter OR ? AND?
-
-    let ret = poolsListData;
+    let ret = allStakingPoolsList;
 
     if (showMyStakedPools) {
-      ret = poolsListData.filter((p) => p.stakeInfo);
+      ret = allStakingPoolsList.filter((p) => p.stakeInfo);
     }
 
-    if (hideZeroRewardPools) {
-      ret = poolsListData.filter((p) => p.rewardPool > 0);
-    }
     return ret;
-  }, [hideZeroRewardPools, poolsListData, showMyStakedPools]);
+  }, [allStakingPoolsList, showMyStakedPools]);
 
   const tableData = {
     tableHeader: [
@@ -199,7 +154,6 @@ export default function PoolsPage({ api }) {
             <FormControl maxW="200px" display="flex" alignItems="center">
               <Switch
                 id="zero-reward-pools"
-                isDisabled={!currentAccount?.address}
                 isChecked={hideZeroRewardPools}
                 onChange={() => setHideZeroRewardPools(!hideZeroRewardPools)}
               />
@@ -216,24 +170,30 @@ export default function PoolsPage({ api }) {
 
           <Box minW="155px" maxW="160px">
             <Select
-              cursor="pointer"
-              border="0px red dotted"
               id="token"
               fontSize="md"
               fontWeight="400"
               variant="unstyled"
+              defaultValue={-1}
+              cursor="pointer"
+              border="0px red dotted"
               placeholder="Sort by selection"
+              onChange={({ target }) => setSortPools(target.value)}
             >
-              {["Low to hight", "Low to hight", "Newest"].map((item, idx) => (
+              {[1, -1].map((item, idx) => (
                 <option key={idx} value={item}>
-                  {item}
+                  {item === 1
+                    ? "Low to hight"
+                    : item === -1
+                    ? "Hight to low"
+                    : ""}
                 </option>
               ))}
             </Select>
           </Box>
         </HStack>
 
-        <IWTable {...tableData} loading={loading} />
+        <IWTable {...tableData} />
       </Stack>
     </SectionContainer>
   );

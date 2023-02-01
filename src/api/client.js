@@ -97,7 +97,7 @@ export const APICall = {
     });
   },
 
-  //  Get list of NFT pools
+  //  Get list of Token pools
   getTokenLPList: async ({
     limit = 1000,
     offset = 0,
@@ -114,14 +114,14 @@ export const APICall = {
     return ret;
   },
 
-  // Get list of NFT pools by owner
+  // Get list of Token pools by owner
   getTokenLPListByOwner: async ({ owner }) => {
     return await client("POST", "/getLPPoolByOwner", {
       owner,
     });
   },
 
-  // Get NFT pool by address
+  // Get Token pool by address
   getTokenLPByAddress: async ({ poolContract }) => {
     return await client("POST", "/getLPPoolByAddress", {
       poolContract,
@@ -185,7 +185,7 @@ export const APICall = {
     return ret;
   },
 
-  getNftByIdFromArtZero: async ({ collection_address, token_id }) => {
+  getNFTByIdFromArtZero: async ({ collection_address, token_id }) => {
     const ret = await client(
       "POST",
       "/getNFTByID",

@@ -28,6 +28,7 @@ const inwContractAddress = azt_contract.CONTRACT_ADDRESS;
 
 export default function FaucetPage({ api }) {
   const { currentAccount } = useSelector((s) => s.wallet);
+  const { allTokensList, loading } = useSelector((s) => s.allPools);
 
   const dispatch = useDispatch();
 
@@ -35,33 +36,9 @@ export default function FaucetPage({ api }) {
   const azeroBalance = currentAccount?.balance?.azero ?? 0;
   const [selectedContractAddress, setSelectedContractAddress] = useState(null);
 
-  const [faucetTokensList, setFaucetTokensList] = useState([]);
-
-  // TODO: double checking booking data is correct
-  // eslint-disable-next-line no-unused-vars
-  const [walMaxCap, setWalMaxCap] = useState(0);
-  // eslint-disable-next-line no-unused-vars
-  const [walMintingCap, setWalMintingCap] = useState(0);
-  // eslint-disable-next-line no-unused-vars
-  const [walTotalMinted, setWalTotalMinted] = useState(0);
-
   const [inwTotalSupply, setInwTotalSupply] = useState(0);
   const [availableMint, setAvailableMint] = useState(0);
-  const [inwBuyAmount, setInwBuyAmount] = useState('');
-
-  useEffect(() => {
-    const getFaucetTokensListData = async () => {
-      let { ret, status, message } = await APICall.getTokensList();
-
-      if (status === "OK") {
-        setFaucetTokensList(ret);
-        return;
-      }
-
-      toast.error(`Get faucet tokens list failed. ${message}`);
-    };
-    getFaucetTokensListData();
-  }, [api, currentAccount, currentAccount?.address]);
+  const [inwBuyAmount, setInwBuyAmount] = useState("");
 
   const [accountInfo, setAccountInfo] = useState(null);
   // eslint-disable-next-line no-unused-vars
@@ -94,7 +71,7 @@ export default function FaucetPage({ api }) {
             currentAccount?.address
           );
 
-          const symbol = faucetTokensList.find(
+          const symbol = allTokensList.find(
             (item) => item.contractAddress === selectedContractAddress
           )?.symbol;
 
@@ -115,15 +92,13 @@ export default function FaucetPage({ api }) {
     };
 
     fetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     api,
     azeroBalance,
     currentAccount?.address,
-    faucetTokensList,
+    allTokensList,
     selectedContractAddress,
     inwBalance,
-    inwTotalSupply,
   ]);
 
   useEffect(() => {
@@ -168,7 +143,6 @@ export default function FaucetPage({ api }) {
   const getInwMintingCapAndTotalSupply = useCallback(async () => {
     if (!api) {
       setInwTotalSupply(0);
-      setWalMintingCap(0);
       return;
     }
 
@@ -180,9 +154,6 @@ export default function FaucetPage({ api }) {
       0,
       "tokenMintCapTrait::mintingCap"
     );
-    const walMintingCap = formatQueryResultToNumber(result);
-
-    setWalMintingCap(walMintingCap);
 
     let result1 = await execContractQuery(
       process.env.REACT_APP_PUBLIC_ADDRESS,
@@ -204,41 +175,7 @@ export default function FaucetPage({ api }) {
   const [inwMintingFee, setInwMintingFee] = useState(0);
 
   useEffect(() => {
-    const getInwMaxCap = async () => {
-      if (!currentAccount) return setWalMaxCap(0);
-
-      let result = await execContractQuery(
-        currentAccount?.address,
-        api,
-        azt_contract.CONTRACT_ABI,
-        azt_contract.CONTRACT_ADDRESS,
-        0,
-        "tokenMintCapTrait::cap"
-      );
-      const walMaxCap = formatQueryResultToNumber(result);
-
-      setWalMaxCap(walMaxCap);
-    };
-    getInwMaxCap();
-
     getInwMintingCapAndTotalSupply();
-
-    const getInwTotalMinted = async () => {
-      if (!currentAccount) return setWalTotalMinted(0);
-
-      let result = await execContractQuery(
-        currentAccount?.address,
-        api,
-        azt_contract.CONTRACT_ABI,
-        azt_contract.CONTRACT_ADDRESS,
-        0,
-        "tokenMintCapTrait::totalMinted"
-      );
-      const walTotalMinted = formatQueryResultToNumber(result);
-
-      setWalTotalMinted(walTotalMinted);
-    };
-    getInwTotalMinted();
 
     const getInwMintingFee = async () => {
       if (!api) return setInwMintingFee(1);
@@ -322,19 +259,6 @@ export default function FaucetPage({ api }) {
                 direction={{ base: "column", xl: "row" }}
                 align={{ base: "column", xl: "center" }}
               >
-                {/* {
-                  "_id": "63b44de4e1fde59c4e809c81",
-                  "name": "Azero Monkey",
-                  "symbol": "AZM",
-                  "decimal": 12,
-                  "contractAddress": "5E2NYJjLDU4wMnU9EUs6ujTqZkGLEZicQAeyYRq9EDgvPbsh",
-                  "creator": "5CHujJTu8KgKZ76yKYuYgdMbz7jj4XuALZZYf4mNnuFjCcvw",
-                  "mintTo": "5CHujJTu8KgKZ76yKYuYgdMbz7jj4XuALZZYf4mNnuFjCcvw",
-                  "totalSupply": 500000,
-                  "index": 49,
-                  "__v": 0
-                 } */}
-
                 <Select
                   // isDisabled={accountInfoLoading}
                   id="token"
@@ -343,7 +267,7 @@ export default function FaucetPage({ api }) {
                     setSelectedContractAddress(target.value)
                   }
                 >
-                  {faucetTokensList?.map((token, idx) => (
+                  {allTokensList?.map((token, idx) => (
                     <option key={idx} value={token.contractAddress}>
                       {token?.symbol} ({token?.name}) -{" "}
                       {addressShortener(token?.contractAddress)}

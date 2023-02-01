@@ -28,7 +28,7 @@ export default function TokensPage() {
   useEffect(() => {
     let isUnmounted = false;
     const getFaucetTokensListData = async () => {
-      let { ret, status, message } = await APICall.getTokensList();
+      let { ret, status, message } = await APICall.getTokensList({});
 
       if (status === "OK") {
         if (isUnmounted) return;

@@ -21,7 +21,7 @@ export default function MyPoolsPage({ api }) {
 
     const fetchPoolsList = async () => {
       try {
-        const { status, ret } = await APICall.getStakingPoolsList();
+        const { status, ret } = await APICall.getStakingPoolsList({});
 
         if (status === "OK") {
           const poolsListFiltered = ret.filter(
@@ -111,7 +111,7 @@ const MyNFTPools = () => {
 
     const fetchNftLPList = async () => {
       try {
-        const { status, ret } = await APICall.getNftLPList();
+        const { status, ret } = await APICall.getNFTLPList({});
 
         if (status === "OK") {
           const nftLPListAddNftInfo = await Promise.all(
@@ -177,7 +177,7 @@ const MyNFTPools = () => {
 
     const fetchTokenLPList = async () => {
       try {
-        const { status, ret } = await APICall.getTokenLPList();
+        const { status, ret } = await APICall.getTokenLPList({});
 
         if (status === "OK") {
           const tokenLPListAddNftInfo = await Promise.all(

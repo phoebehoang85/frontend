@@ -341,7 +341,7 @@ const MyStakeRewardInfoNFT = ({
 
           let stakedID = queryResult?.toHuman();
 
-          const { status, ret } = await APICall.getNftByIdFromArtZero({
+          const { status, ret } = await APICall.getNFTByIdFromArtZero({
             collection_address: nftInfo?.nftContractAddress,
             token_id: parseInt(stakedID.U64),
           });
@@ -1083,7 +1083,7 @@ const PoolInfo = ({
       {mode === "NFT_FARM" ? (
         <NFTBannerCard cardData={cardDataPoolInfo} nftInfo={nftInfo} />
       ) : null}
-      {console.log("multiplier", multiplier)}{" "}
+
       <Stack
         w="full"
         spacing="30px"
@@ -1124,7 +1124,7 @@ const PoolInfo = ({
             },
           ]}
         />
-        {console.log("mode", mode)}
+
         <Stack w="full" spacing="30px">
           {mode === "TOKEN_FARM" ? (
             <CardTwoColumn
