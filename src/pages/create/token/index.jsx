@@ -5,6 +5,7 @@ import { IWTable } from "components/table/IWTable";
 import { toastMessages } from "constants";
 
 import React, { useState, useEffect } from "react";
+import { useCallback } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserBalance } from "redux/slices/walletSlice";
@@ -50,12 +51,8 @@ export default function CreateTokenPage({ api }) {
     fetchCreateTokenFee();
   }, [currentAccount]);
 
-  useEffect(() => {
-    let isUnmounted = false;
-
-    const fetchDataTable = async () => {
-      setLoading(true);
-
+  const fetchDataTable = useCallback(
+    async (isUnmounted) => {
       try {
         let ret = [];
 
@@ -92,10 +89,17 @@ export default function CreateTokenPage({ api }) {
         console.log("error", error.message);
         setLoading(false);
       }
-    };
+    },
+    [currentAccount?.address]
+  );
 
-    fetchDataTable();
-  }, [currentAccount, currentAccount?.address]);
+  useEffect(() => {
+    let isUnmounted = false;
+
+    setLoading(true);
+
+    fetchDataTable(isUnmounted);
+  }, [currentAccount, fetchDataTable]);
 
   async function createNewToken() {
     if (!currentAccount) {
@@ -217,6 +221,7 @@ export default function CreateTokenPage({ api }) {
 
     tableBody: [...tokenListData],
   };
+
   return (
     <>
       <SectionContainer
@@ -304,7 +309,7 @@ export default function CreateTokenPage({ api }) {
         title="Recent Tokens"
         description={``}
       >
-        <IWTable {...tableData} isDisableRowClick={true} loading={loading}/>
+        <IWTable {...tableData} isDisableRowClick={true} loading={loading} />
       </SectionContainer>
     </>
   );

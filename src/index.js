@@ -45,6 +45,12 @@ const App = () => {
   const [, setLastChainBlock] = useState(null);
   const [, setLastBlockParent] = useState(null);
 
+  const uiColorMode = localStorage.getItem("chakra-ui-color-mode");
+
+  if (!uiColorMode || uiColorMode === "dark") {
+    localStorage.setItem("chakra-ui-color-mode", "light");
+  }
+
   useEffect(() => {
     const setupProvider = async () => {
       const provider = new WsProvider(providerUrl);

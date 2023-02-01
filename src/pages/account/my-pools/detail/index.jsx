@@ -10,6 +10,7 @@ import {
   Stack,
   Text,
   VStack,
+  Link,
 } from "@chakra-ui/react";
 import SectionContainer from "components/container/SectionContainer";
 import IWInput from "components/input/Input";
@@ -19,7 +20,7 @@ import ConfirmModal from "components/modal/ConfirmModal";
 import IWCardOneColumn from "components/card/CardOneColumn";
 import CardThreeColumn from "components/card/CardThreeColumn";
 import CardTwoColumn from "components/card/CardTwoColumn";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { addressShortener } from "utils";
 import { formatNumDynDecimal } from "utils";
 import { useSelector } from "react-redux";
@@ -354,6 +355,7 @@ const MyStakeStakingPoolInfo = ({
         content: `${LPtokenBalance || 0} ${lptokenSymbol}`,
       });
     }
+    
     return ret;
   }, [
     LPtokenBalance,

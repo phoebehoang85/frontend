@@ -48,6 +48,14 @@ export default function CreateNFTLPPage({ api }) {
 
   const [tokenBalance, setTokenBalance] = useState(0);
 
+  const selectedTokenDecimal = useMemo(() => {
+    const ret = faucetTokensList.find(
+      (token) => token?.contractAddress === selectedContractAddr
+    );
+    
+    return ret?.decimal ?? 0;
+  }, [faucetTokensList, selectedContractAddr]);
+
   const fetchTokenBalance = useCallback(async () => {
     if (!selectedContractAddr) return;
 
@@ -162,6 +170,12 @@ export default function CreateNFTLPPage({ api }) {
       return toast.error("Invalid address!");
     }
 
+    if (selectedTokenDecimal < 6) {
+      return toast.error(
+        "Invalid Token Decimal. Decimal of Reward token can not be less than 6 !"
+      );
+    }
+
     if (
       parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) <
       createTokenFee
@@ -202,7 +216,7 @@ export default function CreateNFTLPPage({ api }) {
       currentAccount?.address,
       selectedCollectionAddr,
       selectedContractAddr,
-      formatNumToBN(multiplier),
+      formatNumToBN(multiplier, selectedTokenDecimal),
       duration * 24 * 60 * 60 * 1000,
       startTime.getTime()
     );

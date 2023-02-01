@@ -53,10 +53,7 @@ export async function getEstimatedGas(
       error: "Could not fetching gas!",
     },
     {
-      success: {
-        duration: 500,
-        icon: "🔥",
-      },
+      success: { icon: "🔥" },
     }
   );
 
