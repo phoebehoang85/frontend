@@ -1,7 +1,5 @@
 import axios from "axios";
 
-//const baseURL = "http://localhost:3412";
-
 const client = async (
   method,
   url,
@@ -34,12 +32,24 @@ const client = async (
 };
 
 export const APICall = {
-  getFaucetTokensList: async () => {
-    return await client("POST", "/getTokens", {});
+  // Get list of tokens
+  getTokensList: async ({ limit = 1000, offset = 0, sort = -1 }) => {
+    return await client("POST", "/getTokens", { limit, offset, sort });
   },
 
-  getPoolsList: async () => {
-    return await client("POST", "/getPools", {});
+  // Get list of staking pools
+  getStakingPoolsList: async ({
+    limit = 1000,
+    offset = 0,
+    sort = -1,
+    showZeroPool = true,
+  }) => {
+    return await client("POST", "/getPools", {
+      limit,
+      offset,
+      sort,
+      showZeroPool,
+    });
   },
 
   // Get list of staking pools by owner
@@ -64,35 +74,30 @@ export const APICall = {
     showZeroPool = true,
   }) => {
     const ret = await client("POST", "/getNFTPools", {
-      // sort: 1,
-      // limit: 5,
-      // offset: 5,
-      // showZeroPool: true,
+      limit,
+      offset,
+      sort,
+      showZeroPool,
     });
 
     return ret;
   },
 
-  getTokenLPList: async () => {
-    const ret = await client("POST", "/getLPPools", {
-      // sort: 1,
-      // limit: 5,
-      // offset: 5,
-      // showZeroPool: true,
-    });
-
-    return ret;
-  },
-
-  getUserStakingPools: async ({ owner }) => {
-    const ret = await client("POST", "/getPoolByOwner", {
+  // Get list of NFT pools by owner
+  getNFTPoolsListByOwner: async ({ owner }) => {
+    return await client("POST", "/getNFTPoolByOwner", {
       owner,
     });
-
-    return ret;
   },
 
-  //  Get list of NFT pools
+  // Get NFT pool by address
+  getNFTPoolByAddress: async ({ poolContract }) => {
+    return await client("POST", "/getNFTPoolByAddress", {
+      poolContract,
+    });
+  },
+
+  //  Get list of Token pools
   getTokenLPList: async ({
     limit = 1000,
     offset = 0,
@@ -114,6 +119,7 @@ export const APICall = {
     return await client("POST", "/getLPPoolByOwner", {
       owner,
     });
+  },
 
   // Get Token pool by address
   getTokenLPByAddress: async ({ poolContract }) => {
@@ -121,6 +127,12 @@ export const APICall = {
       poolContract,
     });
   },
+
+  /*
+   * Request to update data for token/staking pool/lp pool/nft pool
+   * type: "token"|"pool"|"lp"|"nft"
+   * poolContract:"new" | address
+   */
 
   askBEupdate: async ({ type, poolContract }) => {
     const ret = await client("POST", "/update", { type, poolContract });
