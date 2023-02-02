@@ -33,6 +33,7 @@ import { fetchMyStakingPools } from "redux/slices/myPoolsSlice";
 
 export default function CreateStakePoolPage({ api }) {
   const dispatch = useDispatch();
+  
   const { currentAccount } = useSelector((s) => s.wallet);
   const { myStakingPoolsList, loading } = useSelector((s) => s.myPools);
 

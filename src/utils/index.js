@@ -146,3 +146,13 @@ export const calcUnclaimedRewardTokenLP = ({
 
   return result?.toFixed(tokenDecimal);
 };
+
+export function isPoolEnded(startTime = 0, duration = 0) {
+  const nowTime = Date.now();
+
+  if (nowTime >= startTime + duration * 1000) {
+    return true;
+  }
+
+  return false;
+}

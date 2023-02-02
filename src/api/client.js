@@ -61,7 +61,7 @@ export const APICall = {
 
   // Get staking pool by address
   getStakingPoolByAddress: async ({ poolContract }) => {
-    return await client("POST", "/getPools", {
+    return await client("POST", "/getPoolByAddress", {
       poolContract,
     });
   },
