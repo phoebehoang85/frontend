@@ -2,44 +2,23 @@ import { Stack } from "@chakra-ui/react";
 import SectionContainer from "components/container/SectionContainer";
 
 import { IWTable } from "components/table/IWTable";
-import { APICall } from "api/client";
-import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { formatChainStringToNumber } from "utils";
-import lp_pool_contract from "utils/contracts/lp_pool_contract";
-import { execContractQuery } from "utils/contracts";
-import nft_pool_contract from "utils/contracts/nft_pool_contract";
 import IWTabs from "components/tabs/IWTabs";
+import { useHistory } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function MyPoolsPage({ api }) {
+  const history = useHistory();
+
   const { currentAccount } = useSelector((s) => s.wallet);
 
-  const [poolsListData, setPoolsListData] = useState([]);
+  const { myStakingPoolsList } = useSelector((s) => s.myPools);
 
   useEffect(() => {
-    let isUnmounted = false;
-
-    const fetchPoolsList = async () => {
-      try {
-        const { status, ret } = await APICall.getStakingPoolsList({});
-
-        if (status === "OK") {
-          const poolsListFiltered = ret.filter(
-            (item) => item.owner === currentAccount?.address
-          );
-
-          if (isUnmounted) return;
-
-          setPoolsListData(poolsListFiltered);
-        }
-      } catch (error) {
-        console.log("error", error.message);
-      }
-    };
-    fetchPoolsList();
-
-    return () => (isUnmounted = true);
-  }, [api, currentAccount?.address]);
+    if (!currentAccount?.address) {
+      history.push("/faucet");
+    }
+  }, [currentAccount, history]);
 
   const tableData = {
     tableHeader: [
@@ -75,7 +54,7 @@ export default function MyPoolsPage({ api }) {
       },
     ],
 
-    tableBody: poolsListData,
+    tableBody: myStakingPoolsList,
   };
 
   return (
@@ -96,138 +75,14 @@ export default function MyPoolsPage({ api }) {
           <IWTable {...tableData} mode="STAKING_POOL" />
         </Stack>
       </SectionContainer>
-      <MyNFTPools />
+
+      <MyNFTAndTokenPoolsTab />
     </>
   );
 }
 
-const MyNFTPools = () => {
-  const { currentAccount } = useSelector((s) => s.wallet);
-  const [nftLPList, setNftLPList] = useState([]);
-  const [tokenLPList, setTokenLPList] = useState([]);
-
-  useEffect(() => {
-    let isUnmounted = false;
-
-    const fetchNftLPList = async () => {
-      try {
-        const { status, ret } = await APICall.getNFTLPList({});
-
-        if (status === "OK") {
-          const nftLPListAddNftInfo = await Promise.all(
-            ret
-              ?.filter((p) => p.owner === currentAccount?.address)
-              .map(async (nftLP) => {
-                // get collection info
-                const { status, ret } =
-                  await APICall.getCollectionByAddressFromArtZero({
-                    collection_address: nftLP?.NFTtokenContract,
-                  });
-
-                if (status === "OK") {
-                  nftLP = { ...nftLP, nftInfo: ret[0] };
-                }
-
-                // get stake info NFT LP Pool
-                let queryResult = await execContractQuery(
-                  currentAccount?.address,
-                  "api",
-                  nft_pool_contract.CONTRACT_ABI,
-                  nftLP?.poolContract,
-                  0,
-                  "genericPoolContractTrait::getStakeInfo",
-                  currentAccount?.address
-                );
-
-                let stakeInfo = queryResult?.toHuman();
-
-                if (stakeInfo) {
-                  stakeInfo = {
-                    ...stakeInfo,
-                    lastRewardUpdate: formatChainStringToNumber(
-                      stakeInfo.lastRewardUpdate
-                    ),
-                    stakedValue: formatChainStringToNumber(
-                      stakeInfo.stakedValue
-                    ),
-                    unclaimedReward: formatChainStringToNumber(
-                      stakeInfo.unclaimedReward
-                    ),
-                  };
-                }
-
-                return { ...nftLP, stakeInfo };
-              })
-          );
-
-          if (isUnmounted) return;
-          setNftLPList(nftLPListAddNftInfo);
-        }
-      } catch (error) {
-        console.log("error", error.message);
-      }
-    };
-    fetchNftLPList();
-
-    return () => (isUnmounted = true);
-  }, [currentAccount?.address]);
-
-  useEffect(() => {
-    let isUnmounted = false;
-
-    const fetchTokenLPList = async () => {
-      try {
-        const { status, ret } = await APICall.getTokenLPList({});
-
-        if (status === "OK") {
-          const tokenLPListAddNftInfo = await Promise.all(
-            ret
-              ?.filter((p) => p.owner === currentAccount?.address)
-              .map(async (tokenLP) => {
-                // get stake info
-                let queryResult = await execContractQuery(
-                  currentAccount?.address,
-                  "api",
-                  lp_pool_contract.CONTRACT_ABI,
-                  tokenLP?.poolContract,
-                  0,
-                  "genericPoolContractTrait::getStakeInfo",
-                  currentAccount?.address
-                );
-
-                let stakeInfo = queryResult?.toHuman();
-
-                if (stakeInfo) {
-                  stakeInfo = {
-                    ...stakeInfo,
-                    lastRewardUpdate: formatChainStringToNumber(
-                      stakeInfo.lastRewardUpdate
-                    ),
-                    stakedValue: formatChainStringToNumber(
-                      stakeInfo.stakedValue
-                    ),
-                    unclaimedReward: formatChainStringToNumber(
-                      stakeInfo.unclaimedReward
-                    ),
-                  };
-                }
-
-                return { ...tokenLP, stakeInfo };
-              })
-          );
-
-          if (isUnmounted) return;
-          setTokenLPList(tokenLPListAddNftInfo);
-          // setTokenLPList(ret);
-        }
-      } catch (error) {
-        console.log("error", error.message);
-      }
-    };
-    fetchTokenLPList();
-
-    return () => (isUnmounted = true);
-  }, [currentAccount?.address]);
+const MyNFTAndTokenPoolsTab = () => {
+  const { myNFTPoolsList, myTokenPoolsList } = useSelector((s) => s.myPools);
 
   const tableDataNFT = {
     tableHeader: [
@@ -269,7 +124,7 @@ const MyNFTPools = () => {
       },
     ],
 
-    tableBody: nftLPList,
+    tableBody: myNFTPoolsList,
   };
 
   const tableDataToken = {
@@ -313,7 +168,7 @@ const MyNFTPools = () => {
       },
     ],
 
-    tableBody: tokenLPList,
+    tableBody: myTokenPoolsList,
   };
 
   const tabsData = [

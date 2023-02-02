@@ -13,7 +13,14 @@ const initialState = {
 export const myPoolsSlice = createSlice({
   name: "myPools",
   initialState,
-  reducers: {},
+  reducers: {
+    logOutMyPools: (state) => {
+      state.loading = false;
+      state.myStakingPoolsList = null;
+      state.myNFTPoolsList = null;
+      state.myTokenPoolsList = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchMyStakingPools.pending, (state) => {
       state.loading = true;
@@ -41,7 +48,7 @@ export const myPoolsSlice = createSlice({
   },
 });
 
-// export const {} = myPoolsSlice.actions;
+export const { logOutMyPools } = myPoolsSlice.actions;
 
 export default myPoolsSlice.reducer;
 
