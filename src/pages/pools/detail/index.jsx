@@ -23,7 +23,7 @@ import { useLocation } from "react-router-dom";
 import { formatDataCellTable } from "components/table/IWTable";
 import { addressShortener } from "utils";
 import { formatNumDynDecimal } from "utils";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import psp22_contract from "utils/contracts/psp22_contract";
 import { formatQueryResultToNumber } from "utils";
@@ -39,11 +39,27 @@ import { formatChainStringToNumber } from "utils";
 import { useCallback } from "react";
 import { toastMessages } from "constants";
 import { calcUnclaimedReward } from "utils";
+import { APICall } from "api/client";
+import { isPoolEnded } from "utils";
+import { fetchAllStakingPools } from "redux/slices/allPoolsSlice";
+import { useMemo } from "react";
+import { fetchUserBalance } from "redux/slices/walletSlice";
 
 export default function PoolDetailPage({ api }) {
-  const { currentAccount } = useSelector((s) => s.wallet);
-
   const { state } = useLocation();
+
+  const { currentAccount } = useSelector((s) => s.wallet);
+  const { allStakingPoolsList } = useSelector((s) => s.allPools);
+
+  const currentPool = useMemo(() => {
+    return allStakingPoolsList?.find(
+      (p) => p?.poolContract === state?.poolContract
+    );
+  }, [allStakingPoolsList, state?.poolContract]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const cardData = {
     cardHeaderList: [
@@ -56,19 +72,19 @@ export default function PoolDetailPage({ api }) {
       {
         name: "totalStaked",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Total Value Locked: Total tokens staked into this pool`,
         label: "TVL",
       },
       {
         name: "apy",
-        hasTooltip: true,
-        tooltipContent: "Lorem lorem",
-        label: "APY",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "APR",
       },
       {
         name: "rewardPool",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
       },
       {
@@ -81,6 +97,8 @@ export default function PoolDetailPage({ api }) {
 
     cardValue: {
       ...state,
+      totalStaked: currentPool?.totalStaked,
+      rewardPool: currentPool?.rewardPool,
     },
   };
 
@@ -96,7 +114,13 @@ export default function PoolDetailPage({ api }) {
           Pool Info<Show above="md">rmation</Show>
         </span>
       ),
-      component: <PoolInfo {...state} />,
+      component: (
+        <PoolInfo
+          {...state}
+          rewardPool={currentPool?.rewardPool}
+          totalStaked={currentPool?.totalStaked}
+        />
+      ),
       isDisabled: false,
     },
   ];
@@ -198,7 +222,6 @@ export default function PoolDetailPage({ api }) {
 }
 
 const MyStakeRewardInfo = ({
-  variant = "staking-pool",
   tokenSymbol,
   address,
   balance,
@@ -206,14 +229,19 @@ const MyStakeRewardInfo = ({
   poolContract,
   tokenContract,
   rewardPool,
+  duration,
+  startTime,
+  ...rest
 }) => {
+  const dispatch = useDispatch();
+
   const { currentAccount, api } = useSelector((s) => s.wallet);
 
   const [unstakeFee, setUnstakeFee] = useState(0);
   const [stakeInfo, setStakeInfo] = useState(null);
   const [tokenBalance, setTokenBalance] = useState();
 
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState("");
 
   const fetchUserStakeInfo = useCallback(async () => {
     if (!currentAccount?.balance) return;
@@ -296,10 +324,12 @@ const MyStakeRewardInfo = ({
       toast.error(toastMessages.NO_WALLET);
       return;
     }
-    if (stakeInfo?.unclaimedReward <= amount) {
-      toast.error("Not enough tokens!");
-      return;
-    }
+
+    // if (stakeInfo?.unclaimedReward < 0) {
+    //   toast.error("No reward tokens!");
+    //   return;
+    // }
+
     await execContractTx(
       currentAccount,
       api,
@@ -309,7 +339,13 @@ const MyStakeRewardInfo = ({
       "claimReward"
     );
 
-    await delay(2000).then(() => {
+    await APICall.askBEupdate({ type: "pool", poolContract });
+
+    await delay(6000).then(() => {
+      if (currentAccount) {
+        dispatch(fetchAllStakingPools({ currentAccount }));
+        dispatch(fetchUserBalance({ currentAccount, api }));
+      }
       fetchUserStakeInfo();
       fetchTokenBalance();
     });
@@ -321,17 +357,22 @@ const MyStakeRewardInfo = ({
       return;
     }
 
+    if (isPoolEnded(startTime, duration)) {
+      toast.error("Pool is ended!");
+      return;
+    }
+
     if (!amount) {
       toast.error("Invalid Amount!");
       return;
     }
 
-    if (!rewardPool || parseInt(rewardPool) < 0) {
+    if (!rewardPool || parseInt(rewardPool) <= 0) {
       toast.error("There is no reward balance in this pool!");
       return;
     }
 
-    if (tokenBalance < amount) {
+    if (formatChainStringToNumber(tokenBalance) < amount) {
       toast.error("Not enough tokens!");
       return;
     }
@@ -353,7 +394,7 @@ const MyStakeRewardInfo = ({
 
     await delay(3000);
 
-    toast.success("Step 2: Process staking...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -365,18 +406,29 @@ const MyStakeRewardInfo = ({
       formatNumToBN(amount)
     );
 
-    // TODO: x2 check ask BE update is needed?
+    await APICall.askBEupdate({ type: "pool", poolContract });
 
-    await delay(2000).then(() => {
+    await delay(6000).then(() => {
+      if (currentAccount) {
+        dispatch(fetchAllStakingPools({ currentAccount }));
+        dispatch(fetchUserBalance({ currentAccount, api }));
+      }
       fetchUserStakeInfo();
       fetchTokenBalance();
-      setAmount(0);
+      setAmount("");
     });
   }
 
   async function handleUnstake() {
     if (!currentAccount) {
       toast.error(toastMessages.NO_WALLET);
+      return;
+    }
+
+    if (
+      parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) < unstakeFee
+    ) {
+      toast.error(`You don't have enough INW. Unstake costs ${unstakeFee} INW!`);
       return;
     }
 
@@ -408,7 +460,7 @@ const MyStakeRewardInfo = ({
 
     await delay(3000);
 
-    toast.success("Step 2: Process unstaking...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -420,12 +472,16 @@ const MyStakeRewardInfo = ({
       formatNumToBN(amount)
     );
 
-    // TODO: x2 check ask BE update is needed?
+    await APICall.askBEupdate({ type: "pool", poolContract });
 
-    await delay(2000).then(() => {
+    await delay(6000).then(() => {
+      if (currentAccount) {
+        dispatch(fetchAllStakingPools({ currentAccount }));
+        dispatch(fetchUserBalance({ currentAccount, api }));
+      }
       fetchUserStakeInfo();
       fetchTokenBalance();
-      setAmount(0);
+      setAmount("");
     });
   }
 
@@ -446,8 +502,12 @@ const MyStakeRewardInfo = ({
               : "No account selected",
           },
           {
-            title: "Account Balance",
+            title: "AZERO Balance",
             content: `${balance?.azero || 0} AZERO`,
+          },
+          {
+            title: "INW Balance",
+            content: `${balance?.inw || 0} INW`,
           },
           {
             title: `${tokenSymbol} Balance`,
@@ -486,7 +546,7 @@ const MyStakeRewardInfo = ({
           buttonVariant="outline"
           buttonLabel="Claim Rewards"
           onClick={handleClaimRewards}
-          message="Claim Rewards costs 10 WAL. Continue?"
+          message="Claim All Rewards. Continue?"
         />
 
         <IWCard mt="24px" w="full" variant="solid">
@@ -529,7 +589,7 @@ const MyStakeRewardInfo = ({
                 buttonVariant="primary"
                 buttonLabel="Unstake"
                 onClick={handleUnstake}
-                message="Unstake costs 10 WAL. Continue?"
+                message={`Unstake costs ${unstakeFee} INW. Continue?`}
               />
             </HStack>
           </Flex>
@@ -572,7 +632,7 @@ const PoolInfo = (props) => {
             title: "Start Date",
             content: `${new Date(startTime).toLocaleString("en-US")}`,
           },
-          { title: "Pool Length", content: duration / 86400 },
+          { title: "Pool Length (days)", content: duration / 86400 },
           {
             title: "Reward Pool",
             content: `${formatNumDynDecimal(rewardPool)} ${tokenSymbol}`,

@@ -5,8 +5,10 @@ import { IWTable } from "components/table/IWTable";
 import { toastMessages } from "constants";
 
 import React, { useState, useEffect } from "react";
+import { APICall } from "api/client";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchAllTokensList } from "redux/slices/allPoolsSlice";
 import { fetchUserBalance } from "redux/slices/walletSlice";
 import { delay } from "utils";
 import { isAddressValid } from "utils";
@@ -21,14 +23,14 @@ import psp22_contract from "utils/contracts/psp22_contract";
 export default function CreateTokenPage({ api }) {
   const dispatch = useDispatch();
   const { currentAccount } = useSelector((s) => s.wallet);
+  const { allTokensList, loading } = useSelector((s) => s.allPools);
 
   const [tokenName, setTokenName] = useState("");
   const [mintAddress, setMintAddress] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("");
-  const [totalSupply, setTotalSupply] = useState(0);
+  const [totalSupply, setTotalSupply] = useState("");
 
   const [createTokenFee, setCreateToken] = useState(0);
-  const [tokenListData, setTokenListData] = useState([]);
 
   useEffect(() => {
     const fetchCreateTokenFee = async () => {
@@ -49,41 +51,6 @@ export default function CreateTokenPage({ api }) {
     fetchCreateTokenFee();
   }, [currentAccount]);
 
-  useEffect(() => {
-    const fetchDataTable = async () => {
-      let ret = [];
-
-      const result = await execContractQuery(
-        currentAccount?.address,
-        "api",
-        core_contract.CONTRACT_ABI,
-        core_contract.CONTRACT_ADDRESS,
-        0,
-        "tokenManagerTrait::getTokenCount"
-      );
-
-      const tokenCount = result.toHuman();
-
-      for (let index = tokenCount; index > 0; index--) {
-        const info = await execContractQuery(
-          currentAccount?.address,
-          "api",
-          core_contract.CONTRACT_ABI,
-          core_contract.CONTRACT_ADDRESS,
-          0,
-          "tokenManagerTrait::getTokenInfo",
-          index
-        );
-        if (info) {
-          ret.push(info.toHuman());
-        }
-      }
-      setTokenListData(ret);
-    };
-
-    fetchDataTable();
-  }, [currentAccount, currentAccount?.address]);
-
   async function createNewToken() {
     if (!currentAccount) {
       toast.error(toastMessages.NO_WALLET);
@@ -99,9 +66,12 @@ export default function CreateTokenPage({ api }) {
       return toast.error("Invalid address!");
     }
 
-    if (parseInt(currentAccount?.balance?.wal?.replaceAll(",", "")) < createTokenFee) {
+    if (
+      parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) <
+      createTokenFee
+    ) {
       toast.error(
-        `You don't have enough WAL. Unstake costs ${createTokenFee} WAL`
+        `You don't have enough INW. Create Token costs ${createTokenFee} INW`
       );
       return;
     }
@@ -124,7 +94,7 @@ export default function CreateTokenPage({ api }) {
 
     await delay(3000);
 
-    toast.success("Step 2: Process unstaking...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -134,23 +104,34 @@ export default function CreateTokenPage({ api }) {
       0, //-> value
       "newToken",
       mintAddress,
-      totalSupply,
+      formatNumToBN(totalSupply),
       tokenName,
       tokenSymbol,
       12 // tokenDecimal
     );
 
+    await APICall.askBEupdate({ type: "token", poolContract: "new" });
+
     setTokenName("");
     setMintAddress("");
     setTokenSymbol("");
-    setTotalSupply(0);
+    setTotalSupply("");
 
-    toast.success("Please wait up to 10s for the data to be updated");
+    await delay(3000);
 
-    await delay(2000).then(() => {
-      currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
-      //   fetchTokenBalance();
-    });
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchAllTokensList({}));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   }
 
   const tableData = {
@@ -199,8 +180,9 @@ export default function CreateTokenPage({ api }) {
       },
     ],
 
-    tableBody: [...tokenListData],
+    tableBody: allTokensList,
   };
+
   return (
     <>
       <SectionContainer
@@ -212,7 +194,7 @@ export default function CreateTokenPage({ api }) {
             specific address. The creation requires
             <Text as="span" fontWeight="700" color="text.1">
               {" "}
-              {createTokenFee} WAL
+              {createTokenFee} INW
             </Text>
           </span>
         }
@@ -264,15 +246,15 @@ export default function CreateTokenPage({ api }) {
                 type="text"
                 value={totalSupply}
                 label="Total Supply"
-                placeholder="Total Supply"
+                placeholder="0"
                 onChange={({ target }) => setTotalSupply(target.value)}
               />
             </Box>
             <Box w={{ base: "full" }}>
               <IWInput
                 isDisabled={true}
-                value={`${currentAccount?.balance?.wal || 0} WAL`}
-                label="Your WAL Balance"
+                value={`${currentAccount?.balance?.inw || 0} INW`}
+                label="Your INW Balance"
               />
             </Box>
           </SimpleGrid>
@@ -286,9 +268,9 @@ export default function CreateTokenPage({ api }) {
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
         title="Recent Tokens"
-        description={`Fugiat quis do exercitation ut consequat id consectetur.`}
+        description={``}
       >
-        <IWTable {...tableData} />
+        <IWTable {...tableData} isDisableRowClick={true} loading={loading} />
       </SectionContainer>
     </>
   );

@@ -53,10 +53,7 @@ export async function getEstimatedGas(
       error: "Could not fetching gas!",
     },
     {
-      success: {
-        duration: 500,
-        icon: "🔥",
-      },
+      success: { icon: "🔥" },
     }
   );
 
@@ -103,6 +100,16 @@ export async function execContractTx(
   // NOTE: amount need to convert before passing in
   // const totalAmount = new BN(token_amount * 10 ** 6).mul(new BN(10 ** 6)).toString();
   console.log("execContractTx ", queryName);
+
+  const azeroBalance = await getAzeroBalanceOfAddress({
+    wsApi,
+    address: caller?.address,
+  });
+
+  if (azeroBalance < 0.005) {
+    toast.error("Account low balance! Please top up!");
+    return;
+  }
 
   const contract = new ContractPromise(wsApi, contractAbi, contractAddress);
 

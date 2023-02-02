@@ -30,10 +30,12 @@ import { delay } from "utils";
 import { formatNumToBN } from "utils";
 import azt_contract from "utils/contracts/azt_contract";
 import lp_pool_generator_contract from "utils/contracts/lp_pool_generator_contract";
+import { fetchMyTokenPools } from "redux/slices/myPoolsSlice";
 
 export default function CreateTokenLPPage({ api }) {
   const dispatch = useDispatch();
   const { currentAccount } = useSelector((s) => s.wallet);
+  const { myTokenPoolsList, loading } = useSelector((s) => s.myPools);
 
   const [createTokenFee, setCreateTokenFee] = useState(0);
 
@@ -42,8 +44,8 @@ export default function CreateTokenLPPage({ api }) {
 
   const [LPtokenContract, setLPTokenContract] = useState("");
 
-  const [duration, setDuration] = useState(0);
-  const [multiplier, setMultiplier] = useState(0);
+  const [duration, setDuration] = useState("");
+  const [multiplier, setMultiplier] = useState("");
   const [startTime, setStartTime] = useState(new Date());
 
   const [tokenBalance, setTokenBalance] = useState(0);
@@ -130,7 +132,7 @@ export default function CreateTokenLPPage({ api }) {
   useEffect(() => {
     let isUnmounted = false;
     const getFaucetTokensListData = async () => {
-      let { ret, status, message } = await APICall.getFaucetTokensList();
+      let { ret, status, message } = await APICall.getTokensList({});
 
       if (status === "OK") {
         if (isUnmounted) return;
@@ -189,11 +191,11 @@ export default function CreateTokenLPPage({ api }) {
     }
 
     if (
-      parseInt(currentAccount?.balance?.wal?.replaceAll(",", "")) <
+      parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) <
       createTokenFee
     ) {
       toast.error(
-        `You don't have enough WAL. Stake costs ${createTokenFee} WAL`
+        `You don't have enough INW. Stake costs ${createTokenFee} INW`
       );
       return;
     }
@@ -216,7 +218,7 @@ export default function CreateTokenLPPage({ api }) {
 
     await delay(3000);
 
-    toast.success("Step 2: Process unstaking...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -228,48 +230,38 @@ export default function CreateTokenLPPage({ api }) {
       currentAccount?.address,
       LPtokenContract,
       selectedContractAddr,
-      formatNumToBN(multiplier * 1000000),
+      formatNumToBN(multiplier, 6),
       duration * 24 * 60 * 60 * 1000,
       startTime.getTime()
     );
 
     await APICall.askBEupdate({ type: "lp", poolContract: "new" });
 
-    setMultiplier(0);
-    setDuration(0);
+    setMultiplier("");
+    setDuration("");
     setStartTime(new Date());
+    setSelectedContractAddr("");
+    setLPTokenContract("");
 
-    toast.success("Please wait up to 10s for the data to be updated");
+    await delay(3000);
 
-    await delay(5000).then(() => {
-      currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
-      fetchTokenBalance();
-      fetchLPTokenBalance();
-      fetchMyTokenPoolsList();
-    });
-  }
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchMyTokenPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
 
-  const [myTokenPoolList, setMyTokenPoolList] = useState([]);
-
-  const fetchMyTokenPoolsList = useCallback(
-    async (isUnmounted) => {
-      const { status, ret } = await APICall.getUserTokenLP({
-        owner: currentAccount?.address,
-      });
-
-      if (status === "OK") {
-        if (isUnmounted) return;
-        setMyTokenPoolList(ret);
+        fetchTokenBalance();
+        fetchLPTokenBalance();
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
       }
-    },
-    [currentAccount?.address]
-  );
-
-  useEffect(() => {
-    let isUnmounted;
-
-    fetchMyTokenPoolsList(isUnmounted);
-  }, [currentAccount?.address, fetchMyTokenPoolsList]);
+    );
+  }
 
   const tableData = {
     tableHeader: [
@@ -287,20 +279,20 @@ export default function CreateTokenLPPage({ api }) {
       },
       {
         name: "totalStaked",
-        hasTooltip: false,
-        tooltipContent: "",
+        hasTooltip: true,
+        tooltipContent: `Total Value Locked: Total tokens staked into this pool`,
         label: "TVL",
       },
       {
         name: "rewardPool",
-        hasTooltip: false,
-        tooltipContent: "",
+        hasTooltip: true,
+        tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
       },
       {
         name: "multiplier",
         hasTooltip: true,
-        tooltipContent: "",
+        tooltipContent: `Multiplier determines how many reward tokens will the staker receive per 1 token in 24 hours.`,
         label: "Multiplier",
       },
       {
@@ -311,20 +303,20 @@ export default function CreateTokenLPPage({ api }) {
       },
     ],
 
-    tableBody: [...myTokenPoolList],
+    tableBody: myTokenPoolsList,
   };
 
   return (
     <>
       <SectionContainer
         mt={{ base: "0px", xl: "20px" }}
-        title="Create Token Yield Farms"
+        title="Create Token Yield Farm"
         description={
           <span>
             Stakers get rewards in selected token. The creation costs
             <Text as="span" fontWeight="700" color="text.1">
               {" "}
-              {createTokenFee} WAL
+              {createTokenFee} INW
             </Text>
           </span>
         }
@@ -399,6 +391,7 @@ export default function CreateTokenLPPage({ api }) {
 
             <Box w="full">
               <IWInput
+                placeholder="0"
                 type="number"
                 value={duration}
                 label="Pool Length (days)"
@@ -436,8 +429,8 @@ export default function CreateTokenLPPage({ api }) {
             <Box w="full">
               <IWInput
                 isDisabled={true}
-                value={`${currentAccount?.balance?.wal || 0} WAL`}
-                label="Your WAL Balance"
+                value={`${currentAccount?.balance?.inw || 0} INW`}
+                label="Your INW Balance"
               />
             </Box>
 
@@ -490,17 +483,22 @@ export default function CreateTokenLPPage({ api }) {
             maxW={{ lg: "260px" }}
             onClick={createTokenLPHandler}
           >
-            Create Token Yield Farms
+            Create Token Yield Farm
           </Button>
         </VStack>
       </SectionContainer>
 
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
-        title="My Yield Farms Pools"
+        title="My Yield Farm Pools"
         description=""
       >
-        <IWTable {...tableData} />
+        <IWTable
+          {...tableData}
+          mode="TOKEN_FARM"
+          loading={loading}
+          customURLRowClick="/my-pools"
+        />
       </SectionContainer>
     </>
   );

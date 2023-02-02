@@ -45,8 +45,8 @@ export function delay(sec) {
   return new Promise((res) => setTimeout(res, sec));
 }
 
-export const formatNumToBN = (number = 0) => {
-  return new BN(number * 10 ** 6).mul(new BN(10 ** 6)).toString();
+export const formatNumToBN = (number = 0, decimal = 12) => {
+  return new BN(number * 10 ** 6).mul(new BN(10 ** (decimal - 6))).toString();
 };
 
 export const formatNumDynDecimal = (num = 0, dec = 4) => {
@@ -90,6 +90,7 @@ export const calcUnclaimedReward = ({
   stakedValue = 0,
   unclaimedReward = 0,
   apy = 0,
+  tokenDecimal = 12,
 }) => {
   const accumSecondTillNow = (new Date().getTime() - lastRewardUpdate) / 1000;
 
@@ -97,9 +98,11 @@ export const calcUnclaimedReward = ({
 
   const accumRewardTillNow = accumSecondTillNow * apyPerSecond * stakedValue;
 
-  const result = unclaimedReward / 10 ** 12 + accumRewardTillNow / 10 ** 12;
+  const result =
+    unclaimedReward / 10 ** tokenDecimal +
+    accumRewardTillNow / 10 ** tokenDecimal;
 
-  return result?.toFixed(12);
+  return result?.toFixed(tokenDecimal);
 };
 
 export const calcUnclaimedRewardNftLP = ({
@@ -107,7 +110,7 @@ export const calcUnclaimedRewardNftLP = ({
   stakedValue = 0,
   unclaimedReward = 0,
   multiplier = 1,
-  tokenDecimal = 0,
+  tokenDecimal = 12,
 }) => {
   const accumSecondTillNow = (new Date().getTime() - lastRewardUpdate) / 1000;
 
@@ -117,9 +120,10 @@ export const calcUnclaimedRewardNftLP = ({
     accumSecondTillNow * multiplierPerSecond * stakedValue;
 
   const result =
-    unclaimedReward / 10 ** 12 + accumRewardTillNow / 10 ** tokenDecimal;
+    unclaimedReward / 10 ** tokenDecimal +
+    accumRewardTillNow / 10 ** tokenDecimal;
 
-  return result?.toFixed(12);
+  return result?.toFixed(tokenDecimal);
 };
 
 export const calcUnclaimedRewardTokenLP = ({
@@ -127,7 +131,7 @@ export const calcUnclaimedRewardTokenLP = ({
   stakedValue = 0,
   unclaimedReward = 0,
   multiplier = 1,
-  tokenDecimal = 0,
+  tokenDecimal = 12,
 }) => {
   const accumSecondTillNow = (new Date().getTime() - lastRewardUpdate) / 1000;
   // WHY? / 1000000
@@ -137,7 +141,18 @@ export const calcUnclaimedRewardTokenLP = ({
     accumSecondTillNow * multiplierPerSecond * stakedValue;
 
   const result =
-    unclaimedReward / 10 ** 12 + accumRewardTillNow / 10 ** tokenDecimal;
+    unclaimedReward / 10 ** tokenDecimal +
+    accumRewardTillNow / 10 ** tokenDecimal;
 
-  return result?.toFixed(12);
+  return result?.toFixed(tokenDecimal);
 };
+
+export function isPoolEnded(startTime = 0, duration = 0) {
+  const nowTime = Date.now();
+
+  if (nowTime >= startTime + duration * 1000) {
+    return true;
+  }
+
+  return false;
+}

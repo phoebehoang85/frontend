@@ -28,7 +28,7 @@ export default function TokensPage() {
   useEffect(() => {
     let isUnmounted = false;
     const getFaucetTokensListData = async () => {
-      let { ret, status, message } = await APICall.getFaucetTokensList();
+      let { ret, status, message } = await APICall.getTokensList({});
 
       if (status === "OK") {
         if (isUnmounted) return;
@@ -260,7 +260,7 @@ const TokensTabCheckBalance = ({
             title: "Azero Balance",
             content: `${balance?.azero || 0} AZERO`,
           },
-          { title: "WAL Balance", content: `${balance?.wal || 0} WAL` },
+          { title: "INW Balance", content: `${balance?.inw || 0} INW` },
           {
             title: !tokenInfo?.title ? "" : `${tokenInfo?.title} Balance`,
             content: `${tokenInfo?.content} ${tokenInfo?.title}`,
@@ -390,7 +390,7 @@ const TokensTabTransferToken = ({
             title: "Azero Balance",
             content: `${balance?.azero || 0} AZERO`,
           },
-          { title: "WAL Balance", content: `${balance?.wal || 0} WAL` },
+          { title: "INW Balance", content: `${balance?.inw || 0} INW` },
           {
             title: !tokenInfo?.title ? "" : `${tokenInfo?.title} Balance`,
             content: `${tokenInfo?.content} ${tokenInfo?.title}`,
@@ -449,7 +449,7 @@ const TokensTabBurnToken = ({
 }) => {
   const { currentAccount } = useSelector((s) => s.wallet);
 
-  const [burnAmount, setBurnAmount] = useState(0);
+  const [burnAmount, setBurnAmount] = useState("");
 
   async function burnTokenHandler() {
     if (!currentAccount) {
@@ -513,7 +513,7 @@ const TokensTabBurnToken = ({
             title: "Azero Balance",
             content: `${balance?.azero || 0} AZERO`,
           },
-          { title: "WAL Balance", content: `${balance?.wal || 0} WAL` },
+          { title: "INW Balance", content: `${balance?.inw || 0} INW` },
           {
             title: !tokenInfo?.title ? "" : `${tokenInfo?.title} Balance`,
             content: `${tokenInfo?.content} ${tokenInfo?.title}`,
@@ -534,6 +534,7 @@ const TokensTabBurnToken = ({
             align={{ base: "column", xl: "center" }}
           >
             <IWInput
+              type="number"
               value={burnAmount}
               onChange={({ target }) => setBurnAmount(target.value)}
               placeholder="Amount to burn"

@@ -9,114 +9,85 @@ import {
   Stack,
   Switch,
 } from "@chakra-ui/react";
+import { delay } from "utils";
 import SectionContainer from "components/container/SectionContainer";
 import IWInput from "components/input/Input";
 
 import { IWTable } from "components/table/IWTable";
-import { APICall } from "api/client";
-import { useEffect, useState, useMemo } from "react";
-import { execContractQuery } from "utils/contracts";
-import { useSelector } from "react-redux";
-import pool_contract from "utils/contracts/pool_contract";
-import { formatChainStringToNumber } from "utils";
+import { useEffect } from "react";
+import { useState, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllStakingPools } from "redux/slices/allPoolsSlice";
 
 export default function PoolsPage({ api }) {
-  const { currentAccount } = useSelector((s) => s.wallet);
+  const dispatch = useDispatch();
 
-  const [poolsListData, setPoolsListData] = useState([]);
+  const { currentAccount } = useSelector((s) => s.wallet);
+  const { allStakingPoolsList } = useSelector((s) => s.allPools);
+
+  const [showMyStakedPools, setShowMyStakedPools] = useState(false);
+
+  const [sortPools, setSortPools] = useState(-1);
+  const [hideZeroRewardPools, setHideZeroRewardPools] = useState(true);
 
   useEffect(() => {
-    let isUnmounted = false;
+    delay(500);
 
-    const fetchPoolsList = async () => {
-      try {
-        const { status, ret } = await APICall.getPoolsList();
-
-        if (status === "OK") {
-          const poolsListAddMyStake = await Promise.all(
-            ret?.map(async (pool) => {
-              let queryResult = await execContractQuery(
-                currentAccount?.address,
-                api,
-                pool_contract.CONTRACT_ABI,
-                pool?.poolContract,
-                0,
-                "genericPoolContractTrait::getStakeInfo",
-                currentAccount?.address
-              );
-
-              let stakeInfo = queryResult?.toHuman();
-
-              if (stakeInfo) {
-                stakeInfo = {
-                  ...stakeInfo,
-                  lastRewardUpdate: formatChainStringToNumber(
-                    stakeInfo.lastRewardUpdate
-                  ),
-                  stakedValue: formatChainStringToNumber(stakeInfo.stakedValue),
-                  unclaimedReward: formatChainStringToNumber(
-                    stakeInfo.unclaimedReward
-                  ),
-                };
-              }
-
-              return { ...pool, stakeInfo };
-            })
-          );
-
-          if (isUnmounted) return;
-          setPoolsListData(poolsListAddMyStake);
-        }
-      } catch (error) {
-        console.log("error", error.message);
-      }
-    };
-    fetchPoolsList();
-
-    return () => (isUnmounted = true);
-  }, [api, currentAccount?.address]);
+    dispatch(
+      fetchAllStakingPools({
+        sort: sortPools,
+        showZeroPool: hideZeroRewardPools,
+        currentAccount,
+      })
+    );
+  }, [currentAccount, dispatch, hideZeroRewardPools, sortPools]);
 
   const poolsListDataFiltered = useMemo(() => {
-    //TODO; add more filter here later
-    return poolsListData;
-  }, [poolsListData]);
+    let ret = allStakingPoolsList;
+
+    if (showMyStakedPools) {
+      ret = allStakingPoolsList.filter((p) => p.stakeInfo);
+    }
+
+    return ret;
+  }, [allStakingPoolsList, showMyStakedPools]);
 
   const tableData = {
     tableHeader: [
       {
         name: "tokenName",
         hasTooltip: false,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: "",
         label: "Stake & Earn",
       },
       {
         name: "totalStaked",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Total Value Locked: Total tokens staked into this pool`,
         label: "TVL",
       },
       {
         name: "apy",
         hasTooltip: false,
-        tooltipContent: "Lorem lorem",
-        label: "APY",
+        tooltipContent: "",
+        label: "APR",
       },
       {
         name: "rewardPool",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
       },
       {
         name: "startTime",
         hasTooltip: false,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: "",
         label: "Expired In",
       },
       {
         name: "stakeInfo",
         hasTooltip: false,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: "",
         label: "My Stake",
       },
     ],
@@ -169,14 +140,23 @@ export default function PoolsPage({ api }) {
             spacing={{ base: "0px", lg: "20px" }}
           >
             <FormControl maxW="135px" display="flex" alignItems="center">
-              <Switch id="my-stake" />
+              <Switch
+                id="my-stake"
+                isDisabled={!currentAccount?.address}
+                isChecked={showMyStakedPools}
+                onChange={() => setShowMyStakedPools(!showMyStakedPools)}
+              />
               <FormLabel htmlFor="my-stake" mb="0" ml="10px" fontWeight="400">
                 My Stake
               </FormLabel>
             </FormControl>
 
             <FormControl maxW="200px" display="flex" alignItems="center">
-              <Switch id="zero-reward-pools" />
+              <Switch
+                id="zero-reward-pools"
+                isChecked={hideZeroRewardPools}
+                onChange={() => setHideZeroRewardPools(!hideZeroRewardPools)}
+              />
               <FormLabel
                 mb="0"
                 ml="10px"
@@ -190,17 +170,23 @@ export default function PoolsPage({ api }) {
 
           <Box minW="155px" maxW="160px">
             <Select
-              cursor="pointer"
-              border="0px red dotted"
               id="token"
               fontSize="md"
               fontWeight="400"
               variant="unstyled"
+              defaultValue={-1}
+              cursor="pointer"
+              border="0px red dotted"
               placeholder="Sort by selection"
+              onChange={({ target }) => setSortPools(target.value)}
             >
-              {["Low to hight", "Low to hight", "Newest"].map((item, idx) => (
+              {[1, -1].map((item, idx) => (
                 <option key={idx} value={item}>
-                  {item}
+                  {item === 1
+                    ? "Low to hight"
+                    : item === -1
+                    ? "Hight to low"
+                    : ""}
                 </option>
               ))}
             </Select>

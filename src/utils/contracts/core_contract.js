@@ -1,8 +1,8 @@
 const core_contract = {
-  CONTRACT_ADDRESS: "5DmtzmF9k14WP6NWJxMUAMbQNrfjg9zWb6qBuhfqaf5CTNo8",
+  CONTRACT_ADDRESS: "5DLfvZZx3CtS9ki12HAHUes5aQfhTiMzbA3c5H4QymgMKGkC",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0x045a95cc95f872d11d1cf9e90653245b7ce7267052bfbf3aa9e2b9c7f21c4a49",
+		"hash": "0xe62c8d4a53e0ed21857ae3a05284a3eed555b189c482968619f3658bdf31a760",
 		"language": "ink! 3.4.0",
 		"compiler": "rustc 1.68.0-nightly"
 	  },
@@ -67,6 +67,48 @@ const core_contract = {
 			{
 			  "args": [
 				{
+				  "label": "psp22_hash",
+				  "type": {
+					"displayName": [
+					  "Hash"
+					],
+					"type": 4
+				  }
+				},
+				{
+				  "label": "wal_contract",
+				  "type": {
+					"displayName": [
+					  "AccountId"
+					],
+					"type": 0
+				  }
+				},
+				{
+				  "label": "creation_fee",
+				  "type": {
+					"displayName": [
+					  "Balance"
+					],
+					"type": 6
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "initialize",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "Result"
+				],
+				"type": 12
+			  },
+			  "selector": "0xf2f6dba3"
+			},
+			{
+			  "args": [
+				{
 				  "label": "mint_to",
 				  "type": {
 					"displayName": [
@@ -125,6 +167,50 @@ const core_contract = {
 			  "selector": "0x7d97ec7b"
 			},
 			{
+			  "args": [],
+			  "docs": [
+				" Leaves the contract without owner. It will not be possible to call",
+				" owner's functions anymore. Can only be called by the current owner.",
+				"",
+				" NOTE: Renouncing ownership will leave the contract without an owner,",
+				" thereby removing any functionality that is only available to the owner.",
+				"",
+				" On success a `OwnershipTransferred` event is emitted.",
+				"",
+				" # Errors",
+				"",
+				" Panics with `CallerIsNotOwner` error if caller is not owner"
+			  ],
+			  "label": "Ownable::renounce_ownership",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "ownable_external",
+				  "RenounceOwnershipOutput"
+				],
+				"type": 17
+			  },
+			  "selector": "0x5e228753"
+			},
+			{
+			  "args": [],
+			  "docs": [
+				" Returns the address of the current owner."
+			  ],
+			  "label": "Ownable::owner",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "ownable_external",
+				  "OwnerOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x4fa43c8c"
+			},
+			{
 			  "args": [
 				{
 				  "label": "new_owner",
@@ -157,135 +243,9 @@ const core_contract = {
 				  "ownable_external",
 				  "TransferOwnershipOutput"
 				],
-				"type": 16
+				"type": 17
 			  },
 			  "selector": "0x11f43efd"
-			},
-			{
-			  "args": [],
-			  "docs": [
-				" Returns the address of the current owner."
-			  ],
-			  "label": "Ownable::owner",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "ownable_external",
-				  "OwnerOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0x4fa43c8c"
-			},
-			{
-			  "args": [],
-			  "docs": [
-				" Leaves the contract without owner. It will not be possible to call",
-				" owner's functions anymore. Can only be called by the current owner.",
-				"",
-				" NOTE: Renouncing ownership will leave the contract without an owner,",
-				" thereby removing any functionality that is only available to the owner.",
-				"",
-				" On success a `OwnershipTransferred` event is emitted.",
-				"",
-				" # Errors",
-				"",
-				" Panics with `CallerIsNotOwner` error if caller is not owner"
-			  ],
-			  "label": "Ownable::renounce_ownership",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "ownable_external",
-				  "RenounceOwnershipOutput"
-				],
-				"type": 16
-			  },
-			  "selector": "0x5e228753"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "TokenManagerTrait::get_contract_hash",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "tokenmanagertrait_external",
-				  "GetContractHashOutput"
-				],
-				"type": 4
-			  },
-			  "selector": "0xf39b5876"
-			},
-			{
-			  "args": [
-				{
-				  "label": "wal_contract",
-				  "type": {
-					"displayName": [
-					  "tokenmanagertrait_external",
-					  "SetWalContractInput1"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "TokenManagerTrait::set_wal_contract",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "tokenmanagertrait_external",
-				  "SetWalContractOutput"
-				],
-				"type": 12
-			  },
-			  "selector": "0x929ea02e"
-			},
-			{
-			  "args": [
-				{
-				  "label": "index",
-				  "type": {
-					"displayName": [
-					  "tokenmanagertrait_external",
-					  "GetTokenInfoInput1"
-					],
-					"type": 5
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "TokenManagerTrait::get_token_info",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "tokenmanagertrait_external",
-				  "GetTokenInfoOutput"
-				],
-				"type": 18
-			  },
-			  "selector": "0x3453024b"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "TokenManagerTrait::get_wal_contract",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "tokenmanagertrait_external",
-				  "GetWalContractOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0x23887774"
 			},
 			{
 			  "args": [
@@ -312,21 +272,6 @@ const core_contract = {
 				"type": 12
 			  },
 			  "selector": "0xf38784b8"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "TokenManagerTrait::get_creation_fee",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "tokenmanagertrait_external",
-				  "GetCreationFeeOutput"
-				],
-				"type": 6
-			  },
-			  "selector": "0x034ef9b9"
 			},
 			{
 			  "args": [
@@ -396,6 +341,237 @@ const core_contract = {
 				"type": 12
 			  },
 			  "selector": "0x4e807631"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenManagerTrait::get_creation_fee",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "GetCreationFeeOutput"
+				],
+				"type": 6
+			  },
+			  "selector": "0x034ef9b9"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenManagerTrait::get_contract_hash",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "GetContractHashOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0xf39b5876"
+			},
+			{
+			  "args": [
+				{
+				  "label": "index",
+				  "type": {
+					"displayName": [
+					  "tokenmanagertrait_external",
+					  "GetTokenInfoInput1"
+					],
+					"type": 5
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "TokenManagerTrait::get_token_info",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "GetTokenInfoOutput"
+				],
+				"type": 18
+			  },
+			  "selector": "0x3453024b"
+			},
+			{
+			  "args": [
+				{
+				  "label": "wal_contract",
+				  "type": {
+					"displayName": [
+					  "tokenmanagertrait_external",
+					  "SetWalContractInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "TokenManagerTrait::set_wal_contract",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "SetWalContractOutput"
+				],
+				"type": 12
+			  },
+			  "selector": "0x929ea02e"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "TokenManagerTrait::get_wal_contract",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "tokenmanagertrait_external",
+				  "GetWalContractOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x23887774"
+			},
+			{
+			  "args": [
+				{
+				  "label": "psp22_contract_address",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferPsp22Input1"
+					],
+					"type": 0
+				  }
+				},
+				{
+				  "label": "amount",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferPsp22Input2"
+					],
+					"type": 6
+				  }
+				},
+				{
+				  "label": "receiver",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferPsp22Input3"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [
+				" This function allow contract owner withdraw PSP22 to an account in case there is any token sent to contract by mistake"
+			  ],
+			  "label": "AdminTrait::tranfer_psp22",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "admintrait_external",
+				  "TranferPsp22Output"
+				],
+				"type": 12
+			  },
+			  "selector": "0xd9aad284"
+			},
+			{
+			  "args": [
+				{
+				  "label": "nft_contract_address",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferNftInput1"
+					],
+					"type": 0
+				  }
+				},
+				{
+				  "label": "token_id",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferNftInput2"
+					],
+					"type": 19
+				  }
+				},
+				{
+				  "label": "receiver",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferNftInput3"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [
+				" This function allow contract owner withdraw NFT to an account in case there is any NFT sent to contract by mistake"
+			  ],
+			  "label": "AdminTrait::tranfer_nft",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "admintrait_external",
+				  "TranferNftOutput"
+				],
+				"type": 12
+			  },
+			  "selector": "0xed1e1dfa"
+			},
+			{
+			  "args": [
+				{
+				  "label": "value",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "WithdrawFeeInput1"
+					],
+					"type": 6
+				  }
+				},
+				{
+				  "label": "receiver",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "WithdrawFeeInput2"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [
+				" This function allows contract owner to withdraw contract balance to his account."
+			  ],
+			  "label": "AdminTrait::withdraw_fee",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "admintrait_external",
+				  "WithdrawFeeOutput"
+				],
+				"type": 12
+			  },
+			  "selector": "0x07573e99"
 			}
 		  ]
 		},
@@ -534,6 +710,41 @@ const core_contract = {
 				  }
 				},
 				"name": "manager"
+			  },
+			  {
+				"layout": {
+				  "struct": {
+					"fields": [
+					  {
+						"layout": {
+						  "enum": {
+							"dispatchKey": "0xd343691000000000000000000000000000000000000000000000000000000000",
+							"variants": {
+							  "0": {
+								"fields": [
+								  {
+									"layout": {
+									  "cell": {
+										"key": "0xd443691000000000000000000000000000000000000000000000000000000000",
+										"ty": 3
+									  }
+									},
+									"name": null
+								  }
+								]
+							  },
+							  "1": {
+								"fields": []
+							  }
+							}
+						  }
+						},
+						"name": "_reserved"
+					  }
+					]
+				  }
+				},
+				"name": "admin_data"
 			  }
 			]
 		  }
@@ -815,8 +1026,34 @@ const core_contract = {
 					  "name": "PSP34Error"
 					},
 					{
+					  "fields": [
+						{
+						  "type": 16,
+						  "typeName": "OwnableError"
+						}
+					  ],
 					  "index": 3,
+					  "name": "OwnableError"
+					},
+					{
+					  "index": 4,
 					  "name": "CannotTransfer"
+					},
+					{
+					  "index": 5,
+					  "name": "NotEnoughBalance"
+					},
+					{
+					  "index": 6,
+					  "name": "WithdrawFeeError"
+					},
+					{
+					  "index": 7,
+					  "name": "WithdrawNFTError"
+					},
+					{
+					  "index": 8,
+					  "name": "WithdrawPSP22Error"
 					}
 				  ]
 				}
@@ -944,48 +1181,6 @@ const core_contract = {
 				"variant": {
 				  "variants": [
 					{
-					  "fields": [
-						{
-						  "type": 3
-						}
-					  ],
-					  "index": 0,
-					  "name": "Ok"
-					},
-					{
-					  "fields": [
-						{
-						  "type": 17
-						}
-					  ],
-					  "index": 1,
-					  "name": "Err"
-					}
-				  ]
-				}
-			  },
-			  "params": [
-				{
-				  "name": "T",
-				  "type": 3
-				},
-				{
-				  "name": "E",
-				  "type": 17
-				}
-			  ],
-			  "path": [
-				"Result"
-			  ]
-			}
-		  },
-		  {
-			"id": 17,
-			"type": {
-			  "def": {
-				"variant": {
-				  "variants": [
-					{
 					  "index": 0,
 					  "name": "CallerIsNotOwner"
 					},
@@ -1002,6 +1197,48 @@ const core_contract = {
 				"errors",
 				"ownable",
 				"OwnableError"
+			  ]
+			}
+		  },
+		  {
+			"id": 17,
+			"type": {
+			  "def": {
+				"variant": {
+				  "variants": [
+					{
+					  "fields": [
+						{
+						  "type": 3
+						}
+					  ],
+					  "index": 0,
+					  "name": "Ok"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 16
+						}
+					  ],
+					  "index": 1,
+					  "name": "Err"
+					}
+				  ]
+				}
+			  },
+			  "params": [
+				{
+				  "name": "T",
+				  "type": 3
+				},
+				{
+				  "name": "E",
+				  "type": 16
+				}
+			  ],
+			  "path": [
+				"Result"
 			  ]
 			}
 		  },
@@ -1036,6 +1273,99 @@ const core_contract = {
 			  "path": [
 				"Option"
 			  ]
+			}
+		  },
+		  {
+			"id": 19,
+			"type": {
+			  "def": {
+				"variant": {
+				  "variants": [
+					{
+					  "fields": [
+						{
+						  "type": 2,
+						  "typeName": "u8"
+						}
+					  ],
+					  "index": 0,
+					  "name": "U8"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 20,
+						  "typeName": "u16"
+						}
+					  ],
+					  "index": 1,
+					  "name": "U16"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 21,
+						  "typeName": "u32"
+						}
+					  ],
+					  "index": 2,
+					  "name": "U32"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 5,
+						  "typeName": "u64"
+						}
+					  ],
+					  "index": 3,
+					  "name": "U64"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 6,
+						  "typeName": "u128"
+						}
+					  ],
+					  "index": 4,
+					  "name": "U128"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 9,
+						  "typeName": "Vec<u8>"
+						}
+					  ],
+					  "index": 5,
+					  "name": "Bytes"
+					}
+				  ]
+				}
+			  },
+			  "path": [
+				"openbrush_contracts",
+				"traits",
+				"types",
+				"Id"
+			  ]
+			}
+		  },
+		  {
+			"id": 20,
+			"type": {
+			  "def": {
+				"primitive": "u16"
+			  }
+			}
+		  },
+		  {
+			"id": 21,
+			"type": {
+			  "def": {
+				"primitive": "u32"
+			  }
 			}
 		  }
 		]

@@ -14,7 +14,6 @@ import azt_contract from "utils/contracts/azt_contract";
 import { formatQueryResultToNumber } from "utils";
 import { execContractQuery } from "utils/contracts";
 import { addressShortener } from "utils";
-import { APICall } from "api/client";
 import { isAddressValid } from "utils";
 import { toastMessages } from "constants";
 import { toast } from "react-hot-toast";
@@ -22,40 +21,23 @@ import { delay } from "utils";
 import { execContractTx } from "utils/contracts";
 import { formatNumToBN } from "utils";
 import { fetchUserBalance } from "redux/slices/walletSlice";
+import { formatNumDynDecimal } from "utils";
 
-const walContractAddress = azt_contract.CONTRACT_ADDRESS;
+const inwContractAddress = azt_contract.CONTRACT_ADDRESS;
 
 export default function FaucetPage({ api }) {
   const { currentAccount } = useSelector((s) => s.wallet);
+  const { allTokensList } = useSelector((s) => s.allPools);
 
   const dispatch = useDispatch();
 
-  const walBalance = currentAccount?.balance?.wal ?? 0;
+  const inwBalance = currentAccount?.balance?.inw ?? 0;
   const azeroBalance = currentAccount?.balance?.azero ?? 0;
   const [selectedContractAddress, setSelectedContractAddress] = useState(null);
 
-  const [faucetTokensList, setFaucetTokensList] = useState([]);
-
-  const [walMaxCap, setWalMaxCap] = useState(0);
-  const [walMintingCap, setWalMintingCap] = useState(0);
-  const [walTotalMinted, setWalTotalMinted] = useState(0);
-  const [walTotalSupply, setWalTotalSupply] = useState(0);
+  const [inwTotalSupply, setInwTotalSupply] = useState(0);
   const [availableMint, setAvailableMint] = useState(0);
-  const [walBuyAmount, setWalBuyAmount] = useState(0);
-
-  useEffect(() => {
-    const getFaucetTokensListData = async () => {
-      let { ret, status, message } = await APICall.getFaucetTokensList();
-
-      if (status === "OK") {
-        setFaucetTokensList(ret);
-        return;
-      }
-
-      toast.error(`Get faucet tokens list failed. ${message}`);
-    };
-    getFaucetTokensListData();
-  }, [api, currentAccount, currentAccount?.address]);
+  const [inwBuyAmount, setInwBuyAmount] = useState("");
 
   const [accountInfo, setAccountInfo] = useState(null);
   // eslint-disable-next-line no-unused-vars
@@ -73,7 +55,7 @@ export default function FaucetPage({ api }) {
             : addressShortener(currentAccount?.address),
         },
         { title: "Azero Balance", content: `${azeroBalance} AZERO` },
-        { title: "WAL Balance", content: `${walBalance} WAL` },
+        { title: "INW Balance", content: `${inwBalance} INW` },
       ];
 
       try {
@@ -88,7 +70,7 @@ export default function FaucetPage({ api }) {
             currentAccount?.address
           );
 
-          const symbol = faucetTokensList.find(
+          const symbol = allTokensList.find(
             (item) => item.contractAddress === selectedContractAddress
           )?.symbol;
 
@@ -109,15 +91,13 @@ export default function FaucetPage({ api }) {
     };
 
     fetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     api,
     azeroBalance,
     currentAccount?.address,
-    faucetTokensList,
+    allTokensList,
     selectedContractAddress,
-    walBalance,
-    walTotalSupply,
+    inwBalance,
   ]);
 
   useEffect(() => {
@@ -159,88 +139,48 @@ export default function FaucetPage({ api }) {
     });
   };
 
-  const getWalMintingCapAndTotalSupply = useCallback(async () => {
-    if (!currentAccount) {
-      setWalTotalSupply(0);
-      setWalMintingCap(0);
+  const getInwMintingCapAndTotalSupply = useCallback(async () => {
+    if (!api) {
+      setInwTotalSupply(0);
       return;
     }
 
     let result = await execContractQuery(
-      currentAccount?.address,
+      process.env.REACT_APP_PUBLIC_ADDRESS,
       api,
       azt_contract.CONTRACT_ABI,
       azt_contract.CONTRACT_ADDRESS,
       0,
       "tokenMintCapTrait::mintingCap"
     );
-    const walMintingCap = formatQueryResultToNumber(result);
-
-    setWalMintingCap(walMintingCap);
-
-    if (!api) return setWalTotalSupply(0);
 
     let result1 = await execContractQuery(
-      currentAccount?.address,
+      process.env.REACT_APP_PUBLIC_ADDRESS,
       api,
       azt_contract.CONTRACT_ABI,
       azt_contract.CONTRACT_ADDRESS,
       0,
       "psp22::totalSupply"
     );
-    const walTotalSupply = formatQueryResultToNumber(result1);
+    const inwTotalSupply = formatQueryResultToNumber(result1);
 
-    setWalTotalSupply(walTotalSupply);
+    setInwTotalSupply(inwTotalSupply);
 
     const availableMint = ((result - result1) / 10 ** 12).toFixed(4);
 
     setAvailableMint(availableMint);
-  }, [api, currentAccount?.address]);
+  }, [api]);
 
-  const [walMintingFee, setWalMintingFee] = useState(0);
+  const [inwMintingFee, setInwMintingFee] = useState(0);
 
   useEffect(() => {
-    const getWalMaxCap = async () => {
-      if (!currentAccount) return setWalMaxCap(0);
+    getInwMintingCapAndTotalSupply();
+
+    const getInwMintingFee = async () => {
+      if (!api) return setInwMintingFee(1);
 
       let result = await execContractQuery(
-        currentAccount?.address,
-        api,
-        azt_contract.CONTRACT_ABI,
-        azt_contract.CONTRACT_ADDRESS,
-        0,
-        "tokenMintCapTrait::cap"
-      );
-      const walMaxCap = formatQueryResultToNumber(result);
-
-      setWalMaxCap(walMaxCap);
-    };
-    getWalMaxCap();
-
-    getWalMintingCapAndTotalSupply();
-
-    const getWalTotalMinted = async () => {
-      if (!currentAccount) return setWalTotalMinted(0);
-
-      let result = await execContractQuery(
-        currentAccount?.address,
-        api,
-        azt_contract.CONTRACT_ABI,
-        azt_contract.CONTRACT_ADDRESS,
-        0,
-        "tokenMintCapTrait::totalMinted"
-      );
-      const walTotalMinted = formatQueryResultToNumber(result);
-
-      setWalTotalMinted(walTotalMinted);
-    };
-    getWalTotalMinted();
-
-    const getWalMintingFee = async () => {
-      if (!currentAccount) return setWalMintingFee(1);
-
-      let result = await execContractQuery(
-        currentAccount?.address,
+        process.env.REACT_APP_PUBLIC_ADDRESS,
         api,
         azt_contract.CONTRACT_ABI,
         azt_contract.CONTRACT_ADDRESS,
@@ -249,12 +189,12 @@ export default function FaucetPage({ api }) {
       );
       const mintingFee = formatQueryResultToNumber(result);
 
-      setWalMintingFee(mintingFee);
+      setInwMintingFee(mintingFee);
     };
-    getWalMintingFee();
-  }, [api, currentAccount, getWalMintingCapAndTotalSupply]);
+    getInwMintingFee();
+  }, [api, currentAccount, getInwMintingCapAndTotalSupply]);
 
-  const walPublicMintHandler = async () => {
+  const inwPublicMintHandler = async () => {
     if (!api) {
       toast.error(toastMessages.ERR_API_CONN);
       return;
@@ -270,15 +210,15 @@ export default function FaucetPage({ api }) {
       api,
       azt_contract.CONTRACT_ABI,
       azt_contract.CONTRACT_ADDRESS,
-      formatNumToBN(parseFloat(walMintingFee) * walBuyAmount), //-> value
+      formatNumToBN(parseFloat(inwMintingFee) * inwBuyAmount), //-> value
       "tokenMintCapTrait::publicMint",
-      formatNumToBN(walBuyAmount) // -> token_amount, <...args>
+      formatNumToBN(inwBuyAmount) // -> token_amount, <...args>
     );
 
     await delay(2000).then(() => {
-      getWalMintingCapAndTotalSupply();
+      getInwMintingCapAndTotalSupply();
 
-      setWalBuyAmount(0);
+      setInwBuyAmount(0);
       dispatch(fetchUserBalance({ currentAccount, api }));
     });
   };
@@ -295,9 +235,9 @@ export default function FaucetPage({ api }) {
             <Link
               isExternal
               color="text.1"
-              href="https://faucet.test.azero.dev"
+              href="https://faucet-smartnet.test.azero.dev"
             >
-              https://faucet.test.azero.dev
+              https://faucet-smartnet.test.azero.dev
             </Link>
           </span>
         }
@@ -318,19 +258,6 @@ export default function FaucetPage({ api }) {
                 direction={{ base: "column", xl: "row" }}
                 align={{ base: "column", xl: "center" }}
               >
-                {/* {
-                  "_id": "63b44de4e1fde59c4e809c81",
-                  "name": "Azero Monkey",
-                  "symbol": "AZM",
-                  "decimal": 12,
-                  "contractAddress": "5E2NYJjLDU4wMnU9EUs6ujTqZkGLEZicQAeyYRq9EDgvPbsh",
-                  "creator": "5CHujJTu8KgKZ76yKYuYgdMbz7jj4XuALZZYf4mNnuFjCcvw",
-                  "mintTo": "5CHujJTu8KgKZ76yKYuYgdMbz7jj4XuALZZYf4mNnuFjCcvw",
-                  "totalSupply": 500000,
-                  "index": 49,
-                  "__v": 0
-                 } */}
-
                 <Select
                   // isDisabled={accountInfoLoading}
                   id="token"
@@ -339,7 +266,7 @@ export default function FaucetPage({ api }) {
                     setSelectedContractAddress(target.value)
                   }
                 >
-                  {faucetTokensList?.map((token, idx) => (
+                  {allTokensList?.map((token, idx) => (
                     <option key={idx} value={token.contractAddress}>
                       {token?.symbol} ({token?.name}) -{" "}
                       {addressShortener(token?.contractAddress)}
@@ -362,13 +289,13 @@ export default function FaucetPage({ api }) {
 
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
-        title="WAL Tokens"
+        title="INW Tokens"
         description={
           <>
-            WAL tokens are used as transaction fee. 100M WAL tokens are
-            available at {walMintingFee}
-            <AzeroLogo w="14px" h="14px" ml="2px" mb="3px" /> per WAL. You can
-            trade WAL on PanoramaSwap in due time.
+            INW tokens are used as transaction fee. 100M INW tokens are
+            available at {inwMintingFee}
+            <AzeroLogo w="14px" h="14px" ml="2px" mb="3px" /> per INW. You can
+            trade INW on PanoramaSwap in due time.
           </>
         }
       >
@@ -384,14 +311,14 @@ export default function FaucetPage({ api }) {
               { title: "Total Name", content: "Ink Whale Token" },
               {
                 title: "Contract Address",
-                content: addressShortener(walContractAddress),
+                content: addressShortener(inwContractAddress),
               },
-              { title: "Total Supply", content: walTotalSupply },
-              { title: "Token Symbol", content: "WAL" },
+              { title: "Total Supply", content: inwTotalSupply },
+              { title: "Token Symbol", content: "INW" },
             ]}
           />
 
-          <IWCard w="full" variant="outline" title="Acquire WAL Tokens">
+          <IWCard w="full" variant="outline" title="Acquire INW Tokens">
             <IWCard mt="16px" w="full" variant="solid">
               <Stack
                 w="100%"
@@ -400,19 +327,19 @@ export default function FaucetPage({ api }) {
                 align={{ base: "column", xl: "center" }}
               >
                 <IWInput
-                  value={walBuyAmount}
-                  onChange={({ target }) => setWalBuyAmount(target.value)}
+                  value={inwBuyAmount}
+                  onChange={({ target }) => setInwBuyAmount(target.value)}
                   type="number"
-                  placeholder="Enter WAL amount"
+                  placeholder="Enter INW amount"
                   inputRightElementIcon={
                     <Heading as="h5" size="h5" fontWeight="semibold">
-                      $WAL
+                      INW
                     </Heading>
                   }
                 />
 
                 <IWInput
-                  value={walBuyAmount * parseFloat(walMintingFee)}
+                  value={inwBuyAmount * parseFloat(inwMintingFee)}
                   isDisabled={true}
                   type="number"
                   placeholder="0.000000000"
@@ -420,11 +347,12 @@ export default function FaucetPage({ api }) {
                 />
 
                 <Text textAlign="left" w="full" fontSize="md" lineHeight="28px">
-                  (There are {availableMint} WAL tokens available to mint){" "}
+                  (There are {formatNumDynDecimal(availableMint)} INW tokens
+                  available to mint){" "}
                 </Text>
 
-                <Button w="full" onClick={() => walPublicMintHandler()}>
-                  Get WAL
+                <Button w="full" onClick={() => inwPublicMintHandler()}>
+                  Get INW
                 </Button>
               </Stack>
             </IWCard>

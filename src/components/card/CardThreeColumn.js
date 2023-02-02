@@ -25,13 +25,14 @@ export default function CardThreeColumn(props) {
         borderTop={!title ? "" : "1px solid #E3DFF3"}
       >
         <Flex
+          flexWrap="wrap"
           justifyContent="space-between"
           flexDirection={{ base: "column", lg: "row" }}
         >
           {" "}
           {data?.map(({ title, content }, idx) => {
             return (
-              <Box key={idx} my={{ base: "12px", lg: "20px" }}>
+              <Box w="33%" key={idx} my={{ base: "12px", lg: "12px" }}>
                 <Text fontSize="md" lineHeight="28px">
                   {title}{" "}
                 </Text>

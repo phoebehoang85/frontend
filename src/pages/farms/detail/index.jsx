@@ -5,11 +5,9 @@ import {
   BreadcrumbLink,
   Flex,
   Heading,
-  Hide,
   HStack,
   Link,
   Show,
-  Square,
   Stack,
   Text,
   Tooltip,
@@ -25,7 +23,7 @@ import CardTwoColumn from "components/card/CardTwoColumn";
 import CardThreeColumn from "components/card/CardThreeColumn";
 import IWCardNFTWrapper from "components/card/CardNFTWrapper";
 import { formatDataCellTable } from "components/table/IWTable";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useState, useEffect } from "react";
 import { execContractQuery } from "utils/contracts";
 import nft_pool_contract from "utils/contracts/nft_pool_contract";
@@ -43,21 +41,41 @@ import { APICall } from "api/client";
 import { formatNumToBN } from "utils";
 import psp34_standard from "utils/contracts/psp34_standard";
 import azt_contract from "utils/contracts/azt_contract";
-import AddressCopier from "components/address-copier/AddressCopier";
-import CardSocial from "components/card/CardSocial";
-import ImageCloudFlare from "components/image-cf/ImageCF";
 import { calcUnclaimedRewardTokenLP } from "utils";
 import lp_pool_contract from "utils/contracts/lp_pool_contract";
 import IWInput from "components/input/Input";
+import { NFTBannerCard } from "components/card/Card";
+import { useMemo } from "react";
+import { fetchUserBalance } from "redux/slices/walletSlice";
+import { fetchAllNFTPools } from "redux/slices/allPoolsSlice";
+import { fetchAllTokenPools } from "redux/slices/allPoolsSlice";
+import { isPoolEnded } from "utils";
 
 export default function FarmDetailPage() {
-  // const params = useParams();
+  const { state } = useLocation();
+
   const { currentAccount } = useSelector((s) => s.wallet);
+  const { allNFTPoolsList, allTokenPoolsList } = useSelector((s) => s.allPools);
+
+  const currentNFTPool = useMemo(() => {
+    return allNFTPoolsList?.find(
+      (p) => p?.poolContract === state?.poolContract
+    );
+  }, [allNFTPoolsList, state?.poolContract]);
+
+  const currentTokenPool = useMemo(() => {
+    return allTokenPoolsList?.find(
+      (p) => p?.poolContract === state?.poolContract
+    );
+  }, [allTokenPoolsList, state?.poolContract]);
 
   const location = useLocation();
 
   const currMode = location?.state?.mode;
-  const { state } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const cardData = {
     cardHeaderList: [
@@ -76,19 +94,19 @@ export default function FarmDetailPage() {
       {
         name: "totalStaked",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Total Value Locked: Total tokens staked into this pool`,
         label: "TVL",
       },
       {
         name: "rewardPool",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
       },
       {
         name: "multiplier",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Multiplier determines how many reward tokens will the staker receive per 1 NFT in 24 hours.`,
         label: "Multiplier",
       },
       {
@@ -101,6 +119,14 @@ export default function FarmDetailPage() {
 
     cardValue: {
       ...state,
+      totalStaked:
+        state?.mode === "NFT_FARM"
+          ? currentNFTPool?.totalStaked
+          : currentTokenPool?.totalStaked,
+      rewardPool:
+        state?.mode === "NFT_FARM"
+          ? currentNFTPool?.rewardPool
+          : currentTokenPool?.rewardPool,
     },
   };
 
@@ -121,7 +147,21 @@ export default function FarmDetailPage() {
           Pool Info<Show above="md">rmation</Show>
         </>
       ),
-      component: <PoolInfo {...state} />,
+      component: (
+        <PoolInfo
+          {...state}
+          rewardPool={
+            state?.mode === "NFT_FARM"
+              ? currentNFTPool?.rewardPool
+              : currentTokenPool?.rewardPool
+          }
+          totalStaked={
+            state?.mode === "NFT_FARM"
+              ? currentNFTPool?.totalStaked
+              : currentTokenPool?.totalStaked
+          }
+        />
+      ),
       isDisabled: false,
     },
   ];
@@ -211,7 +251,11 @@ export default function FarmDetailPage() {
                         fontSize={{ base: "16px", lg: "20px" }}
                       >
                         <Text>
-                          {formatDataCellTable(cardData?.cardValue, name)}
+                          {formatDataCellTable(
+                            cardData?.cardValue,
+                            name,
+                            currMode
+                          )}
                         </Text>{" "}
                       </Flex>
                     </Flex>
@@ -244,16 +288,20 @@ const MyStakeRewardInfoNFT = ({
   tokenDecimal,
   multiplier,
   NFTtokenContract,
+  startTime,
+  duration,
   ...rest
 }) => {
-  const { currentAccount } = useSelector((s) => s.wallet);
+  const dispatch = useDispatch();
+
+  const { currentAccount, api } = useSelector((s) => s.wallet);
 
   const [unstakeFee, setUnstakeFee] = useState(0);
 
   const [stakeInfo, setStakeInfo] = useState(null);
   const [tokenBalance, setTokenBalance] = useState();
-  const [availableNFT, setAvailableNFT] = useState([]);
-  const [stakedNFT, setStakedNFT] = useState([]);
+  const [availableNFT, setAvailableNFT] = useState(null);
+  const [stakedNFT, setStakedNFT] = useState(null);
 
   const fetchUserStakeInfo = useCallback(async () => {
     if (!currentAccount?.balance) return;
@@ -319,6 +367,10 @@ const MyStakeRewardInfoNFT = ({
   const fetchStakedNFT = useCallback(async () => {
     let isUnmounted = false;
 
+    if (stakeInfo?.stakedValue === 0) {
+      setStakedNFT([]);
+    }
+
     if (stakeInfo?.stakedValue > 0) {
       const listData = await Promise.all(
         [...Array(stakeInfo?.stakedValue)].map(async (_, idx) => {
@@ -337,7 +389,7 @@ const MyStakeRewardInfoNFT = ({
 
           let stakedID = queryResult?.toHuman();
 
-          const { status, ret } = await APICall.getNftByIdFromArtZero({
+          const { status, ret } = await APICall.getNFTByIdFromArtZero({
             collection_address: nftInfo?.nftContractAddress,
             token_id: parseInt(stakedID.U64),
           });
@@ -425,10 +477,26 @@ const MyStakeRewardInfoNFT = ({
       "claimReward"
     );
 
-    await delay(2000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-    });
+    await APICall.askBEupdate({ type: "pool", poolContract });
+
+    await delay(3000);
+
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchAllNFTPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+
+        fetchUserStakeInfo();
+        fetchTokenBalance();
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   }
 
   async function stakeNftHandler(tokenID) {
@@ -437,7 +505,12 @@ const MyStakeRewardInfoNFT = ({
       return;
     }
 
-    if (!rewardPool || parseInt(rewardPool) < 0) {
+    if (isPoolEnded(startTime, duration)) {
+      toast.error("Pool is ended!");
+      return;
+    }
+
+    if (!rewardPool || parseInt(rewardPool) <= 0) {
       toast.error("There is no reward balance in this pool!");
       return;
     }
@@ -460,7 +533,7 @@ const MyStakeRewardInfoNFT = ({
 
     await delay(3000);
 
-    toast.success("Step 2: Process staking...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -473,17 +546,32 @@ const MyStakeRewardInfoNFT = ({
     );
 
     await APICall.askBEupdate({ type: "nft", poolContract });
+    await APICall.askBEupdate({ type: "pool", poolContract });
     await APICall.askBEupdateNFTFromArtZero({
       token_id: tokenID,
       collection_address: NFTtokenContract,
     });
 
-    toast.success("Please wait up to 10s for the data to be updated");
+    await delay(3000);
 
-    await delay(5000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-    });
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchAllNFTPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+
+        fetchUserStakeInfo();
+        fetchTokenBalance();
+        fetchAvailableNFT();
+        fetchStakedNFT();
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   }
 
   async function unstakeNftHandler(tokenID) {
@@ -493,9 +581,9 @@ const MyStakeRewardInfoNFT = ({
     }
 
     if (
-      parseInt(currentAccount?.balance?.wal?.replaceAll(",", "")) < unstakeFee
+      parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) < unstakeFee
     ) {
-      toast.error(`You don't have enough WAL. Unstake costs ${unstakeFee} WAL`);
+      toast.error(`You don't have enough INW. Unstake costs ${unstakeFee} INW`);
       return;
     }
 
@@ -517,7 +605,7 @@ const MyStakeRewardInfoNFT = ({
 
     await delay(3000);
 
-    toast.success("Step 2: Process unstaking...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -530,17 +618,32 @@ const MyStakeRewardInfoNFT = ({
     );
 
     await APICall.askBEupdate({ type: "nft", poolContract });
+    await APICall.askBEupdate({ type: "pool", poolContract });
     await APICall.askBEupdateNFTFromArtZero({
       token_id: tokenID,
       collection_address: NFTtokenContract,
     });
 
-    toast.success("Please wait up to 10s for the data to be updated");
+    await delay(3000);
 
-    await delay(5000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-    });
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchAllNFTPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+
+        fetchUserStakeInfo();
+        fetchTokenBalance();
+        fetchAvailableNFT();
+        fetchStakedNFT();
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   }
 
   return (
@@ -563,8 +666,12 @@ const MyStakeRewardInfoNFT = ({
                 : "No account selected",
             },
             {
-              title: "Account Balance",
+              title: "AZERO Balance",
               content: `${balance?.azero || 0} AZERO`,
+            },
+            {
+              title: "INW Balance",
+              content: `${balance?.inw || 0} INW`,
             },
             {
               title: `${tokenSymbol} Balance`,
@@ -576,7 +683,7 @@ const MyStakeRewardInfoNFT = ({
           title="Staking Information"
           data={[
             {
-              title: `My Stakes (${nftInfo?.name})`,
+              title: `My Stakes ${nftInfo?.name ? `(${nftInfo?.name})` : ""}`,
               content: `${formatNumDynDecimal(stakeInfo?.stakedValue)}`,
             },
             {
@@ -606,7 +713,7 @@ const MyStakeRewardInfoNFT = ({
             buttonVariant="outline"
             buttonLabel="Claim Rewards"
             onClick={handleClaimNFTLP}
-            message="Claim Rewards costs 10 WAL. Continue?"
+            message="Claim All Rewards. Continue?"
           />
         </CardThreeColumn>
       </Stack>
@@ -636,9 +743,13 @@ const MyStakeRewardInfoToken = ({
   tokenDecimal,
   multiplier,
   lptokenContract,
+  duration,
+  startTime,
   ...rest
 }) => {
-  const { currentAccount } = useSelector((s) => s.wallet);
+  const dispatch = useDispatch();
+
+  const { currentAccount, api } = useSelector((s) => s.wallet);
 
   const [unstakeFee, setUnstakeFee] = useState(0);
 
@@ -752,10 +863,24 @@ const MyStakeRewardInfoToken = ({
 
     await APICall.askBEupdate({ type: "lp", poolContract });
 
-    await delay(2000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-    });
+    await delay(3000);
+
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchAllTokenPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+
+        fetchUserStakeInfo();
+        fetchTokenBalance();
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   }
 
   async function stakeTokenLPHandler() {
@@ -764,8 +889,23 @@ const MyStakeRewardInfoToken = ({
       return;
     }
 
-    if (!rewardPool || parseInt(rewardPool) < 0) {
+    if (isPoolEnded(startTime, duration)) {
+      toast.error("Pool is ended!");
+      return;
+    }
+
+    if (!LPTokenAmount || LPTokenAmount < 0 || LPTokenAmount === "0") {
+      toast.error("Invalid Amount!");
+      return;
+    }
+
+    if (!rewardPool || parseInt(rewardPool) <= 0) {
       toast.error("There is no reward balance in this pool!");
+      return;
+    }
+
+    if (formatChainStringToNumber(LPtokenBalance) < LPTokenAmount) {
+      toast.error("There is not enough balance!");
       return;
     }
 
@@ -786,7 +926,7 @@ const MyStakeRewardInfoToken = ({
 
     await delay(3000);
 
-    toast.success("Step 2: Process staking...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -799,14 +939,27 @@ const MyStakeRewardInfoToken = ({
     );
 
     await APICall.askBEupdate({ type: "lp", poolContract });
-    setLPTokenAmount(0);
 
-    toast.success("Please wait up to 10s for the data to be updated");
+    await delay(3000);
 
-    await delay(5000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-    });
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchAllTokenPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+
+        fetchUserStakeInfo();
+        fetchTokenBalance();
+
+        setLPTokenAmount("");
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   }
 
   async function unstakeTokenLPHandler(tokenID) {
@@ -816,9 +969,19 @@ const MyStakeRewardInfoToken = ({
     }
 
     if (
-      parseInt(currentAccount?.balance?.wal?.replaceAll(",", "")) < unstakeFee
+      parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) < unstakeFee
     ) {
-      toast.error(`You don't have enough WAL. Unstake costs ${unstakeFee} WAL`);
+      toast.error(`You don't have enough INW. Unstake costs ${unstakeFee} INW`);
+      return;
+    }
+
+    if (!LPTokenAmount || LPTokenAmount < 0 || LPTokenAmount === "0") {
+      toast.error("Invalid Amount!");
+      return;
+    }
+
+    if (stakeInfo?.stakedValue / 10 ** 12 < LPTokenAmount) {
+      toast.error("There is not enough balance!");
       return;
     }
 
@@ -840,7 +1003,7 @@ const MyStakeRewardInfoToken = ({
 
     await delay(3000);
 
-    toast.success("Step 2: Process unstaking...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -852,14 +1015,28 @@ const MyStakeRewardInfoToken = ({
       formatNumToBN(LPTokenAmount)
     );
 
-    await APICall.askBEupdate({ type: "nft", poolContract });
-    setLPTokenAmount(0);
-    toast.success("Please wait up to 10s for the data to be updated");
+    await APICall.askBEupdate({ type: "lp", poolContract });
 
-    await delay(5000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-    });
+    await delay(3000);
+
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchAllTokenPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+
+        fetchUserStakeInfo();
+        fetchTokenBalance();
+
+        setLPTokenAmount("");
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   }
 
   return (
@@ -886,8 +1063,8 @@ const MyStakeRewardInfoToken = ({
               content: `${balance?.azero || 0} AZERO`,
             },
             {
-              title: "WAL Balance",
-              content: `${balance?.wal || 0} WAL`,
+              title: "INW Balance",
+              content: `${balance?.inw || 0} INW`,
             },
             {
               title: `${tokenSymbol} Balance`,
@@ -903,7 +1080,7 @@ const MyStakeRewardInfoToken = ({
           title="Staking Information"
           data={[
             {
-              title: `My Stakes (${nftInfo?.name})`,
+              title: `My Stakes ${nftInfo?.name ? `(${nftInfo?.name})` : ""}`,
               content: `${formatNumDynDecimal(
                 stakeInfo?.stakedValue / 10 ** 12
               )}`,
@@ -935,7 +1112,7 @@ const MyStakeRewardInfoToken = ({
             buttonVariant="outline"
             buttonLabel="Claim Rewards"
             onClick={handleClaimTokenLP}
-            message="Claim Rewards costs 10 WAL. Continue?"
+            message="Claim All Rewards. Continue?"
           />
           <IWCard mt="24px" w="full" variant="solid">
             <Flex
@@ -979,8 +1156,9 @@ const MyStakeRewardInfoToken = ({
                   buttonVariant="primary"
                   buttonLabel="Unstake"
                   onClick={unstakeTokenLPHandler}
-                  message="Unstake costs 10 WAL. Continue?"
+                  message={`Unstake costs ${unstakeFee} INW. Continue?`}
                 />
+                {}
               </HStack>
             </Flex>
           </IWCard>
@@ -1027,13 +1205,13 @@ const PoolInfo = ({
       {
         name: "royaltyFee",
         hasTooltip: false,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: "",
         label: "Royalty Fee",
       },
       {
         name: "volume",
         hasTooltip: false,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: "",
         label: "Volume",
       },
     ],
@@ -1049,129 +1227,14 @@ const PoolInfo = ({
       ),
       volume: `${nftInfo?.volume} AZERO`,
       totalSupply: `${nftInfo?.nft_count} NFT${nftInfo?.nft_count > 1 && "s"}`,
-      royaltyFee: `${nftInfo?.royalFee / 100}%`,
+      royaltyFee: `${(nftInfo?.royaltyFee / 100).toFixed(2)}%`,
     },
   };
 
   return (
     <>
       {mode === "NFT_FARM" ? (
-        <IWCard
-          mb={{ base: "24px", lg: "30px" }}
-          pt={{ lg: "10px" }}
-          pb={{ lg: "24px" }}
-        >
-          <Flex flexDirection={{ base: "column", md: "row" }}>
-            <Square
-              mr={{ lg: "24px" }}
-              maxW={{ base: "300px", sm: "320px", lg: "160" }}
-              maxH={{ base: "300px", sm: "320px", lg: "160" }}
-              borderRadius="10px"
-              overflow="hidden"
-            >
-              <ImageCloudFlare
-                borderWidth="1px"
-                w="full"
-                h="full"
-                size="500"
-                alt={nftInfo?.name}
-                borderRadius="5px"
-                src={nftInfo?.avatarImage}
-              />
-            </Square>
-
-            <Stack w="full" alignItems="start">
-              <HStack
-                alignItems="center"
-                justifyContent="space-between"
-                w="full"
-              >
-                <Heading as="h2" size="h2" lineHeight="38px">
-                  {nftInfo?.name}{" "}
-                </Heading>
-
-                {/* Big screen card */}
-                <Show above="md">
-                  <CardSocial
-                    twitterUrl={nftInfo?.twitter}
-                    discordUrl={nftInfo?.discord}
-                    telegramUrl={nftInfo?.telegram}
-                  />
-                </Show>
-              </HStack>
-
-              <HStack justifyContent={{ base: "start" }} w="full">
-                <Heading as="h4" size="h4" fontWeight="600" lineHeight="25px">
-                  <AddressCopier address={nftInfo?.nftContractAddress} />
-                </Heading>
-              </HStack>
-
-              {/* Small screen card */}
-              <Hide above="md">
-                <CardSocial
-                  twitterUrl={nftInfo?.twitter}
-                  discordUrl={nftInfo?.discord}
-                  telegramUrl={nftInfo?.telegram}
-                />
-              </Hide>
-
-              <HStack
-                justifyContent="space-between"
-                w="full"
-                pb={{ base: "24px", lg: "0px" }}
-              >
-                <Flex
-                  w="full"
-                  minH="70px"
-                  flexDirection={{ base: "column", lg: "row" }}
-                  justifyContent={{ base: "space-between" }}
-                >
-                  {cardDataPoolInfo?.cardHeaderList?.map(
-                    ({ name, hasTooltip, label, tooltipContent }) => {
-                      return name === "myStake" ? null : (
-                        <Flex
-                          key={name}
-                          w={{ lg: "fit-content" }}
-                          justifyContent="center"
-                          mt={{ base: "15px", lg: "0px" }}
-                          flexDirection={{ base: "column", lg: "column" }}
-                        >
-                          <Flex
-                            w={{ base: "full" }}
-                            color="text.2"
-                            fontWeight="400"
-                            fontSize="16px"
-                            lineHeight="28px"
-                            alignItems="center"
-                          >
-                            {label}
-                            {hasTooltip && (
-                              <Tooltip fontSize="md" label={tooltipContent}>
-                                <QuestionOutlineIcon ml="6px" color="text.2" />
-                              </Tooltip>
-                            )}
-                          </Flex>
-
-                          <Flex
-                            w={{ base: "full" }}
-                            color="text.1"
-                            fontWeight="600"
-                            fontSize={{ base: "16px", lg: "20px" }}
-                            lineHeight="28px"
-                            justify={{ base: "start" }}
-                            alignItems={{ base: "center" }}
-                          >
-                            <Text> {cardDataPoolInfo?.cardValue[name]}</Text>{" "}
-                          </Flex>
-                        </Flex>
-                      );
-                    }
-                  )}
-                </Flex>
-              </HStack>
-            </Stack>
-          </Flex>
-        </IWCard>
+        <NFTBannerCard cardData={cardDataPoolInfo} nftInfo={nftInfo} />
       ) : null}
 
       <Stack
@@ -1189,22 +1252,28 @@ const PoolInfo = ({
             },
             {
               title: "Multiplier",
-              content: (multiplier / 10 ** 12).toFixed(6),
+              content:
+                mode === "TOKEN_FARM"
+                  ? (multiplier / 10 ** 18).toFixed(2)
+                  : (multiplier / 10 ** 12).toFixed(2),
             },
             {
               title: "Start Date",
               content: `${new Date(startTime).toLocaleString("en-US")}`,
             },
-            { title: "Pool Length", content: `${duration / 86400} days` },
+            {
+              title: "Pool Length (days)",
+              content: `${duration / 86400} days`,
+            },
             {
               title: "Reward Pool",
               content: `${formatNumDynDecimal(rewardPool)} ${tokenSymbol}`,
             },
             {
               title: "Total Value Locked",
-              content: `${formatNumDynDecimal(totalStaked)} NFT${
-                totalStaked > 1 ? "s" : ""
-              }`,
+              content: `${formatNumDynDecimal(totalStaked)} ${
+                mode === "NFT_FARM" ? "NFT" : ""
+              }${mode === "NFT_FARM" && totalStaked > 1 ? "s" : ""}`,
             },
           ]}
         />
@@ -1252,27 +1321,65 @@ const PoolInfo = ({
   );
 };
 
-const AvailableNFTs = (props) => (
+const AvailableNFTs = (props) => {
   // { data, action, actionHandler }
-  <>
+  const { currentAccount } = useSelector((s) => s.wallet);
+
+  if (!currentAccount?.address) {
+    // return <Text>Please connect wallet!<Text/>
+    return (
+      <Heading size="h5" textAlign="center">
+        Please connect wallet!
+      </Heading>
+    );
+  }
+
+  return (
+    <>
+      <Stack
+        w="full"
+        spacing="30px"
+        alignItems="start"
+        direction={{ base: "column", lg: "row" }}
+      >
+        {props?.data?.length === 0 ? (
+          <Text textAlign="center" w="full">
+            There is no available NFTs
+          </Text>
+        ) : (
+          <IWCardNFTWrapper {...props} />
+        )}
+      </Stack>
+    </>
+  );
+};
+
+const StakedNFTs = (props) => {
+  const { currentAccount } = useSelector((s) => s.wallet);
+
+  if (!currentAccount?.address) {
+    // return <Text>Please connect wallet!<Text/>
+    return (
+      <Heading size="h5" textAlign="center">
+        Please connect wallet!
+      </Heading>
+    );
+  }
+
+  return (
     <Stack
       w="full"
       spacing="30px"
       alignItems="start"
       direction={{ base: "column", lg: "row" }}
     >
-      <IWCardNFTWrapper {...props} />
+      {props?.data?.length === 0 ? (
+        <Text textAlign="center" w="full">
+          There is no staked NFTs
+        </Text>
+      ) : (
+        <IWCardNFTWrapper {...props} />
+      )}
     </Stack>
-  </>
-);
-
-const StakedNFTs = (props) => (
-  <Stack
-    w="full"
-    spacing="30px"
-    alignItems="start"
-    direction={{ base: "column", lg: "row" }}
-  >
-    <IWCardNFTWrapper {...props} />
-  </Stack>
-);
+  );
+};

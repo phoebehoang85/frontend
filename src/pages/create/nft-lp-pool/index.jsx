@@ -29,6 +29,7 @@ import { delay } from "utils";
 import { formatNumToBN } from "utils";
 import azt_contract from "utils/contracts/azt_contract";
 import nft_pool_generator_contract from "utils/contracts/nft_pool_generator_contract";
+import { fetchMyNFTPools } from "redux/slices/myPoolsSlice";
 
 export default function CreateNFTLPPage({ api }) {
   const dispatch = useDispatch();
@@ -42,11 +43,19 @@ export default function CreateNFTLPPage({ api }) {
   const [collectionList, setCollectionList] = useState([]);
   const [selectedCollectionAddr, setSelectedCollectionAddr] = useState("");
 
-  const [duration, setDuration] = useState(0);
-  const [multiplier, setMultiplier] = useState(0);
+  const [duration, setDuration] = useState("");
+  const [multiplier, setMultiplier] = useState("");
   const [startTime, setStartTime] = useState(new Date());
 
   const [tokenBalance, setTokenBalance] = useState(0);
+
+  const selectedTokenDecimal = useMemo(() => {
+    const ret = faucetTokensList.find(
+      (token) => token?.contractAddress === selectedContractAddr
+    );
+
+    return ret?.decimal ?? 0;
+  }, [faucetTokensList, selectedContractAddr]);
 
   const fetchTokenBalance = useCallback(async () => {
     if (!selectedContractAddr) return;
@@ -86,7 +95,7 @@ export default function CreateNFTLPPage({ api }) {
   useEffect(() => {
     let isUnmounted = false;
     const getFaucetTokensListData = async () => {
-      let { ret, status, message } = await APICall.getFaucetTokensList();
+      let { ret, status, message } = await APICall.getTokensList({});
 
       if (status === "OK") {
         if (isUnmounted) return;
@@ -162,12 +171,18 @@ export default function CreateNFTLPPage({ api }) {
       return toast.error("Invalid address!");
     }
 
+    if (selectedTokenDecimal < 6) {
+      return toast.error(
+        "Invalid Token Decimal. Decimal of Reward token can not be less than 6 !"
+      );
+    }
+
     if (
-      parseInt(currentAccount?.balance?.wal?.replaceAll(",", "")) <
+      parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) <
       createTokenFee
     ) {
       toast.error(
-        `You don't have enough WAL. Stake costs ${createTokenFee} WAL`
+        `You don't have enough INW.Create Pool costs ${createTokenFee} INW`
       );
       return;
     }
@@ -190,7 +205,7 @@ export default function CreateNFTLPPage({ api }) {
 
     await delay(3000);
 
-    toast.success("Step 2: Process unstaking...");
+    toast.success("Step 2: Process ...");
 
     await execContractTx(
       currentAccount,
@@ -202,62 +217,38 @@ export default function CreateNFTLPPage({ api }) {
       currentAccount?.address,
       selectedCollectionAddr,
       selectedContractAddr,
-      formatNumToBN(multiplier),
+      formatNumToBN(multiplier, selectedTokenDecimal),
       duration * 24 * 60 * 60 * 1000,
       startTime.getTime()
     );
 
     await APICall.askBEupdate({ type: "nft", poolContract: "new" });
 
-    setMultiplier(0);
-    setDuration(0);
+    setMultiplier("");
+    setDuration("");
     setStartTime(new Date());
+    setSelectedContractAddr("");
+    setSelectedCollectionAddr("");
 
-    toast.success("Please wait up to 10s for the data to be updated");
+    await delay(3000);
 
-    await delay(5000).then(() => {
-      currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
-      fetchTokenBalance();
-      fetchMyPoolsList();
-    });
-  }
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchMyNFTPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
 
-  const [myNFTPoolList, setMyNFTPoolList] = useState([]);
-
-  const fetchMyPoolsList = useCallback(
-    async (isUnmounted) => {
-      const { status, ret } = await APICall.getUserNFTLP({
-        owner: currentAccount?.address,
-      });
-
-      if (status === "OK") {
-        const nftLPListAddNftInfo = await Promise.all(
-          ret?.map(async (nftLP) => {
-            // get collection info
-            const { ret } = await APICall.getCollectionByAddressFromArtZero({
-              collection_address: nftLP?.NFTtokenContract,
-            });
-
-            if (ret[0]) {
-              nftLP = { ...nftLP, nftInfo: ret[0] };
-            }
-
-            return nftLP;
-          })
-        );
-
-        if (isUnmounted) return;
-        setMyNFTPoolList(nftLPListAddNftInfo);
+        fetchTokenBalance();
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
       }
-    },
-    [currentAccount?.address]
-  );
-
-  useEffect(() => {
-    let isUnmounted;
-
-    fetchMyPoolsList(isUnmounted);
-  }, [currentAccount?.address, fetchMyPoolsList]);
+    );
+  }
+  const { myNFTPoolsList, loading } = useSelector((s) => s.myPools);
 
   const tableData = {
     tableHeader: [
@@ -275,20 +266,20 @@ export default function CreateNFTLPPage({ api }) {
       },
       {
         name: "totalStaked",
-        hasTooltip: false,
-        tooltipContent: "",
+        hasTooltip: true,
+        tooltipContent: "Total Value Locked: Total NFT staked into this pool",
         label: "TVL",
       },
       {
         name: "rewardPool",
-        hasTooltip: false,
-        tooltipContent: "",
+        hasTooltip: true,
+        tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
       },
       {
         name: "multiplier",
         hasTooltip: true,
-        tooltipContent: "",
+        tooltipContent: `Multiplier determines how many reward tokens will the staker receive per 1 NFT in 24 hours.`,
         label: "Multiplier",
       },
       {
@@ -299,20 +290,20 @@ export default function CreateNFTLPPage({ api }) {
       },
     ],
 
-    tableBody: [...myNFTPoolList],
+    tableBody: myNFTPoolsList,
   };
 
   return (
     <>
       <SectionContainer
         mt={{ base: "0px", xl: "20px" }}
-        title="Create ArtZero's NFT Yield Farms"
+        title="Create ArtZero's NFT Yield Farm"
         description={
           <span>
             NFT Stakers get rewards in selected token. The creation costs
             <Text as="span" fontWeight="700" color="text.1">
               {" "}
-              {createTokenFee} WAL
+              {createTokenFee} INW
             </Text>
           </span>
         }
@@ -390,6 +381,7 @@ export default function CreateNFTLPPage({ api }) {
 
             <Box w="full">
               <IWInput
+                placeholder="0"
                 type="number"
                 value={duration}
                 label="Pool Length (days)"
@@ -427,8 +419,8 @@ export default function CreateNFTLPPage({ api }) {
             <Box w="full">
               <IWInput
                 isDisabled={true}
-                value={`${currentAccount?.balance?.wal || 0} WAL`}
-                label="Your WAL Balance"
+                value={`${currentAccount?.balance?.inw || 0} INW`}
+                label="Your INW Balance"
               />
             </Box>
 
@@ -452,18 +444,22 @@ export default function CreateNFTLPPage({ api }) {
           </SimpleGrid>
 
           <Button w="full" maxW={{ lg: "260px" }} onClick={createNFTLPHandler}>
-            Create NFT Yield Farms
+            Create NFT Yield Farm
           </Button>
         </VStack>
       </SectionContainer>
 
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
-        title="My ArtZero's Yield Farms Pools
-        "
+        title="My ArtZero's Yield Farm Pools"
         description=""
       >
-        <IWTable {...tableData} />
+        <IWTable
+          {...tableData}
+          mode="NFT_FARM"
+          loading={loading}
+          customURLRowClick="/my-pools"
+        />
       </SectionContainer>
     </>
   );

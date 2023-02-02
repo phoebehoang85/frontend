@@ -24,6 +24,7 @@ export default function IWTabs({ tabsData, ...rest }) {
             mr="20px"
             key={idx}
             justifyContent="start"
+            _focus={{ borderWidth: "0px" }}
             minW={{ base: "fit-content", lg: "250px" }}
           >
             <Heading as="h3" size="h3">

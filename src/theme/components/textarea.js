@@ -1,4 +1,3 @@
-import { mode } from "@chakra-ui/theme-tools";
 export const textareaStyles = {
   components: {
     Textarea: {
@@ -12,10 +11,10 @@ export const textareaStyles = {
       variants: {
         main: (props) => ({
           field: {
-            bg: mode("transparent", "navy.800")(props),
+            bg: "transparent",
             border: "1px solid !important",
-            color: mode("secondaryGray.900", "white")(props),
-            borderColor: mode("secondaryGray.100", "whiteAlpha.100")(props),
+            color: "secondaryGray.900",
+            borderColor: "secondaryGray.100",
             borderRadius: "16px",
             fontSize: "sm",
             p: "20px",

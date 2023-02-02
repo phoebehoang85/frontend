@@ -14,133 +14,65 @@ import IWInput from "components/input/Input";
 
 import { IWTable } from "components/table/IWTable";
 import IWTabs from "components/tabs/IWTabs";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { APICall } from "api/client";
-import nft_pool_contract from "utils/contracts/nft_pool_contract";
-import { execContractQuery } from "utils/contracts";
-import { formatChainStringToNumber } from "utils";
-import lp_pool_contract from "utils/contracts/lp_pool_contract";
+import { useMemo } from "react";
+import { delay } from "utils";
+import { fetchAllNFTPools } from "redux/slices/allPoolsSlice";
+import { fetchAllTokenPools } from "redux/slices/allPoolsSlice";
 
 export default function FarmsPage() {
+  const dispatch = useDispatch();
+
   const { currentAccount } = useSelector((s) => s.wallet);
-  const [nftLPList, setNftLPList] = useState([]);
-  const [tokenLPList, setTokenLPList] = useState([]);
+  const { allNFTPoolsList, allTokenPoolsList, loading } = useSelector(
+    (s) => s.allPools
+  );
+
+  const [sortPools, setSortPools] = useState(-1);
+  const [hideZeroRewardPools, setHideZeroRewardPools] = useState(true);
+
+  const [showMyStakedPools, setShowMyStakedPools] = useState(false);
 
   useEffect(() => {
-    let isUnmounted = false;
+    delay(500);
 
-    const fetchNftLPList = async () => {
-      try {
-        const { status, ret } = await APICall.getNftLPList();
+    dispatch(
+      fetchAllNFTPools({
+        sort: sortPools,
+        showZeroPool: hideZeroRewardPools,
+        currentAccount,
+      })
+    );
 
-        if (status === "OK") {
-          const nftLPListAddNftInfo = await Promise.all(
-            ret?.map(async (nftLP) => {
-              // get collection info
-              const { status, ret } =
-                await APICall.getCollectionByAddressFromArtZero({
-                  collection_address: nftLP?.NFTtokenContract,
-                });
+    dispatch(
+      fetchAllTokenPools({
+        sort: sortPools,
+        showZeroPool: hideZeroRewardPools,
+        currentAccount,
+      })
+    );
+  }, [currentAccount, dispatch, hideZeroRewardPools, sortPools]);
 
-              if (status === "OK") {
-                nftLP = { ...nftLP, nftInfo: ret[0] };
-              }
+  const nftLPListFiltered = useMemo(() => {
+    let ret = allNFTPoolsList;
 
-              // get stake info NFT LP Pool
-              let queryResult = await execContractQuery(
-                currentAccount?.address,
-                "api",
-                nft_pool_contract.CONTRACT_ABI,
-                nftLP?.poolContract,
-                0,
-                "genericPoolContractTrait::getStakeInfo",
-                currentAccount?.address
-              );
+    if (showMyStakedPools) {
+      ret = allNFTPoolsList.filter((p) => p.stakeInfo);
+    }
 
-              let stakeInfo = queryResult?.toHuman();
+    return ret;
+  }, [allNFTPoolsList, showMyStakedPools]);
 
-              if (stakeInfo) {
-                stakeInfo = {
-                  ...stakeInfo,
-                  lastRewardUpdate: formatChainStringToNumber(
-                    stakeInfo.lastRewardUpdate
-                  ),
-                  stakedValue: formatChainStringToNumber(stakeInfo.stakedValue),
-                  unclaimedReward: formatChainStringToNumber(
-                    stakeInfo.unclaimedReward
-                  ),
-                };
-              }
+  const tokenLPListFiltered = useMemo(() => {
+    let ret = allTokenPoolsList;
 
-              return { ...nftLP, stakeInfo };
-            })
-          );
+    if (showMyStakedPools) {
+      ret = allTokenPoolsList.filter((p) => p.stakeInfo);
+    }
 
-          if (isUnmounted) return;
-          setNftLPList(nftLPListAddNftInfo);
-        }
-      } catch (error) {
-        console.log("error", error.message);
-      }
-    };
-    fetchNftLPList();
-
-    return () => (isUnmounted = true);
-  }, [currentAccount?.address]);
-
-  useEffect(() => {
-    let isUnmounted = false;
-
-    const fetchTokenLPList = async () => {
-      try {
-        const { status, ret } = await APICall.getTokenLPList();
-
-        if (status === "OK") {
-          const tokenLPListAddNftInfo = await Promise.all(
-            ret?.map(async (tokenLP) => {
-              // get stake info
-              let queryResult = await execContractQuery(
-                currentAccount?.address,
-                "api",
-                lp_pool_contract.CONTRACT_ABI,
-                tokenLP?.poolContract,
-                0,
-                "genericPoolContractTrait::getStakeInfo",
-                currentAccount?.address
-              );
-
-              let stakeInfo = queryResult?.toHuman();
-
-              if (stakeInfo) {
-                stakeInfo = {
-                  ...stakeInfo,
-                  lastRewardUpdate: formatChainStringToNumber(
-                    stakeInfo.lastRewardUpdate
-                  ),
-                  stakedValue: formatChainStringToNumber(stakeInfo.stakedValue),
-                  unclaimedReward: formatChainStringToNumber(
-                    stakeInfo.unclaimedReward
-                  ),
-                };
-              }
-
-              return { ...tokenLP, stakeInfo };
-            })
-          );
-
-          if (isUnmounted) return;
-          setTokenLPList(tokenLPListAddNftInfo);
-          // setTokenLPList(ret);
-        }
-      } catch (error) {
-        console.log("error", error.message);
-      }
-    };
-    fetchTokenLPList();
-
-    return () => (isUnmounted = true);
-  }, [currentAccount?.address]);
+    return ret;
+  }, [allTokenPoolsList, showMyStakedPools]);
 
   const tableDataNFT = {
     tableHeader: [
@@ -159,19 +91,19 @@ export default function FarmsPage() {
       {
         name: "totalStaked",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Total Value Locked: Total tokens staked into this pool`,
         label: "TVL",
       },
       {
         name: "rewardPool",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
       },
       {
         name: "multiplier",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Multiplier determines how many reward tokens will the staker receive per 1 NFTs in 24 hours.`,
         label: "Multiplier",
       },
       {
@@ -183,24 +115,24 @@ export default function FarmsPage() {
       {
         name: "stakeInfo",
         hasTooltip: false,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: "",
         label: "My Stake",
       },
     ],
 
-    tableBody: nftLPList,
+    tableBody: nftLPListFiltered,
   };
 
   const tableDataToken = {
     tableHeader: [
       {
-        name: "tokenName",
+        name: "lptokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Stake",
       },
       {
-        name: "lptokenSymbol",
+        name: "tokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Earn",
@@ -208,19 +140,19 @@ export default function FarmsPage() {
       {
         name: "totalStaked",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Total Value Locked: Total tokens staked into this pool`,
         label: "TVL",
       },
       {
         name: "rewardPool",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
       },
       {
         name: "multiplier",
         hasTooltip: true,
-        tooltipContent: "Lorem lorem",
+        tooltipContent: `Multiplier determines how many reward tokens will the staker receive per 1 token in 24 hours.`,
         label: "Multiplier",
       },
 
@@ -238,7 +170,7 @@ export default function FarmsPage() {
       },
     ],
 
-    tableBody: tokenLPList,
+    tableBody: tokenLPListFiltered,
   };
 
   const tabsData = [
@@ -297,14 +229,23 @@ export default function FarmsPage() {
             spacing={{ base: "0px", lg: "20px" }}
           >
             <FormControl maxW="135px" display="flex" alignItems="center">
-              <Switch id="my-stake" />
+              <Switch
+                id="my-stake"
+                isDisabled={!currentAccount?.address}
+                isChecked={showMyStakedPools}
+                onChange={() => setShowMyStakedPools(!showMyStakedPools)}
+              />{" "}
               <FormLabel htmlFor="my-stake" mb="0" ml="10px" fontWeight="400">
                 My Stake
               </FormLabel>
             </FormControl>
 
             <FormControl maxW="200px" display="flex" alignItems="center">
-              <Switch id="zero-reward-pools" />
+              <Switch
+                id="zero-reward-pools"
+                isChecked={hideZeroRewardPools}
+                onChange={() => setHideZeroRewardPools(!hideZeroRewardPools)}
+              />{" "}
               <FormLabel
                 mb="0"
                 ml="10px"
@@ -318,24 +259,30 @@ export default function FarmsPage() {
 
           <Box minW="155px" maxW="160px">
             <Select
-              cursor="pointer"
-              border="0px red dotted"
               id="token"
               fontSize="md"
               fontWeight="400"
               variant="unstyled"
+              defaultValue={-1}
+              cursor="pointer"
+              border="0px red dotted"
               placeholder="Sort by selection"
+              onChange={({ target }) => setSortPools(target.value)}
             >
-              {["Low to hight", "Low to hight", "Newest"].map((item, idx) => (
+              {[1, -1].map((item, idx) => (
                 <option key={idx} value={item}>
-                  {item}
+                  {item === 1
+                    ? "Low to hight"
+                    : item === -1
+                    ? "Hight to low"
+                    : ""}
                 </option>
               ))}
             </Select>
           </Box>
         </HStack>
 
-        <IWTabs tabsData={tabsData} />
+        <IWTabs tabsData={tabsData} loading={loading} />
       </Stack>
     </SectionContainer>
   );

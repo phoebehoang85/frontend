@@ -37,6 +37,8 @@ import PolkadotjsLogo from "assets/img/wallet/PolkadotjsLogo.svg";
 import SubWalletLogo from "assets/img/wallet/SubWalletLogo.svg";
 import WalletModal from "./WalletModal";
 import { disconnectCurrentAccount } from "redux/slices/walletSlice";
+import AddressCopier from "components/address-copier/AddressCopier";
+import { logOutMyPools } from "redux/slices/myPoolsSlice";
 
 export default function WalletButton({ currentAccountAddress }) {
   const dispatch = useDispatch();
@@ -246,9 +248,19 @@ export const WalletConnect = () => {
         boxShadow="0px 10px 21px rgba(0, 0, 0, 0.08)"
       >
         <Flex flexDirection="column" p="20px">
+          <IWCard mb="12px" variant="menu" minW={{ base: "full", lg: "350px" }}>
+            <Flex justify={{ base: "space-between" }}>
+              <Text>Address</Text>
+
+              <Heading as="h4" size="h4">
+                <AddressCopier address={currentAccount?.address} />
+              </Heading>
+            </Flex>
+          </IWCard>
+
           {[
             { title: "AZERO Balance", content: currentAccount?.balance?.azero },
-            { title: "WAL Balance", content: currentAccount?.balance?.wal },
+            { title: "INW Balance", content: currentAccount?.balance?.inw },
           ].map(({ title, content }, idx) => {
             return (
               <IWCard
@@ -283,7 +295,7 @@ export const WalletConnect = () => {
                   w="32px"
                   h="32px"
                   bg="bg.5"
-                  onClick={() => history.push("/account/my-balance")}
+                  onClick={() => history.push("/my-pools")}
                 >
                   <MenuArrowRightIcon color="text.1" />
                 </Circle>
@@ -306,7 +318,7 @@ export const WalletConnect = () => {
                 key={idx}
                 alignItems="start"
                 width={{ base: "33%" }}
-                onClick={() => history.push("/account/my-balance")}
+                onClick={() => history.push("/my-pools")}
               >
                 <MenuCardIcon {...item} />
               </MenuItem>
@@ -316,7 +328,11 @@ export const WalletConnect = () => {
           <Button
             w="full"
             variant="outline"
-            onClick={() => dispatch(disconnectCurrentAccount())}
+            onClick={() => {
+              dispatch(disconnectCurrentAccount());
+              dispatch(logOutMyPools());
+              history.push("/faucet");
+            }}
           >
             Log out
           </Button>
@@ -416,6 +432,7 @@ const myMenuList = [
     iconColorHover: "#57527E",
     icon: <MyPoolsIcon />,
     title: "My pools",
+    href: "/my-staking-pools",
   },
   {
     borderColor: "#93F0F5",
@@ -426,6 +443,7 @@ const myMenuList = [
     iconColorHover: "#57527E",
     icon: <MyNFTFarmsIcon />,
     title: "My NFT Farms",
+    href: "/my-nft-pool",
   },
   {
     borderColor: "#93F0F5",
@@ -436,5 +454,6 @@ const myMenuList = [
     iconColorHover: "#57527E",
     icon: <MyLPFarmsIcon />,
     title: "My LP Farms",
+    href: "/my-token-pools",
   },
 ];

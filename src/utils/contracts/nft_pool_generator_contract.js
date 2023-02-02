@@ -1,8 +1,8 @@
 const nft_pool_generator_contract = {
-  CONTRACT_ADDRESS: "5ETY5ifnaUrVbqQfrECxsn6DmRhKST6K2Au1bQ1Z24bEuQfw",
+  CONTRACT_ADDRESS: "5FtsnTRkVfiJHmX7frc3jY5nb4VzExqLAdUqZgTTwwAfm6Df",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0xe00c2812e1c64b80283538b1cd6ca916f1f94383093d65b7a1dccadbe2ff26b7",
+		"hash": "0x0fd3436ae5cd6c3a21cfc239ad361dfcee9e8fd5f604a8e4c71d9cbb585ddbdf",
 		"language": "ink! 3.4.0",
 		"compiler": "rustc 1.68.0-nightly"
 	  },
@@ -73,6 +73,57 @@ const nft_pool_generator_contract = {
 		  "docs": [],
 		  "events": [],
 		  "messages": [
+			{
+			  "args": [
+				{
+				  "label": "pool_hash",
+				  "type": {
+					"displayName": [
+					  "Hash"
+					],
+					"type": 4
+				  }
+				},
+				{
+				  "label": "wal_contract",
+				  "type": {
+					"displayName": [
+					  "AccountId"
+					],
+					"type": 0
+				  }
+				},
+				{
+				  "label": "creation_fee",
+				  "type": {
+					"displayName": [
+					  "Balance"
+					],
+					"type": 6
+				  }
+				},
+				{
+				  "label": "unstake_fee",
+				  "type": {
+					"displayName": [
+					  "Balance"
+					],
+					"type": 6
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "initialize",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "Result"
+				],
+				"type": 15
+			  },
+			  "selector": "0xf2f6dba3"
+			},
 			{
 			  "args": [
 				{
@@ -182,7 +233,7 @@ const nft_pool_generator_contract = {
 				  "ownable_external",
 				  "RenounceOwnershipOutput"
 				],
-				"type": 20
+				"type": 21
 			  },
 			  "selector": "0x5e228753"
 			},
@@ -219,9 +270,89 @@ const nft_pool_generator_contract = {
 				  "ownable_external",
 				  "TransferOwnershipOutput"
 				],
-				"type": 20
+				"type": 21
 			  },
 			  "selector": "0x11f43efd"
+			},
+			{
+			  "args": [
+				{
+				  "label": "value",
+				  "type": {
+					"displayName": [
+					  "genericpoolgeneratortrait_external",
+					  "WithdrawFeeInput1"
+					],
+					"type": 6
+				  }
+				}
+			  ],
+			  "docs": [
+				" Withdraw Fees - only Owner"
+			  ],
+			  "label": "GenericPoolGeneratorTrait::withdraw_fee",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "WithdrawFeeOutput"
+				],
+				"type": 15
+			  },
+			  "selector": "0xe386c676"
+			},
+			{
+			  "args": [
+				{
+				  "label": "unstake_fee",
+				  "type": {
+					"displayName": [
+					  "genericpoolgeneratortrait_external",
+					  "SetUnstakeFeeInput1"
+					],
+					"type": 6
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::set_unstake_fee",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "SetUnstakeFeeOutput"
+				],
+				"type": 15
+			  },
+			  "selector": "0xfd8d8fda"
+			},
+			{
+			  "args": [
+				{
+				  "label": "value",
+				  "type": {
+					"displayName": [
+					  "genericpoolgeneratortrait_external",
+					  "WithdrawWalInput1"
+					],
+					"type": 6
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::withdraw_wal",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "WithdrawWalOutput"
+				],
+				"type": 15
+			  },
+			  "selector": "0x795fbbfb"
 			},
 			{
 			  "args": [
@@ -252,6 +383,88 @@ const nft_pool_generator_contract = {
 			{
 			  "args": [],
 			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::get_unstake_fee",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "GetUnstakeFeeOutput"
+				],
+				"type": 6
+			  },
+			  "selector": "0xa4395f88"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::get_creation_fee",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "GetCreationFeeOutput"
+				],
+				"type": 6
+			  },
+			  "selector": "0xea416566"
+			},
+			{
+			  "args": [
+				{
+				  "label": "pool_hash",
+				  "type": {
+					"displayName": [
+					  "genericpoolgeneratortrait_external",
+					  "SetPoolHashInput1"
+					],
+					"type": 4
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::set_pool_hash",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "SetPoolHashOutput"
+				],
+				"type": 15
+			  },
+			  "selector": "0xc49c451f"
+			},
+			{
+			  "args": [
+				{
+				  "label": "contract_owner",
+				  "type": {
+					"displayName": [
+					  "genericpoolgeneratortrait_external",
+					  "GetPoolCountByOwnerInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::get_pool_count_by_owner",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "GetPoolCountByOwnerOutput"
+				],
+				"type": 5
+			  },
+			  "selector": "0xa4cef8cd"
+			},
+			{
+			  "args": [],
+			  "docs": [],
 			  "label": "GenericPoolGeneratorTrait::get_pool_count",
 			  "mutates": false,
 			  "payable": false,
@@ -278,6 +491,47 @@ const nft_pool_generator_contract = {
 				"type": 0
 			  },
 			  "selector": "0x7b7280e9"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::get_pool_hash",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "GetPoolHashOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0x79f903bb"
+			},
+			{
+			  "args": [
+				{
+				  "label": "creation_fee",
+				  "type": {
+					"displayName": [
+					  "genericpoolgeneratortrait_external",
+					  "SetCreationFeeInput1"
+					],
+					"type": 6
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "GenericPoolGeneratorTrait::set_creation_fee",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolgeneratortrait_external",
+				  "SetCreationFeeOutput"
+				],
+				"type": 15
+			  },
+			  "selector": "0x3cd3873c"
 			},
 			{
 			  "args": [
@@ -318,73 +572,6 @@ const nft_pool_generator_contract = {
 			{
 			  "args": [
 				{
-				  "label": "pool_hash",
-				  "type": {
-					"displayName": [
-					  "genericpoolgeneratortrait_external",
-					  "SetPoolHashInput1"
-					],
-					"type": 4
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::set_pool_hash",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "SetPoolHashOutput"
-				],
-				"type": 15
-			  },
-			  "selector": "0xc49c451f"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::get_unstake_fee",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "GetUnstakeFeeOutput"
-				],
-				"type": 6
-			  },
-			  "selector": "0xa4395f88"
-			},
-			{
-			  "args": [
-				{
-				  "label": "contract_owner",
-				  "type": {
-					"displayName": [
-					  "genericpoolgeneratortrait_external",
-					  "GetPoolCountByOwnerInput1"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::get_pool_count_by_owner",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "GetPoolCountByOwnerOutput"
-				],
-				"type": 5
-			  },
-			  "selector": "0xa4cef8cd"
-			},
-			{
-			  "args": [
-				{
 				  "label": "wal_contract",
 				  "type": {
 					"displayName": [
@@ -411,97 +598,50 @@ const nft_pool_generator_contract = {
 			{
 			  "args": [
 				{
-				  "label": "creation_fee",
+				  "label": "psp22_contract_address",
 				  "type": {
 					"displayName": [
-					  "genericpoolgeneratortrait_external",
-					  "SetCreationFeeInput1"
+					  "admintrait_external",
+					  "TranferPsp22Input1"
+					],
+					"type": 0
+				  }
+				},
+				{
+				  "label": "amount",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferPsp22Input2"
 					],
 					"type": 6
 				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::set_creation_fee",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "SetCreationFeeOutput"
-				],
-				"type": 15
-			  },
-			  "selector": "0x3cd3873c"
-			},
-			{
-			  "args": [
+				},
 				{
-				  "label": "unstake_fee",
+				  "label": "receiver",
 				  "type": {
 					"displayName": [
-					  "genericpoolgeneratortrait_external",
-					  "SetUnstakeFeeInput1"
+					  "admintrait_external",
+					  "TranferPsp22Input3"
 					],
-					"type": 6
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::set_unstake_fee",
-			  "mutates": true,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "SetUnstakeFeeOutput"
-				],
-				"type": 15
-			  },
-			  "selector": "0xfd8d8fda"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::get_pool_hash",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "GetPoolHashOutput"
-				],
-				"type": 4
-			  },
-			  "selector": "0x79f903bb"
-			},
-			{
-			  "args": [
-				{
-				  "label": "value",
-				  "type": {
-					"displayName": [
-					  "genericpoolgeneratortrait_external",
-					  "WithdrawFeeInput1"
-					],
-					"type": 6
+					"type": 0
 				  }
 				}
 			  ],
 			  "docs": [
-				" Withdraw Fees - only Owner"
+				" This function allow contract owner withdraw PSP22 to an account in case there is any token sent to contract by mistake"
 			  ],
-			  "label": "GenericPoolGeneratorTrait::withdraw_fee",
+			  "label": "AdminTrait::tranfer_psp22",
 			  "mutates": true,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "WithdrawFeeOutput"
+				  "admintrait_external",
+				  "TranferPsp22Output"
 				],
 				"type": 15
 			  },
-			  "selector": "0xe386c676"
+			  "selector": "0xd9aad284"
 			},
 			{
 			  "args": [
@@ -509,40 +649,85 @@ const nft_pool_generator_contract = {
 				  "label": "value",
 				  "type": {
 					"displayName": [
-					  "genericpoolgeneratortrait_external",
-					  "WithdrawWalInput1"
+					  "admintrait_external",
+					  "WithdrawFeeInput1"
 					],
 					"type": 6
 				  }
+				},
+				{
+				  "label": "receiver",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "WithdrawFeeInput2"
+					],
+					"type": 0
+				  }
 				}
 			  ],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::withdraw_wal",
+			  "docs": [
+				" This function allows contract owner to withdraw contract balance to his account."
+			  ],
+			  "label": "AdminTrait::withdraw_fee",
 			  "mutates": true,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "WithdrawWalOutput"
+				  "admintrait_external",
+				  "WithdrawFeeOutput"
 				],
 				"type": 15
 			  },
-			  "selector": "0x795fbbfb"
+			  "selector": "0x07573e99"
 			},
 			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolGeneratorTrait::get_creation_fee",
-			  "mutates": false,
+			  "args": [
+				{
+				  "label": "nft_contract_address",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferNftInput1"
+					],
+					"type": 0
+				  }
+				},
+				{
+				  "label": "token_id",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferNftInput2"
+					],
+					"type": 22
+				  }
+				},
+				{
+				  "label": "receiver",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferNftInput3"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [
+				" This function allow contract owner withdraw NFT to an account in case there is any NFT sent to contract by mistake"
+			  ],
+			  "label": "AdminTrait::tranfer_nft",
+			  "mutates": true,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
-				  "genericpoolgeneratortrait_external",
-				  "GetCreationFeeOutput"
+				  "admintrait_external",
+				  "TranferNftOutput"
 				],
-				"type": 6
+				"type": 15
 			  },
-			  "selector": "0xea416566"
+			  "selector": "0xed1e1dfa"
 			}
 		  ]
 		},
@@ -708,6 +893,41 @@ const nft_pool_generator_contract = {
 				  }
 				},
 				"name": "manager"
+			  },
+			  {
+				"layout": {
+				  "struct": {
+					"fields": [
+					  {
+						"layout": {
+						  "enum": {
+							"dispatchKey": "0xd343691000000000000000000000000000000000000000000000000000000000",
+							"variants": {
+							  "0": {
+								"fields": [
+								  {
+									"layout": {
+									  "cell": {
+										"key": "0xd443691000000000000000000000000000000000000000000000000000000000",
+										"ty": 3
+									  }
+									},
+									"name": null
+								  }
+								]
+							  },
+							  "1": {
+								"fields": []
+							  }
+							}
+						  }
+						},
+						"name": "_reserved"
+					  }
+					]
+				  }
+				},
+				"name": "admin_data"
 			  }
 			]
 		  }
@@ -1040,8 +1260,34 @@ const nft_pool_generator_contract = {
 					  "name": "PSP34Error"
 					},
 					{
+					  "fields": [
+						{
+						  "type": 20,
+						  "typeName": "OwnableError"
+						}
+					  ],
 					  "index": 3,
+					  "name": "OwnableError"
+					},
+					{
+					  "index": 4,
 					  "name": "CannotTransfer"
+					},
+					{
+					  "index": 5,
+					  "name": "NotEnoughBalance"
+					},
+					{
+					  "index": 6,
+					  "name": "WithdrawFeeError"
+					},
+					{
+					  "index": 7,
+					  "name": "WithdrawNFTError"
+					},
+					{
+					  "index": 8,
+					  "name": "WithdrawPSP22Error"
 					}
 				  ]
 				}
@@ -1179,48 +1425,6 @@ const nft_pool_generator_contract = {
 				"variant": {
 				  "variants": [
 					{
-					  "fields": [
-						{
-						  "type": 3
-						}
-					  ],
-					  "index": 0,
-					  "name": "Ok"
-					},
-					{
-					  "fields": [
-						{
-						  "type": 21
-						}
-					  ],
-					  "index": 1,
-					  "name": "Err"
-					}
-				  ]
-				}
-			  },
-			  "params": [
-				{
-				  "name": "T",
-				  "type": 3
-				},
-				{
-				  "name": "E",
-				  "type": 21
-				}
-			  ],
-			  "path": [
-				"Result"
-			  ]
-			}
-		  },
-		  {
-			"id": 21,
-			"type": {
-			  "def": {
-				"variant": {
-				  "variants": [
-					{
 					  "index": 0,
 					  "name": "CallerIsNotOwner"
 					},
@@ -1238,6 +1442,141 @@ const nft_pool_generator_contract = {
 				"ownable",
 				"OwnableError"
 			  ]
+			}
+		  },
+		  {
+			"id": 21,
+			"type": {
+			  "def": {
+				"variant": {
+				  "variants": [
+					{
+					  "fields": [
+						{
+						  "type": 3
+						}
+					  ],
+					  "index": 0,
+					  "name": "Ok"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 20
+						}
+					  ],
+					  "index": 1,
+					  "name": "Err"
+					}
+				  ]
+				}
+			  },
+			  "params": [
+				{
+				  "name": "T",
+				  "type": 3
+				},
+				{
+				  "name": "E",
+				  "type": 20
+				}
+			  ],
+			  "path": [
+				"Result"
+			  ]
+			}
+		  },
+		  {
+			"id": 22,
+			"type": {
+			  "def": {
+				"variant": {
+				  "variants": [
+					{
+					  "fields": [
+						{
+						  "type": 2,
+						  "typeName": "u8"
+						}
+					  ],
+					  "index": 0,
+					  "name": "U8"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 23,
+						  "typeName": "u16"
+						}
+					  ],
+					  "index": 1,
+					  "name": "U16"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 24,
+						  "typeName": "u32"
+						}
+					  ],
+					  "index": 2,
+					  "name": "U32"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 5,
+						  "typeName": "u64"
+						}
+					  ],
+					  "index": 3,
+					  "name": "U64"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 6,
+						  "typeName": "u128"
+						}
+					  ],
+					  "index": 4,
+					  "name": "U128"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 17,
+						  "typeName": "Vec<u8>"
+						}
+					  ],
+					  "index": 5,
+					  "name": "Bytes"
+					}
+				  ]
+				}
+			  },
+			  "path": [
+				"openbrush_contracts",
+				"traits",
+				"types",
+				"Id"
+			  ]
+			}
+		  },
+		  {
+			"id": 23,
+			"type": {
+			  "def": {
+				"primitive": "u16"
+			  }
+			}
+		  },
+		  {
+			"id": 24,
+			"type": {
+			  "def": {
+				"primitive": "u32"
+			  }
 			}
 		  }
 		]

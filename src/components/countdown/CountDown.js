@@ -1,7 +1,7 @@
 import React from "react";
 import Countdown, { zeroPad } from "react-countdown";
 
-import { Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 
 export default function IWCountDown({ date }) {
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
@@ -9,10 +9,20 @@ export default function IWCountDown({ date }) {
       return <Text>Pool ended!</Text>;
     } else {
       return (
-        <span>
-          {zeroPad(days)}d {zeroPad(hours)}h {zeroPad(minutes)}m{" "}
-          {zeroPad(seconds)}s
-        </span>
+        <Flex>
+          <Text textAlign="left" minW="42px">
+            {zeroPad(days)}d
+          </Text>
+          <Text textAlign="left" minW="40px">
+            {zeroPad(hours)}h
+          </Text>
+          <Text textAlign="left" minW="44px">
+            {zeroPad(minutes)}m
+          </Text>
+          <Text textAlign="left" minW="36px">
+            {zeroPad(seconds)}s
+          </Text>
+        </Flex>
       );
     }
   };

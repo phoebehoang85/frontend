@@ -3,6 +3,7 @@ import {
   Circle,
   Flex,
   Image,
+  Skeleton,
   Table,
   TableContainer,
   Tbody,
@@ -20,11 +21,36 @@ import { useHistory, useLocation } from "react-router-dom";
 import { formatNumDynDecimal } from "utils";
 import ImageCloudFlare from "components/image-cf/ImageCF";
 import { addressShortener } from "utils";
+import FadeIn from "react-fade-in/lib/FadeIn";
 
-export function IWTable({ tableHeader, tableBody, mode }) {
+export function IWTable({
+  tableHeader,
+  tableBody,
+  mode,
+  loading,
+  isDisableRowClick = false,
+  customURLRowClick = "",
+}) {
   const history = useHistory();
   const location = useLocation();
 
+  function onClickRowHandler(itemObj) {
+    if (isDisableRowClick) return;
+
+    if (customURLRowClick) {
+      history.push({
+        state: { ...itemObj, mode },
+        pathname: `${customURLRowClick}/${itemObj?.poolContract}`,
+      });
+
+      return;
+    }
+
+    history.push({
+      state: { ...itemObj, mode },
+      pathname: `${location.pathname}/${itemObj?.poolContract}`,
+    });
+  }
   return (
     <TableContainer
       w="full"
@@ -63,38 +89,73 @@ export function IWTable({ tableHeader, tableBody, mode }) {
         </Thead>
 
         <Tbody>
-          {tableBody?.map((itemObj, idx) => {
-            return (
-              <Fragment key={idx}>
-                <Tr
-                  h="60px"
-                  cursor="pointer"
-                  _hover={{ bg: "bg.1" }}
-                  onClick={() =>
-                    history.push({
-                      state: { ...itemObj, mode },
-                      pathname: `${location.pathname}/${itemObj?.poolContract}`,
-                    })
-                  }
-                >
-                  {tableHeader?.map((i, idx) => {
-                    return (
-                      <Fragment key={idx}>
-                        <Td>{formatDataCellTable(itemObj, i?.name)}</Td>
-                      </Fragment>
-                    );
-                  })}
-                </Tr>
-              </Fragment>
-            );
-          })}
+          {loading ? (
+            <>
+              <Tr>
+                {tableHeader?.map((_, idx) => (
+                  <Td p="0" key={idx}>
+                    <Skeleton
+                      startColor="#E8FDFF"
+                      endColor="#93F0F5"
+                      height="60px"
+                    />
+                  </Td>
+                ))}
+              </Tr>
+              <Tr>
+                {tableHeader?.map((_, idx) => (
+                  <Td p="0" key={idx}>
+                    <Skeleton
+                      startColor="#E8FDFF"
+                      endColor="#93F0F5"
+                      height="60px"
+                    />
+                  </Td>
+                ))}
+              </Tr>
+              <Tr>
+                {tableHeader?.map((_, idx) => (
+                  <Td p="0" key={idx}>
+                    <Skeleton
+                      startColor="#E8FDFF"
+                      endColor="#93F0F5"
+                      height="60px"
+                    />
+                  </Td>
+                ))}
+              </Tr>
+            </>
+          ) : (
+            tableBody?.map((itemObj, idx) => {
+              return (
+                <Fragment key={idx}>
+                  <Tr
+                    h="60px"
+                    cursor="pointer"
+                    _hover={{ bg: "bg.1" }}
+                    onClick={() => onClickRowHandler(itemObj)}
+                  >
+                    {tableHeader?.map((i, idx) => {
+                      return (
+                        <Td key={idx}>
+                          <FadeIn>
+                            {formatDataCellTable(itemObj, i?.name, mode)}
+                          </FadeIn>
+                        </Td>
+                      );
+                    })}
+                  </Tr>
+                </Fragment>
+              );
+            })
+          )}
         </Tbody>
       </Table>
     </TableContainer>
   );
 }
 
-export const formatDataCellTable = (itemObj, header) => {
+export const formatDataCellTable = (itemObj, header, mode) => {
   switch (header) {
     case "totalStaked":
       const extPart = `NFT${itemObj[header] > 1 ? "s" : ""}`;
@@ -108,10 +169,12 @@ export const formatDataCellTable = (itemObj, header) => {
       );
 
     case "multiplier":
-      return (
-        <>
-          <Text>{(itemObj[header] / 10 ** 12).toFixed(6)}</Text>
-        </>
+      return mode === "TOKEN_FARM" ? (
+        <Text>{(itemObj[header] / 10 ** 6).toFixed(2)}</Text>
+      ) : mode === "NFT_FARM" ? (
+        <Text>{(itemObj[header] / 10 ** 12).toFixed(2)}</Text>
+      ) : (
+        <></>
       );
 
     case "rewardPool":
@@ -232,7 +295,7 @@ export const formatDataCellTable = (itemObj, header) => {
     case "totalSupply":
       return (
         <>
-          <Text>{formatNumDynDecimal(itemObj[header] / 10 ** 12)}</Text>
+          <Text>{formatNumDynDecimal(itemObj[header])}</Text>
         </>
       );
 
@@ -244,9 +307,10 @@ export const formatDataCellTable = (itemObj, header) => {
       );
 
     case "tokenTotalSupply":
+      const tokenTotalSupply = itemObj[header].replaceAll(",", "");
       return (
         <>
-          <Text>{formatNumDynDecimal(itemObj[header] / 10 ** 12)}</Text>
+          <Text>{formatNumDynDecimal(tokenTotalSupply / 10 ** 12)}</Text>
         </>
       );
 

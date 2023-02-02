@@ -62,7 +62,7 @@ export const fetchUserBalance = createAsyncThunk(
   "wallet/fetchUserBalance",
   async ({ currentAccount, api }, thunkAPI) => {
     // TODO: check can fix warning about storing api on redux?
-    const walBalance = await execContractQuery(
+    const inwBalance = await execContractQuery(
       currentAccount?.address,
       //thunkAPI.getState().wallet.api,
       api,
@@ -73,7 +73,7 @@ export const fetchUserBalance = createAsyncThunk(
       currentAccount?.address
     );
 
-    const wal = formatQueryResultToNumber(walBalance);
+    const inw = formatQueryResultToNumber(inwBalance);
 
     const azeroBalance = await getAzeroBalanceOfAddress({
       api,
@@ -81,7 +81,7 @@ export const fetchUserBalance = createAsyncThunk(
     });
 
     const azero = formatNumDynDecimal(azeroBalance);
-    return { wal, azero };
+    return { inw, azero };
   }
 );
 

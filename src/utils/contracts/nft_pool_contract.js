@@ -1,8 +1,8 @@
 const nft_pool_contract = {
-  CONTRACT_ADDRESS: "5GnSVjWkh7wCrMDEEVipZGzJJm3RUqXz8DFUtJd4gXAfPS5w",
+  CONTRACT_ADDRESS: "5EGKfYGeYVtNzTRPvTZejKoD7W5ZAnaEdXKCi2kmTV91VKmk",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0x24b04d61a74554b377a59845e92c8877a591801bbbbcb501bb21107d1b19e798",
+		"hash": "0x3afde28f620265f1ebaa5dfc4bde9a0e5ff01745f91e8480ab93e7e191dc1b7c",
 		"language": "ink! 3.4.0",
 		"compiler": "rustc 1.68.0-nightly"
 	  },
@@ -100,6 +100,84 @@ const nft_pool_contract = {
 		  "docs": [],
 		  "events": [],
 		  "messages": [
+			{
+			  "args": [
+				{
+				  "label": "wal_contract",
+				  "type": {
+					"displayName": [
+					  "AccountId"
+					],
+					"type": 0
+				  }
+				},
+				{
+				  "label": "psp34_contract_address",
+				  "type": {
+					"displayName": [
+					  "AccountId"
+					],
+					"type": 0
+				  }
+				},
+				{
+				  "label": "psp22_contract_address",
+				  "type": {
+					"displayName": [
+					  "AccountId"
+					],
+					"type": 0
+				  }
+				},
+				{
+				  "label": "multiplier",
+				  "type": {
+					"displayName": [
+					  "Balance"
+					],
+					"type": 4
+				  }
+				},
+				{
+				  "label": "duration",
+				  "type": {
+					"displayName": [
+					  "u64"
+					],
+					"type": 7
+				  }
+				},
+				{
+				  "label": "start_time",
+				  "type": {
+					"displayName": [
+					  "u64"
+					],
+					"type": 7
+				  }
+				},
+				{
+				  "label": "unstake_fee",
+				  "type": {
+					"displayName": [
+					  "Balance"
+					],
+					"type": 4
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "initialize",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "Result"
+				],
+				"type": 17
+			  },
+			  "selector": "0xf2f6dba3"
+			},
 			{
 			  "args": [
 				{
@@ -216,7 +294,7 @@ const nft_pool_contract = {
 				  "ownable_external",
 				  "RenounceOwnershipOutput"
 				],
-				"type": 21
+				"type": 22
 			  },
 			  "selector": "0x5e228753"
 			},
@@ -253,39 +331,9 @@ const nft_pool_contract = {
 				  "ownable_external",
 				  "TransferOwnershipOutput"
 				],
-				"type": 21
+				"type": 22
 			  },
 			  "selector": "0x11f43efd"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::duration",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "DurationOutput"
-				],
-				"type": 7
-			  },
-			  "selector": "0xec96d641"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::unstake_fee",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "UnstakeFeeOutput"
-				],
-				"type": 4
-			  },
-			  "selector": "0xc74b547f"
 			},
 			{
 			  "args": [
@@ -314,6 +362,51 @@ const nft_pool_contract = {
 			  "selector": "0xaaa53e1a"
 			},
 			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::unstake_fee",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "UnstakeFeeOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0xc74b547f"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::total_staked",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "TotalStakedOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0x6d230adf"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::reward_pool",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "RewardPoolOutput"
+				],
+				"type": 4
+			  },
+			  "selector": "0xfc6c3a08"
+			},
+			{
 			  "args": [
 				{
 				  "label": "amount",
@@ -338,6 +431,77 @@ const nft_pool_contract = {
 				"type": 17
 			  },
 			  "selector": "0x7be928b9"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::start_time",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "StartTimeOutput"
+				],
+				"type": 7
+			  },
+			  "selector": "0xc48cf63e"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::psp22_contract_address",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "Psp22ContractAddressOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0x0da3be06"
+			},
+			{
+			  "args": [
+				{
+				  "label": "staker",
+				  "type": {
+					"displayName": [
+					  "genericpoolcontracttrait_external",
+					  "GetStakeInfoInput1"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::get_stake_info",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "GetStakeInfoOutput"
+				],
+				"type": 23
+			  },
+			  "selector": "0x7d91f5c8"
+			},
+			{
+			  "args": [],
+			  "docs": [],
+			  "label": "GenericPoolContractTrait::staking_contract_address",
+			  "mutates": false,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "genericpoolcontracttrait_external",
+				  "StakingContractAddressOutput"
+				],
+				"type": 0
+			  },
+			  "selector": "0xb22a7a83"
 			},
 			{
 			  "args": [],
@@ -372,103 +536,17 @@ const nft_pool_contract = {
 			{
 			  "args": [],
 			  "docs": [],
-			  "label": "GenericPoolContractTrait::staking_contract_address",
+			  "label": "GenericPoolContractTrait::duration",
 			  "mutates": false,
 			  "payable": false,
 			  "returnType": {
 				"displayName": [
 				  "genericpoolcontracttrait_external",
-				  "StakingContractAddressOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0xb22a7a83"
-			},
-			{
-			  "args": [
-				{
-				  "label": "staker",
-				  "type": {
-					"displayName": [
-					  "genericpoolcontracttrait_external",
-					  "GetStakeInfoInput1"
-					],
-					"type": 0
-				  }
-				}
-			  ],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::get_stake_info",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "GetStakeInfoOutput"
-				],
-				"type": 23
-			  },
-			  "selector": "0x7d91f5c8"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::start_time",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "StartTimeOutput"
+				  "DurationOutput"
 				],
 				"type": 7
 			  },
-			  "selector": "0xc48cf63e"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::total_staked",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "TotalStakedOutput"
-				],
-				"type": 4
-			  },
-			  "selector": "0x6d230adf"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::psp22_contract_address",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "Psp22ContractAddressOutput"
-				],
-				"type": 0
-			  },
-			  "selector": "0x0da3be06"
-			},
-			{
-			  "args": [],
-			  "docs": [],
-			  "label": "GenericPoolContractTrait::reward_pool",
-			  "mutates": false,
-			  "payable": false,
-			  "returnType": {
-				"displayName": [
-				  "genericpoolcontracttrait_external",
-				  "RewardPoolOutput"
-				],
-				"type": 4
-			  },
-			  "selector": "0xfc6c3a08"
+			  "selector": "0xec96d641"
 			},
 			{
 			  "args": [
@@ -531,6 +609,140 @@ const nft_pool_contract = {
 				"type": 7
 			  },
 			  "selector": "0x2a30e9be"
+			},
+			{
+			  "args": [
+				{
+				  "label": "psp22_contract_address",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferPsp22Input1"
+					],
+					"type": 0
+				  }
+				},
+				{
+				  "label": "amount",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferPsp22Input2"
+					],
+					"type": 4
+				  }
+				},
+				{
+				  "label": "receiver",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferPsp22Input3"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [
+				" This function allow contract owner withdraw PSP22 to an account in case there is any token sent to contract by mistake"
+			  ],
+			  "label": "AdminTrait::tranfer_psp22",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "admintrait_external",
+				  "TranferPsp22Output"
+				],
+				"type": 17
+			  },
+			  "selector": "0xd9aad284"
+			},
+			{
+			  "args": [
+				{
+				  "label": "nft_contract_address",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferNftInput1"
+					],
+					"type": 0
+				  }
+				},
+				{
+				  "label": "token_id",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferNftInput2"
+					],
+					"type": 11
+				  }
+				},
+				{
+				  "label": "receiver",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "TranferNftInput3"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [
+				" This function allow contract owner withdraw NFT to an account in case there is any NFT sent to contract by mistake"
+			  ],
+			  "label": "AdminTrait::tranfer_nft",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "admintrait_external",
+				  "TranferNftOutput"
+				],
+				"type": 17
+			  },
+			  "selector": "0xed1e1dfa"
+			},
+			{
+			  "args": [
+				{
+				  "label": "value",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "WithdrawFeeInput1"
+					],
+					"type": 4
+				  }
+				},
+				{
+				  "label": "receiver",
+				  "type": {
+					"displayName": [
+					  "admintrait_external",
+					  "WithdrawFeeInput2"
+					],
+					"type": 0
+				  }
+				}
+			  ],
+			  "docs": [
+				" This function allows contract owner to withdraw contract balance to his account."
+			  ],
+			  "label": "AdminTrait::withdraw_fee",
+			  "mutates": true,
+			  "payable": false,
+			  "returnType": {
+				"displayName": [
+				  "admintrait_external",
+				  "WithdrawFeeOutput"
+				],
+				"type": 17
+			  },
+			  "selector": "0x07573e99"
 			}
 		  ]
 		},
@@ -749,6 +961,41 @@ const nft_pool_contract = {
 				  }
 				},
 				"name": "staking_list_data"
+			  },
+			  {
+				"layout": {
+				  "struct": {
+					"fields": [
+					  {
+						"layout": {
+						  "enum": {
+							"dispatchKey": "0xd343691000000000000000000000000000000000000000000000000000000000",
+							"variants": {
+							  "0": {
+								"fields": [
+								  {
+									"layout": {
+									  "cell": {
+										"key": "0xd443691000000000000000000000000000000000000000000000000000000000",
+										"ty": 3
+									  }
+									},
+									"name": null
+								  }
+								]
+							  },
+							  "1": {
+								"fields": []
+							  }
+							}
+						  }
+						},
+						"name": "_reserved"
+					  }
+					]
+				  }
+				},
+				"name": "admin_data"
 			  }
 			]
 		  }
@@ -1134,8 +1381,34 @@ const nft_pool_contract = {
 					  "name": "PSP34Error"
 					},
 					{
+					  "fields": [
+						{
+						  "type": 21,
+						  "typeName": "OwnableError"
+						}
+					  ],
 					  "index": 3,
+					  "name": "OwnableError"
+					},
+					{
+					  "index": 4,
 					  "name": "CannotTransfer"
+					},
+					{
+					  "index": 5,
+					  "name": "NotEnoughBalance"
+					},
+					{
+					  "index": 6,
+					  "name": "WithdrawFeeError"
+					},
+					{
+					  "index": 7,
+					  "name": "WithdrawNFTError"
+					},
+					{
+					  "index": 8,
+					  "name": "WithdrawPSP22Error"
 					}
 				  ]
 				}
@@ -1263,48 +1536,6 @@ const nft_pool_contract = {
 				"variant": {
 				  "variants": [
 					{
-					  "fields": [
-						{
-						  "type": 3
-						}
-					  ],
-					  "index": 0,
-					  "name": "Ok"
-					},
-					{
-					  "fields": [
-						{
-						  "type": 22
-						}
-					  ],
-					  "index": 1,
-					  "name": "Err"
-					}
-				  ]
-				}
-			  },
-			  "params": [
-				{
-				  "name": "T",
-				  "type": 3
-				},
-				{
-				  "name": "E",
-				  "type": 22
-				}
-			  ],
-			  "path": [
-				"Result"
-			  ]
-			}
-		  },
-		  {
-			"id": 22,
-			"type": {
-			  "def": {
-				"variant": {
-				  "variants": [
-					{
 					  "index": 0,
 					  "name": "CallerIsNotOwner"
 					},
@@ -1321,6 +1552,48 @@ const nft_pool_contract = {
 				"errors",
 				"ownable",
 				"OwnableError"
+			  ]
+			}
+		  },
+		  {
+			"id": 22,
+			"type": {
+			  "def": {
+				"variant": {
+				  "variants": [
+					{
+					  "fields": [
+						{
+						  "type": 3
+						}
+					  ],
+					  "index": 0,
+					  "name": "Ok"
+					},
+					{
+					  "fields": [
+						{
+						  "type": 21
+						}
+					  ],
+					  "index": 1,
+					  "name": "Err"
+					}
+				  ]
+				}
+			  },
+			  "params": [
+				{
+				  "name": "T",
+				  "type": 3
+				},
+				{
+				  "name": "E",
+				  "type": 21
+				}
+			  ],
+			  "path": [
+				"Result"
 			  ]
 			}
 		  },

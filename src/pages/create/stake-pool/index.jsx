@@ -29,17 +29,20 @@ import { addressShortener } from "utils";
 import DateTimePicker from "react-datetime-picker";
 import pool_generator_contract from "utils/contracts/pool_generator";
 import { toastMessages } from "constants";
+import { fetchMyStakingPools } from "redux/slices/myPoolsSlice";
 
 export default function CreateStakePoolPage({ api }) {
   const dispatch = useDispatch();
+  
   const { currentAccount } = useSelector((s) => s.wallet);
+  const { myStakingPoolsList, loading } = useSelector((s) => s.myPools);
 
   const [createTokenFee, setCreateTokenFee] = useState(0);
   const [faucetTokensList, setFaucetTokensList] = useState([]);
 
   const [selectedContractAddr, setSelectedContractAddr] = useState("");
-  const [duration, setDuration] = useState(0);
-  const [apy, setApy] = useState(0);
+  const [duration, setDuration] = useState("");
+  const [apy, setApy] = useState("");
   const [startTime, setStartTime] = useState(new Date());
 
   const [tokenBalance, setTokenBalance] = useState(0);
@@ -86,7 +89,7 @@ export default function CreateStakePoolPage({ api }) {
   useEffect(() => {
     let isUnmounted = false;
     const getFaucetTokensListData = async () => {
-      let { ret, status, message } = await APICall.getFaucetTokensList();
+      let { ret, status, message } = await APICall.getTokensList({});
 
       if (status === "OK") {
         if (isUnmounted) return;
@@ -135,11 +138,11 @@ export default function CreateStakePoolPage({ api }) {
     }
 
     if (
-      parseInt(currentAccount?.balance?.wal?.replaceAll(",", "")) <
+      parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) <
       createTokenFee
     ) {
       toast.error(
-        `You don't have enough WAL. Stake costs ${createTokenFee} WAL`
+        `You don't have enough INW. Create Stake Pool costs ${createTokenFee} INW`
       );
       return;
     }
@@ -162,7 +165,7 @@ export default function CreateStakePoolPage({ api }) {
 
     await delay(3000);
 
-    toast.success("Step 2: Process unstaking...");
+    toast.success("Step 2: Process...");
 
     await execContractTx(
       currentAccount,
@@ -180,32 +183,28 @@ export default function CreateStakePoolPage({ api }) {
 
     await APICall.askBEupdate({ type: "pool", poolContract: "new" });
 
-    setApy(0);
-    setDuration(0);
+    setApy("");
+    setDuration("");
     setStartTime(new Date());
 
-    toast.success("Please wait up to 10s for the data to be updated");
+    await delay(3000);
 
-    await delay(2000).then(() => {
-      currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
-      fetchTokenBalance();
-    });
-  }
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchUserBalance({ currentAccount, api }));
+          dispatch(fetchMyStakingPools({ currentAccount }));
+        }
 
-  const [myPoolList, setMyPoolList] = useState([]);
-
-  useEffect(() => {
-    const fetchMyPools = async () => {
-      const { status, ret } = await APICall.getUserStakingPools({
-        owner: currentAccount?.address,
-      });
-
-      if (status === "OK") {
-        setMyPoolList(ret);
+        fetchTokenBalance();
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
       }
-    };
-    fetchMyPools();
-  }, [currentAccount?.address]);
+    );
+  }
 
   const tableData = {
     tableHeader: [
@@ -228,28 +227,23 @@ export default function CreateStakePoolPage({ api }) {
         tooltipContent: "",
         label: "Decimal",
       },
-      {
-        name: "tokenTotalSupply",
-        hasTooltip: false,
-        tooltipContent: "",
-        label: "Initial Mint",
-      },
+
       {
         name: "apy",
         hasTooltip: false,
         tooltipContent: "",
-        label: "APY",
+        label: "APR",
       },
       {
         name: "rewardPool",
-        hasTooltip: false,
-        tooltipContent: "",
+        hasTooltip: true,
+        tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
       },
       {
         name: "totalStaked",
-        hasTooltip: false,
-        tooltipContent: "",
+        hasTooltip: true,
+        tooltipContent: `Total Value Locked: Total tokens staked into this pool`,
         label: "TVL",
       },
 
@@ -261,7 +255,7 @@ export default function CreateStakePoolPage({ api }) {
       },
     ],
 
-    tableBody: [...myPoolList],
+    tableBody: myStakingPoolsList,
   };
   return (
     <>
@@ -273,7 +267,7 @@ export default function CreateStakePoolPage({ api }) {
             Staker earns tokens at fixed APR. The creation costs
             <Text as="span" fontWeight="700" color="text.1">
               {" "}
-              {createTokenFee} WAL
+              {createTokenFee} INW
             </Text>
           </span>
         }
@@ -297,7 +291,6 @@ export default function CreateStakePoolPage({ api }) {
                 id="token"
                 placeholder="Select token"
                 onChange={({ target }) => {
-
                   setSelectedContractAddr(target.value);
                 }}
               >
@@ -313,13 +306,14 @@ export default function CreateStakePoolPage({ api }) {
               <IWInput
                 onChange={({ target }) => setSelectedContractAddr(target.value)}
                 value={selectedContractAddr}
-                placeholder="Address to check"
+                placeholder="Contract Address"
                 label="or enter token contract address"
               />
             </Box>
 
             <Box w="full">
               <IWInput
+                placeholder="0"
                 type="number"
                 value={duration}
                 label="Pool Length (days)"
@@ -357,15 +351,15 @@ export default function CreateStakePoolPage({ api }) {
             <Box w="full">
               <IWInput
                 isDisabled={true}
-                value={`${currentAccount?.balance?.wal || 0} WAL`}
-                label="Your WAL Balance"
+                value={`${currentAccount?.balance?.inw || 0} INW`}
+                label="Your INW Balance"
               />
             </Box>
 
             <Box w="full">
               <IWInput
                 type="number"
-                placeholder="0%"
+                placeholder="0"
                 label="Annual Percentage Yield (APR) %"
                 value={apy}
                 onChange={({ target }) => setApy(target.value)}
@@ -396,7 +390,12 @@ export default function CreateStakePoolPage({ api }) {
         title="My Staking Pools"
         description=""
       >
-        <IWTable {...tableData} />
+        <IWTable
+          {...tableData}
+          mode="STAKING_POOL"
+          loading={loading}
+          customURLRowClick="/my-pools"
+        />
       </SectionContainer>
     </>
   );
