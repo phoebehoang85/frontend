@@ -29,6 +29,7 @@ import { delay } from "utils";
 import { formatNumToBN } from "utils";
 import azt_contract from "utils/contracts/azt_contract";
 import nft_pool_generator_contract from "utils/contracts/nft_pool_generator_contract";
+import { fetchMyNFTPools } from "redux/slices/myPoolsSlice";
 
 export default function CreateNFTLPPage({ api }) {
   const dispatch = useDispatch();
@@ -52,7 +53,7 @@ export default function CreateNFTLPPage({ api }) {
     const ret = faucetTokensList.find(
       (token) => token?.contractAddress === selectedContractAddr
     );
-    
+
     return ret?.decimal ?? 0;
   }, [faucetTokensList, selectedContractAddr]);
 
@@ -94,7 +95,7 @@ export default function CreateNFTLPPage({ api }) {
   useEffect(() => {
     let isUnmounted = false;
     const getFaucetTokensListData = async () => {
-      let { ret, status, message } = await APICall.getFaucetTokensList();
+      let { ret, status, message } = await APICall.getTokensList({});
 
       if (status === "OK") {
         if (isUnmounted) return;
@@ -223,55 +224,31 @@ export default function CreateNFTLPPage({ api }) {
 
     await APICall.askBEupdate({ type: "nft", poolContract: "new" });
 
-    setMultiplier(0);
-    setDuration(0);
+    setMultiplier("");
+    setDuration("");
     setStartTime(new Date());
+    setSelectedContractAddr("");
+    setSelectedCollectionAddr("");
 
-    toast.success("Please wait up to 10s for the data to be updated");
+    await delay(3000);
 
-    await delay(6000).then(() => {
-      currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
-      fetchTokenBalance();
-      fetchMyPoolsList();
-    });
-  }
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchMyNFTPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
 
-  const [myNFTPoolList, setMyNFTPoolList] = useState([]);
-
-  const fetchMyPoolsList = useCallback(
-    async (isUnmounted) => {
-      const { status, ret } = await APICall.getUserNFTLP({
-        owner: currentAccount?.address,
-      });
-
-      if (status === "OK") {
-        const nftLPListAddNftInfo = await Promise.all(
-          ret?.map(async (nftLP) => {
-            // get collection info
-            const { ret } = await APICall.getCollectionByAddressFromArtZero({
-              collection_address: nftLP?.NFTtokenContract,
-            });
-
-            if (ret[0]) {
-              nftLP = { ...nftLP, nftInfo: ret[0] };
-            }
-
-            return nftLP;
-          })
-        );
-
-        if (isUnmounted) return;
-        setMyNFTPoolList(nftLPListAddNftInfo);
+        fetchTokenBalance();
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
       }
-    },
-    [currentAccount?.address]
-  );
-
-  useEffect(() => {
-    let isUnmounted;
-
-    fetchMyPoolsList(isUnmounted);
-  }, [currentAccount?.address, fetchMyPoolsList]);
+    );
+  }
+  const { myNFTPoolsList, loading } = useSelector((s) => s.myPools);
 
   const tableData = {
     tableHeader: [
@@ -313,7 +290,7 @@ export default function CreateNFTLPPage({ api }) {
       },
     ],
 
-    tableBody: [...myNFTPoolList],
+    tableBody: myNFTPoolsList,
   };
 
   return (
@@ -477,7 +454,12 @@ export default function CreateNFTLPPage({ api }) {
         title="My ArtZero's Yield Farm Pools"
         description=""
       >
-        <IWTable {...tableData} mode="NFT_FARM" customURLRowClick="/my-pools" />
+        <IWTable
+          {...tableData}
+          mode="NFT_FARM"
+          loading={loading}
+          customURLRowClick="/my-pools"
+        />
       </SectionContainer>
     </>
   );

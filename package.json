@@ -35,6 +35,7 @@
     "react-datetime-picker": "^4.1.1",
     "react-dom": "17.0.2",
     "react-dropzone": "^12.0.4",
+    "react-fade-in": "^2.0.1",
     "react-floaterjs": "^1.0.6",
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.3.1",

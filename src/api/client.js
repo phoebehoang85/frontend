@@ -42,7 +42,27 @@ export const APICall = {
     return await client("POST", "/getPools", {});
   },
 
-  getNftLPList: async () => {
+  // Get list of staking pools by owner
+  getStakingPoolsListByOwner: async ({ owner }) => {
+    return await client("POST", "/getPoolByOwner", {
+      owner,
+    });
+  },
+
+  // Get staking pool by address
+  getStakingPoolByAddress: async ({ poolContract }) => {
+    return await client("POST", "/getPoolByAddress", {
+      poolContract,
+    });
+  },
+
+  //  Get list of NFT pools
+  getNFTLPList: async ({
+    limit = 1000,
+    offset = 0,
+    sort = -1,
+    showZeroPool = true,
+  }) => {
     const ret = await client("POST", "/getNFTPools", {
       // sort: 1,
       // limit: 5,
@@ -72,20 +92,34 @@ export const APICall = {
     return ret;
   },
 
-  getUserNFTLP: async ({ owner }) => {
-    const ret = await client("POST", "/getNFTPoolByOwner", {
-      owner,
+  //  Get list of NFT pools
+  getTokenLPList: async ({
+    limit = 1000,
+    offset = 0,
+    sort = -1,
+    showZeroPool = true,
+  }) => {
+    const ret = await client("POST", "/getLPPools", {
+      limit,
+      offset,
+      sort,
+      showZeroPool,
     });
 
     return ret;
   },
 
-  getUserTokenLP: async ({ owner }) => {
-    const ret = await client("POST", "/getLPPoolByOwner", {
+  // Get list of Token pools by owner
+  getTokenLPListByOwner: async ({ owner }) => {
+    return await client("POST", "/getLPPoolByOwner", {
       owner,
     });
 
-    return ret;
+  // Get Token pool by address
+  getTokenLPByAddress: async ({ poolContract }) => {
+    return await client("POST", "/getLPPoolByAddress", {
+      poolContract,
+    });
   },
 
   askBEupdate: async ({ type, poolContract }) => {
@@ -139,7 +173,7 @@ export const APICall = {
     return ret;
   },
 
-  getNftByIdFromArtZero: async ({ collection_address, token_id }) => {
+  getNFTByIdFromArtZero: async ({ collection_address, token_id }) => {
     const ret = await client(
       "POST",
       "/getNFTByID",

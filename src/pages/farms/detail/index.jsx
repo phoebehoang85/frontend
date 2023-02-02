@@ -23,7 +23,7 @@ import CardTwoColumn from "components/card/CardTwoColumn";
 import CardThreeColumn from "components/card/CardThreeColumn";
 import IWCardNFTWrapper from "components/card/CardNFTWrapper";
 import { formatDataCellTable } from "components/table/IWTable";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useState, useEffect } from "react";
 import { execContractQuery } from "utils/contracts";
 import nft_pool_contract from "utils/contracts/nft_pool_contract";
@@ -45,15 +45,33 @@ import { calcUnclaimedRewardTokenLP } from "utils";
 import lp_pool_contract from "utils/contracts/lp_pool_contract";
 import IWInput from "components/input/Input";
 import { NFTBannerCard } from "components/card/Card";
+import { useMemo } from "react";
+import { fetchUserBalance } from "redux/slices/walletSlice";
+import { fetchAllNFTPools } from "redux/slices/allPoolsSlice";
+import { fetchAllTokenPools } from "redux/slices/allPoolsSlice";
+import { isPoolEnded } from "utils";
 
 export default function FarmDetailPage() {
-  // const params = useParams();
+  const { state } = useLocation();
+
   const { currentAccount } = useSelector((s) => s.wallet);
+  const { allNFTPoolsList, allTokenPoolsList } = useSelector((s) => s.allPools);
+
+  const currentNFTPool = useMemo(() => {
+    return allNFTPoolsList?.find(
+      (p) => p?.poolContract === state?.poolContract
+    );
+  }, [allNFTPoolsList, state?.poolContract]);
+
+  const currentTokenPool = useMemo(() => {
+    return allTokenPoolsList?.find(
+      (p) => p?.poolContract === state?.poolContract
+    );
+  }, [allTokenPoolsList, state?.poolContract]);
 
   const location = useLocation();
 
   const currMode = location?.state?.mode;
-  const { state } = useLocation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -101,6 +119,14 @@ export default function FarmDetailPage() {
 
     cardValue: {
       ...state,
+      totalStaked:
+        state?.mode === "NFT_FARM"
+          ? currentNFTPool?.totalStaked
+          : currentTokenPool?.totalStaked,
+      rewardPool:
+        state?.mode === "NFT_FARM"
+          ? currentNFTPool?.rewardPool
+          : currentTokenPool?.rewardPool,
     },
   };
 
@@ -121,7 +147,21 @@ export default function FarmDetailPage() {
           Pool Info<Show above="md">rmation</Show>
         </>
       ),
-      component: <PoolInfo {...state} />,
+      component: (
+        <PoolInfo
+          {...state}
+          rewardPool={
+            state?.mode === "NFT_FARM"
+              ? currentNFTPool?.rewardPool
+              : currentTokenPool?.rewardPool
+          }
+          totalStaked={
+            state?.mode === "NFT_FARM"
+              ? currentNFTPool?.totalStaked
+              : currentTokenPool?.totalStaked
+          }
+        />
+      ),
       isDisabled: false,
     },
   ];
@@ -248,16 +288,20 @@ const MyStakeRewardInfoNFT = ({
   tokenDecimal,
   multiplier,
   NFTtokenContract,
+  startTime,
+  duration,
   ...rest
 }) => {
-  const { currentAccount } = useSelector((s) => s.wallet);
+  const dispatch = useDispatch();
+
+  const { currentAccount, api } = useSelector((s) => s.wallet);
 
   const [unstakeFee, setUnstakeFee] = useState(0);
 
   const [stakeInfo, setStakeInfo] = useState(null);
   const [tokenBalance, setTokenBalance] = useState();
-  const [availableNFT, setAvailableNFT] = useState([]);
-  const [stakedNFT, setStakedNFT] = useState([]);
+  const [availableNFT, setAvailableNFT] = useState(null);
+  const [stakedNFT, setStakedNFT] = useState(null);
 
   const fetchUserStakeInfo = useCallback(async () => {
     if (!currentAccount?.balance) return;
@@ -323,6 +367,10 @@ const MyStakeRewardInfoNFT = ({
   const fetchStakedNFT = useCallback(async () => {
     let isUnmounted = false;
 
+    if (stakeInfo?.stakedValue === 0) {
+      setStakedNFT([]);
+    }
+
     if (stakeInfo?.stakedValue > 0) {
       const listData = await Promise.all(
         [...Array(stakeInfo?.stakedValue)].map(async (_, idx) => {
@@ -341,7 +389,7 @@ const MyStakeRewardInfoNFT = ({
 
           let stakedID = queryResult?.toHuman().Ok;
 
-          const { status, ret } = await APICall.getNftByIdFromArtZero({
+          const { status, ret } = await APICall.getNFTByIdFromArtZero({
             collection_address: nftInfo?.nftContractAddress,
             token_id: parseInt(stakedID.U64),
           });
@@ -429,10 +477,26 @@ const MyStakeRewardInfoNFT = ({
       "claimReward"
     );
 
-    await delay(2000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-    });
+    await APICall.askBEupdate({ type: "pool", poolContract });
+
+    await delay(3000);
+
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchAllNFTPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+
+        fetchUserStakeInfo();
+        fetchTokenBalance();
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   }
 
   async function stakeNftHandler(tokenID) {
@@ -441,7 +505,12 @@ const MyStakeRewardInfoNFT = ({
       return;
     }
 
-    if (!rewardPool || parseInt(rewardPool) < 0) {
+    if (isPoolEnded(startTime, duration)) {
+      toast.error("Pool is ended!");
+      return;
+    }
+
+    if (!rewardPool || parseInt(rewardPool) <= 0) {
       toast.error("There is no reward balance in this pool!");
       return;
     }
@@ -477,17 +546,32 @@ const MyStakeRewardInfoNFT = ({
     );
 
     await APICall.askBEupdate({ type: "nft", poolContract });
+    await APICall.askBEupdate({ type: "pool", poolContract });
     await APICall.askBEupdateNFTFromArtZero({
       token_id: tokenID,
       collection_address: NFTtokenContract,
     });
 
-    toast.success("Please wait up to 10s for the data to be updated");
+    await delay(3000);
 
-    await delay(6000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-    });
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchAllNFTPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+
+        fetchUserStakeInfo();
+        fetchTokenBalance();
+        fetchAvailableNFT();
+        fetchStakedNFT();
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   }
 
   async function unstakeNftHandler(tokenID) {
@@ -534,17 +618,32 @@ const MyStakeRewardInfoNFT = ({
     );
 
     await APICall.askBEupdate({ type: "nft", poolContract });
+    await APICall.askBEupdate({ type: "pool", poolContract });
     await APICall.askBEupdateNFTFromArtZero({
       token_id: tokenID,
       collection_address: NFTtokenContract,
     });
 
-    toast.success("Please wait up to 10s for the data to be updated");
+    await delay(3000);
 
-    await delay(6000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-    });
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchAllNFTPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+
+        fetchUserStakeInfo();
+        fetchTokenBalance();
+        fetchAvailableNFT();
+        fetchStakedNFT();
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   }
 
   return (
@@ -567,8 +666,12 @@ const MyStakeRewardInfoNFT = ({
                 : "No account selected",
             },
             {
-              title: "Account Balance",
+              title: "AZERO Balance",
               content: `${balance?.azero || 0} AZERO`,
+            },
+            {
+              title: "INW Balance",
+              content: `${balance?.inw || 0} INW`,
             },
             {
               title: `${tokenSymbol} Balance`,
@@ -640,9 +743,13 @@ const MyStakeRewardInfoToken = ({
   tokenDecimal,
   multiplier,
   lptokenContract,
+  duration,
+  startTime,
   ...rest
 }) => {
-  const { currentAccount } = useSelector((s) => s.wallet);
+  const dispatch = useDispatch();
+
+  const { currentAccount, api } = useSelector((s) => s.wallet);
 
   const [unstakeFee, setUnstakeFee] = useState(0);
 
@@ -756,10 +863,24 @@ const MyStakeRewardInfoToken = ({
 
     await APICall.askBEupdate({ type: "lp", poolContract });
 
-    await delay(2000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-    });
+    await delay(3000);
+
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchAllTokenPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+
+        fetchUserStakeInfo();
+        fetchTokenBalance();
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   }
 
   async function stakeTokenLPHandler() {
@@ -768,18 +889,23 @@ const MyStakeRewardInfoToken = ({
       return;
     }
 
+    if (isPoolEnded(startTime, duration)) {
+      toast.error("Pool is ended!");
+      return;
+    }
+
     if (!LPTokenAmount || LPTokenAmount < 0 || LPTokenAmount === "0") {
       toast.error("Invalid Amount!");
       return;
     }
 
-    if (formatChainStringToNumber(LPtokenBalance) < LPTokenAmount) {
-      toast.error("There is not enough balance!");
+    if (!rewardPool || parseInt(rewardPool) <= 0) {
+      toast.error("There is no reward balance in this pool!");
       return;
     }
 
-    if (!rewardPool || parseInt(rewardPool) < 0) {
-      toast.error("There is no reward balance in this pool!");
+    if (formatChainStringToNumber(LPtokenBalance) < LPTokenAmount) {
+      toast.error("There is not enough balance!");
       return;
     }
 
@@ -813,19 +939,39 @@ const MyStakeRewardInfoToken = ({
     );
 
     await APICall.askBEupdate({ type: "lp", poolContract });
-    setLPTokenAmount(0);
 
-    toast.success("Please wait up to 10s for the data to be updated");
+    await delay(3000);
 
-    await delay(6000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-    });
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchAllTokenPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+
+        fetchUserStakeInfo();
+        fetchTokenBalance();
+
+        setLPTokenAmount("");
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   }
 
   async function unstakeTokenLPHandler(tokenID) {
     if (!currentAccount) {
       toast.error(toastMessages.NO_WALLET);
+      return;
+    }
+
+    if (
+      parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) < unstakeFee
+    ) {
+      toast.error(`You don't have enough INW. Unstake costs ${unstakeFee} INW`);
       return;
     }
 
@@ -836,13 +982,6 @@ const MyStakeRewardInfoToken = ({
 
     if (stakeInfo?.stakedValue / 10 ** 12 < LPTokenAmount) {
       toast.error("There is not enough balance!");
-      return;
-    }
-
-    if (
-      parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) < unstakeFee
-    ) {
-      toast.error(`You don't have enough INW. Unstake costs ${unstakeFee} INW`);
       return;
     }
 
@@ -876,14 +1015,28 @@ const MyStakeRewardInfoToken = ({
       formatNumToBN(LPTokenAmount)
     );
 
-    await APICall.askBEupdate({ type: "nft", poolContract });
-    setLPTokenAmount(0);
-    toast.success("Please wait up to 10s for the data to be updated");
+    await APICall.askBEupdate({ type: "lp", poolContract });
 
-    await delay(6000).then(() => {
-      fetchUserStakeInfo();
-      fetchTokenBalance();
-    });
+    await delay(3000);
+
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchAllTokenPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+
+        fetchUserStakeInfo();
+        fetchTokenBalance();
+
+        setLPTokenAmount("");
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   }
 
   return (
@@ -948,7 +1101,7 @@ const MyStakeRewardInfoToken = ({
               title: "My Unclaimed Rewards (FOD)",
               content: `${calcUnclaimedRewardTokenLP({
                 ...stakeInfo,
-                multiplier: multiplier / 10 ** 12,
+                multiplier,
                 tokenDecimal,
               })}`,
             },
@@ -1083,7 +1236,7 @@ const PoolInfo = ({
       {mode === "NFT_FARM" ? (
         <NFTBannerCard cardData={cardDataPoolInfo} nftInfo={nftInfo} />
       ) : null}
-      {console.log("multiplier", multiplier)}{" "}
+
       <Stack
         w="full"
         spacing="30px"
@@ -1124,7 +1277,7 @@ const PoolInfo = ({
             },
           ]}
         />
-        {console.log("mode", mode)}
+
         <Stack w="full" spacing="30px">
           {mode === "TOKEN_FARM" ? (
             <CardTwoColumn

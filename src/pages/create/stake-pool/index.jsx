@@ -29,10 +29,13 @@ import { addressShortener } from "utils";
 import DateTimePicker from "react-datetime-picker";
 import pool_generator_contract from "utils/contracts/pool_generator";
 import { toastMessages } from "constants";
+import { fetchMyStakingPools } from "redux/slices/myPoolsSlice";
 
 export default function CreateStakePoolPage({ api }) {
   const dispatch = useDispatch();
+  
   const { currentAccount } = useSelector((s) => s.wallet);
+  const { myStakingPoolsList, loading } = useSelector((s) => s.myPools);
 
   const [createTokenFee, setCreateTokenFee] = useState(0);
   const [faucetTokensList, setFaucetTokensList] = useState([]);
@@ -86,7 +89,7 @@ export default function CreateStakePoolPage({ api }) {
   useEffect(() => {
     let isUnmounted = false;
     const getFaucetTokensListData = async () => {
-      let { ret, status, message } = await APICall.getFaucetTokensList();
+      let { ret, status, message } = await APICall.getTokensList({});
 
       if (status === "OK") {
         if (isUnmounted) return;
@@ -180,32 +183,28 @@ export default function CreateStakePoolPage({ api }) {
 
     await APICall.askBEupdate({ type: "pool", poolContract: "new" });
 
-    setApy(0);
-    setDuration(0);
+    setApy("");
+    setDuration("");
     setStartTime(new Date());
 
-    toast.success("Please wait up to 10s for the data to be updated");
+    await delay(3000);
 
-    await delay(6000).then(() => {
-      currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
-      fetchTokenBalance();
-    });
-  }
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchUserBalance({ currentAccount, api }));
+          dispatch(fetchMyStakingPools({ currentAccount }));
+        }
 
-  const [myPoolList, setMyPoolList] = useState([]);
-
-  useEffect(() => {
-    const fetchMyPools = async () => {
-      const { status, ret } = await APICall.getUserStakingPools({
-        owner: currentAccount?.address,
-      });
-
-      if (status === "OK") {
-        setMyPoolList(ret);
+        fetchTokenBalance();
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
       }
-    };
-    fetchMyPools();
-  }, [currentAccount?.address]);
+    );
+  }
 
   const tableData = {
     tableHeader: [
@@ -256,7 +255,7 @@ export default function CreateStakePoolPage({ api }) {
       },
     ],
 
-    tableBody: [...myPoolList],
+    tableBody: myStakingPoolsList,
   };
   return (
     <>
@@ -394,6 +393,7 @@ export default function CreateStakePoolPage({ api }) {
         <IWTable
           {...tableData}
           mode="STAKING_POOL"
+          loading={loading}
           customURLRowClick="/my-pools"
         />
       </SectionContainer>

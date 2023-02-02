@@ -5,9 +5,10 @@ import { IWTable } from "components/table/IWTable";
 import { toastMessages } from "constants";
 
 import React, { useState, useEffect } from "react";
-import { useCallback } from "react";
+import { APICall } from "api/client";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import { fetchAllTokensList } from "redux/slices/allPoolsSlice";
 import { fetchUserBalance } from "redux/slices/walletSlice";
 import { delay } from "utils";
 import { isAddressValid } from "utils";
@@ -22,6 +23,7 @@ import psp22_contract from "utils/contracts/psp22_contract";
 export default function CreateTokenPage({ api }) {
   const dispatch = useDispatch();
   const { currentAccount } = useSelector((s) => s.wallet);
+  const { allTokensList, loading } = useSelector((s) => s.allPools);
 
   const [tokenName, setTokenName] = useState("");
   const [mintAddress, setMintAddress] = useState("");
@@ -29,8 +31,6 @@ export default function CreateTokenPage({ api }) {
   const [totalSupply, setTotalSupply] = useState("");
 
   const [createTokenFee, setCreateToken] = useState(0);
-  const [tokenListData, setTokenListData] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchCreateTokenFee = async () => {
@@ -50,56 +50,6 @@ export default function CreateTokenPage({ api }) {
 
     fetchCreateTokenFee();
   }, [currentAccount]);
-
-  const fetchDataTable = useCallback(
-    async (isUnmounted) => {
-      try {
-        let ret = [];
-
-        const result = await execContractQuery(
-          currentAccount?.address,
-          "api",
-          core_contract.CONTRACT_ABI,
-          core_contract.CONTRACT_ADDRESS,
-          0,
-          "tokenManagerTrait::getTokenCount"
-        );
-
-        const tokenCount = result.toHuman().Ok;
-
-        for (let index = tokenCount; index > 0; index--) {
-          const info = await execContractQuery(
-            currentAccount?.address,
-            "api",
-            core_contract.CONTRACT_ABI,
-            core_contract.CONTRACT_ADDRESS,
-            0,
-            "tokenManagerTrait::getTokenInfo",
-            index
-          );
-          if (info) {
-            ret.push(info.toHuman().Ok);
-          }
-        }
-        if (isUnmounted) return;
-
-        setTokenListData(ret);
-        setLoading(false);
-      } catch (error) {
-        console.log("error", error.message);
-        setLoading(false);
-      }
-    },
-    [currentAccount?.address]
-  );
-
-  useEffect(() => {
-    let isUnmounted = false;
-
-    setLoading(true);
-
-    fetchDataTable(isUnmounted);
-  }, [currentAccount, fetchDataTable]);
 
   async function createNewToken() {
     if (!currentAccount) {
@@ -160,17 +110,28 @@ export default function CreateTokenPage({ api }) {
       12 // tokenDecimal
     );
 
+    await APICall.askBEupdate({ type: "token", poolContract: "new" });
+
     setTokenName("");
     setMintAddress("");
     setTokenSymbol("");
-    setTotalSupply(0);
+    setTotalSupply("");
 
-    toast.success("Please wait up to 10s for the data to be updated");
+    await delay(3000);
 
-    await delay(6000).then(() => {
-      currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
-      //   fetchTokenBalance();
-    });
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchAllTokensList({}));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   }
 
   const tableData = {
@@ -219,7 +180,7 @@ export default function CreateTokenPage({ api }) {
       },
     ],
 
-    tableBody: [...tokenListData],
+    tableBody: allTokensList,
   };
 
   return (

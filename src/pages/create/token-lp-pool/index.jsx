@@ -30,10 +30,12 @@ import { delay } from "utils";
 import { formatNumToBN } from "utils";
 import azt_contract from "utils/contracts/azt_contract";
 import lp_pool_generator_contract from "utils/contracts/lp_pool_generator_contract";
+import { fetchMyTokenPools } from "redux/slices/myPoolsSlice";
 
 export default function CreateTokenLPPage({ api }) {
   const dispatch = useDispatch();
   const { currentAccount } = useSelector((s) => s.wallet);
+  const { myTokenPoolsList, loading } = useSelector((s) => s.myPools);
 
   const [createTokenFee, setCreateTokenFee] = useState(0);
 
@@ -130,7 +132,7 @@ export default function CreateTokenLPPage({ api }) {
   useEffect(() => {
     let isUnmounted = false;
     const getFaucetTokensListData = async () => {
-      let { ret, status, message } = await APICall.getFaucetTokensList();
+      let { ret, status, message } = await APICall.getTokensList({});
 
       if (status === "OK") {
         if (isUnmounted) return;
@@ -235,41 +237,31 @@ export default function CreateTokenLPPage({ api }) {
 
     await APICall.askBEupdate({ type: "lp", poolContract: "new" });
 
-    setMultiplier(0);
-    setDuration(0);
+    setMultiplier("");
+    setDuration("");
     setStartTime(new Date());
+    setSelectedContractAddr("");
+    setLPTokenContract("");
 
-    toast.success("Please wait up to 10s for the data to be updated");
+    await delay(3000);
 
-    await delay(6000).then(() => {
-      currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
-      fetchTokenBalance();
-      fetchLPTokenBalance();
-      fetchMyTokenPoolsList();
-    });
-  }
+    toast.promise(
+      delay(10000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchMyTokenPools({ currentAccount }));
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
 
-  const [myTokenPoolList, setMyTokenPoolList] = useState([]);
-
-  const fetchMyTokenPoolsList = useCallback(
-    async (isUnmounted) => {
-      const { status, ret } = await APICall.getUserTokenLP({
-        owner: currentAccount?.address,
-      });
-
-      if (status === "OK") {
-        if (isUnmounted) return;
-        setMyTokenPoolList(ret);
+        fetchTokenBalance();
+        fetchLPTokenBalance();
+      }),
+      {
+        loading: "Please wait up to 10s for the data to be updated! ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
       }
-    },
-    [currentAccount?.address]
-  );
-
-  useEffect(() => {
-    let isUnmounted;
-
-    fetchMyTokenPoolsList(isUnmounted);
-  }, [currentAccount?.address, fetchMyTokenPoolsList]);
+    );
+  }
 
   const tableData = {
     tableHeader: [
@@ -311,7 +303,7 @@ export default function CreateTokenLPPage({ api }) {
       },
     ],
 
-    tableBody: [...myTokenPoolList],
+    tableBody: myTokenPoolsList,
   };
 
   return (
@@ -504,6 +496,7 @@ export default function CreateTokenLPPage({ api }) {
         <IWTable
           {...tableData}
           mode="TOKEN_FARM"
+          loading={loading}
           customURLRowClick="/my-pools"
         />
       </SectionContainer>

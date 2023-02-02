@@ -21,6 +21,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { formatNumDynDecimal } from "utils";
 import ImageCloudFlare from "components/image-cf/ImageCF";
 import { addressShortener } from "utils";
+import FadeIn from "react-fade-in/lib/FadeIn";
 
 export function IWTable({
   tableHeader,
@@ -124,9 +125,11 @@ export function IWTable({
                   >
                     {tableHeader?.map((i, idx) => {
                       return (
-                        <Fragment key={idx}>
-                          <Td>{formatDataCellTable(itemObj, i?.name, mode)}</Td>
-                        </Fragment>
+                        <Td key={idx}>
+                          <FadeIn>
+                            {formatDataCellTable(itemObj, i?.name, mode)}
+                          </FadeIn>
+                        </Td>
                       );
                     })}
                   </Tr>
@@ -155,7 +158,7 @@ export const formatDataCellTable = (itemObj, header, mode) => {
 
     case "multiplier":
       return mode === "TOKEN_FARM" ? (
-        <Text>{(itemObj[header] / 10 ** 18).toFixed(2)}</Text>
+        <Text>{(itemObj[header] / 10 ** 6).toFixed(2)}</Text>
       ) : mode === "NFT_FARM" ? (
         <Text>{(itemObj[header] / 10 ** 12).toFixed(2)}</Text>
       ) : (
@@ -278,11 +281,9 @@ export const formatDataCellTable = (itemObj, header, mode) => {
       );
 
     case "totalSupply":
-      const totalSupply = itemObj[header].replaceAll(",", "");
-
       return (
         <>
-          <Text>{formatNumDynDecimal(totalSupply / 10 ** 12)}</Text>
+          <Text>{formatNumDynDecimal(itemObj[header])}</Text>
         </>
       );
 

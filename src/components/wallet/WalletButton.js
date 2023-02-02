@@ -38,6 +38,7 @@ import SubWalletLogo from "assets/img/wallet/SubWalletLogo.svg";
 import WalletModal from "./WalletModal";
 import { disconnectCurrentAccount } from "redux/slices/walletSlice";
 import AddressCopier from "components/address-copier/AddressCopier";
+import { logOutMyPools } from "redux/slices/myPoolsSlice";
 
 export default function WalletButton({ currentAccountAddress }) {
   const dispatch = useDispatch();
@@ -327,7 +328,11 @@ export const WalletConnect = () => {
           <Button
             w="full"
             variant="outline"
-            onClick={() => dispatch(disconnectCurrentAccount())}
+            onClick={() => {
+              dispatch(disconnectCurrentAccount());
+              dispatch(logOutMyPools());
+              history.push("/faucet");
+            }}
           >
             Log out
           </Button>
