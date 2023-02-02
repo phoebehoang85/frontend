@@ -482,7 +482,7 @@ const MyStakeRewardInfoNFT = ({
     await delay(3000);
 
     toast.promise(
-      delay(6000).then(() => {
+      delay(10000).then(() => {
         if (currentAccount) {
           dispatch(fetchAllNFTPools({ currentAccount }));
           dispatch(fetchUserBalance({ currentAccount, api }));
@@ -555,7 +555,7 @@ const MyStakeRewardInfoNFT = ({
     await delay(3000);
 
     toast.promise(
-      delay(6000).then(() => {
+      delay(10000).then(() => {
         if (currentAccount) {
           dispatch(fetchAllNFTPools({ currentAccount }));
           dispatch(fetchUserBalance({ currentAccount, api }));
@@ -627,7 +627,7 @@ const MyStakeRewardInfoNFT = ({
     await delay(3000);
 
     toast.promise(
-      delay(6000).then(() => {
+      delay(10000).then(() => {
         if (currentAccount) {
           dispatch(fetchAllNFTPools({ currentAccount }));
           dispatch(fetchUserBalance({ currentAccount, api }));
@@ -866,7 +866,7 @@ const MyStakeRewardInfoToken = ({
     await delay(3000);
 
     toast.promise(
-      delay(6000).then(() => {
+      delay(10000).then(() => {
         if (currentAccount) {
           dispatch(fetchAllTokenPools({ currentAccount }));
           dispatch(fetchUserBalance({ currentAccount, api }));
@@ -943,7 +943,7 @@ const MyStakeRewardInfoToken = ({
     await delay(3000);
 
     toast.promise(
-      delay(6000).then(() => {
+      delay(10000).then(() => {
         if (currentAccount) {
           dispatch(fetchAllTokenPools({ currentAccount }));
           dispatch(fetchUserBalance({ currentAccount, api }));
@@ -1020,7 +1020,7 @@ const MyStakeRewardInfoToken = ({
     await delay(3000);
 
     toast.promise(
-      delay(6000).then(() => {
+      delay(10000).then(() => {
         if (currentAccount) {
           dispatch(fetchAllTokenPools({ currentAccount }));
           dispatch(fetchUserBalance({ currentAccount, api }));

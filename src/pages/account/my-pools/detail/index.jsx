@@ -517,7 +517,7 @@ const MyPoolInfo = ({
       await delay(3000);
 
       toast.promise(
-        delay(6000).then(() => {
+        delay(10000).then(() => {
           if (currentAccount) {
             dispatch(fetchMyStakingPools({ currentAccount }));
             dispatch(fetchAllStakingPools({ currentAccount }));
@@ -570,7 +570,7 @@ const MyPoolInfo = ({
       await delay(3000);
 
       toast.promise(
-        delay(6000).then(() => {
+        delay(10000).then(() => {
           if (currentAccount) {
             dispatch(fetchMyNFTPools({ currentAccount }));
             dispatch(fetchAllNFTPools({ currentAccount }));
@@ -623,7 +623,7 @@ const MyPoolInfo = ({
       await delay(3000);
 
       toast.promise(
-        delay(6000).then(() => {
+        delay(10000).then(() => {
           if (currentAccount) {
             dispatch(fetchMyTokenPools({ currentAccount }));
             dispatch(fetchAllTokenPools({ currentAccount }));
@@ -684,7 +684,7 @@ const MyPoolInfo = ({
       await delay(3000);
 
       toast.promise(
-        delay(6000).then(() => {
+        delay(10000).then(() => {
           if (currentAccount) {
             dispatch(fetchMyStakingPools({ currentAccount }));
             dispatch(fetchAllStakingPools({ currentAccount }));
@@ -720,7 +720,7 @@ const MyPoolInfo = ({
       await delay(3000);
 
       toast.promise(
-        delay(6000).then(() => {
+        delay(10000).then(() => {
           if (currentAccount) {
             dispatch(fetchMyNFTPools({ currentAccount }));
             dispatch(fetchAllNFTPools({ currentAccount }));
@@ -756,7 +756,7 @@ const MyPoolInfo = ({
       await delay(3000);
 
       toast.promise(
-        delay(6000).then(() => {
+        delay(10000).then(() => {
           if (currentAccount) {
             dispatch(fetchMyTokenPools({ currentAccount }));
             dispatch(fetchAllTokenPools({ currentAccount }));
