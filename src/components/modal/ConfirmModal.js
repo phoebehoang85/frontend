@@ -3,6 +3,7 @@ import {
   Flex,
   Heading,
   Modal,
+  ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
@@ -11,6 +12,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React from "react";
+import { delay } from "utils";
 
 export default function ConfirmModal({
   onClick,
@@ -18,6 +20,7 @@ export default function ConfirmModal({
   message,
   buttonLabel,
   buttonVariant,
+  children,
   ...rest
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -44,11 +47,19 @@ export default function ConfirmModal({
             </Heading>
           </ModalHeader>
 
-          {/* <ModalBody px="46px">.</ModalBody> */}
+          <ModalBody px="46px">{children}</ModalBody>
 
           <ModalFooter px="46px" pb="42px">
             <Flex w="full" justifyContent="center">
-              <Button mx="5px" w="127px" onClick={() => onClick()}>
+              <Button
+                mx="5px"
+                w="127px"
+                onClick={() => {
+                  onClick();
+
+                  delay(500).then(() => onClose());
+                }}
+              >
                 Confirm
               </Button>
               <Button mx="5px" w="127px" variant="outline" onClick={onClose}>

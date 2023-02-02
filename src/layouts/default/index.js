@@ -4,21 +4,9 @@ import Footer from "components/footer/FooterLandingPage.js";
 import Navbar from "components/navbar/Navbar.js";
 import { SidebarContext } from "contexts/SidebarContext";
 import React, { useState } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
-
-import FaucetPage from "pages/faucet";
-import PoolsPage from "pages/pools";
-import PoolDetailPage from "pages/pools/detail";
-import FarmsPage from "pages/farms";
-import FarmDetailPage from "pages/farms/detail";
-import TokensPage from "pages/tokens";
-import CreateTokenPage from "pages/create/token";
-import CreateStakePoolPage from "pages/create/stake-pool";
-import CreateLPPage from "pages/create/lp-pool";
-import MyBalancePage from "pages/account/my-balance";
 
 export default function Default(props) {
-  const { ...rest } = props;
+  const { children, ...rest } = props;
 
   const [fixed] = useState(false);
   const [toggleSidebar, setToggleSidebar] = useState(false);
@@ -60,37 +48,7 @@ export default function Default(props) {
           </Portal>
 
           <Box mx="auto" minH="100vh" pt={["65px", "92px"]}>
-            <Switch>
-              <Route path={`/faucet`} component={FaucetPage} />
-
-              <Route
-                path={`/pools/:contractAddress`}
-                component={PoolDetailPage}
-              />
-              <Route path={`/pools`} component={PoolsPage} />
-
-              <Route
-                path={`/farms/:contractAddress`}
-                component={FarmDetailPage}
-              />
-              <Route path={`/farms`} component={FarmsPage} />
-              <Route path={`/tokens`} component={TokensPage} />
-
-              <Route path={`/create/token`} component={CreateTokenPage} />
-              <Route
-                path={`/create/stake-pool`}
-                component={CreateStakePoolPage}
-              />
-              <Route path={`/create/nft-lp`} component={CreateLPPage} />
-              <Route path={`/create/token-lp`} component={CreateLPPage} />
-              <Redirect from="/create" to="/create/token" />
-
-              <Route path={`/account`} component={MyBalancePage} />
-              <Route path={`/account/my-balance`} component={MyBalancePage} />
-              <Redirect from="/account" to="/account/my-balance" />
-
-              <Redirect from="/" to="/faucet" />
-            </Switch>
+            {children}
           </Box>
 
           <Box>

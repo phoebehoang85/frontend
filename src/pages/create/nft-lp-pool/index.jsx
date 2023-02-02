@@ -12,34 +12,38 @@ import SectionContainer from "components/container/SectionContainer";
 import IWInput from "components/input/Input";
 import { IWTable } from "components/table/IWTable";
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { toast } from "react-hot-toast";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import DateTimePicker from "react-datetime-picker";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserBalance } from "redux/slices/walletSlice";
-import { delay } from "utils";
+import { addressShortener } from "utils";
+import { toast } from "react-hot-toast";
 import { isAddressValid } from "utils";
-import { formatNumToBN } from "utils";
-import { formatQueryResultToNumber } from "utils";
 import { execContractQuery } from "utils/contracts";
-import { execContractTx } from "utils/contracts";
-import azt_contract from "utils/contracts/azt_contract";
+import { formatQueryResultToNumber } from "utils";
 import psp22_contract from "utils/contracts/psp22_contract";
 import { APICall } from "api/client";
-import { addressShortener } from "utils";
-import DateTimePicker from "react-datetime-picker";
-import pool_generator_contract from "utils/contracts/pool_generator";
 import { toastMessages } from "constants";
+import { execContractTx } from "utils/contracts";
+import { fetchUserBalance } from "redux/slices/walletSlice";
+import { delay } from "utils";
+import { formatNumToBN } from "utils";
+import azt_contract from "utils/contracts/azt_contract";
+import nft_pool_generator_contract from "utils/contracts/nft_pool_generator_contract";
 
-export default function CreateStakePoolPage({ api }) {
+export default function CreateNFTLPPage({ api }) {
   const dispatch = useDispatch();
   const { currentAccount } = useSelector((s) => s.wallet);
 
   const [createTokenFee, setCreateTokenFee] = useState(0);
-  const [faucetTokensList, setFaucetTokensList] = useState([]);
 
+  const [faucetTokensList, setFaucetTokensList] = useState([]);
   const [selectedContractAddr, setSelectedContractAddr] = useState("");
+
+  const [collectionList, setCollectionList] = useState([]);
+  const [selectedCollectionAddr, setSelectedCollectionAddr] = useState("");
+
   const [duration, setDuration] = useState(0);
-  const [apy, setApy] = useState(0);
+  const [multiplier, setMultiplier] = useState(0);
   const [startTime, setStartTime] = useState(new Date());
 
   const [tokenBalance, setTokenBalance] = useState(0);
@@ -80,10 +84,6 @@ export default function CreateStakePoolPage({ api }) {
   }, [faucetTokensList, selectedContractAddr]);
 
   useEffect(() => {
-    fetchTokenBalance();
-  }, [fetchTokenBalance]);
-
-  useEffect(() => {
     let isUnmounted = false;
     const getFaucetTokensListData = async () => {
       let { ret, status, message } = await APICall.getFaucetTokensList();
@@ -97,16 +97,35 @@ export default function CreateStakePoolPage({ api }) {
       toast.error(`Get faucet tokens list failed. ${message}`);
     };
     getFaucetTokensListData();
+
+    const getCollectionListData = async () => {
+      let { ret, status, message } = await APICall.getAllCollectionsFromArtZero(
+        { isActive: true, ignoreNoNFT: false }
+      );
+
+      if (status === "OK") {
+        if (isUnmounted) return;
+
+        return setCollectionList(ret);
+      }
+
+      toast.error(`Get Collection list failed. ${message}`);
+    };
+    getCollectionListData();
     return () => (isUnmounted = true);
   }, []);
+
+  useEffect(() => {
+    fetchTokenBalance();
+  }, [fetchTokenBalance]);
 
   useEffect(() => {
     const fetchCreateTokenFee = async () => {
       const result = await execContractQuery(
         currentAccount?.address,
         "api",
-        pool_generator_contract.CONTRACT_ABI,
-        pool_generator_contract.CONTRACT_ADDRESS,
+        nft_pool_generator_contract.CONTRACT_ABI,
+        nft_pool_generator_contract.CONTRACT_ADDRESS,
         0,
         "genericPoolGeneratorTrait::getCreationFee"
       );
@@ -119,18 +138,27 @@ export default function CreateStakePoolPage({ api }) {
     fetchCreateTokenFee();
   }, [currentAccount]);
 
-  async function createStakingPoolHandler() {
+  async function createNFTLPHandler() {
     if (!currentAccount) {
       toast.error(toastMessages.NO_WALLET);
       return;
     }
 
-    if (!selectedContractAddr || !apy || !duration || !startTime) {
+    if (
+      !selectedContractAddr ||
+      !selectedCollectionAddr ||
+      !multiplier ||
+      !duration ||
+      !startTime
+    ) {
       toast.error(`Please fill in all data!`);
       return;
     }
 
-    if (!isAddressValid(selectedContractAddr)) {
+    if (
+      !isAddressValid(selectedContractAddr) ||
+      !isAddressValid(selectedCollectionAddr)
+    ) {
       return toast.error("Invalid address!");
     }
 
@@ -154,7 +182,7 @@ export default function CreateStakePoolPage({ api }) {
       azt_contract.CONTRACT_ADDRESS,
       0, //-> value
       "psp22::approve",
-      pool_generator_contract.CONTRACT_ADDRESS,
+      nft_pool_generator_contract.CONTRACT_ADDRESS,
       formatNumToBN(createTokenFee)
     );
 
@@ -167,78 +195,89 @@ export default function CreateStakePoolPage({ api }) {
     await execContractTx(
       currentAccount,
       "api",
-      pool_generator_contract.CONTRACT_ABI,
-      pool_generator_contract.CONTRACT_ADDRESS,
+      nft_pool_generator_contract.CONTRACT_ABI,
+      nft_pool_generator_contract.CONTRACT_ADDRESS,
       0, //-> value
       "newPool",
       currentAccount?.address,
+      selectedCollectionAddr,
       selectedContractAddr,
-      parseInt(apy * 100),
+      formatNumToBN(multiplier),
       duration * 24 * 60 * 60 * 1000,
       startTime.getTime()
     );
 
-    await APICall.askBEupdate({ type: "pool", poolContract: "new" });
+    await APICall.askBEupdate({ type: "nft", poolContract: "new" });
 
-    setApy(0);
+    setMultiplier(0);
     setDuration(0);
     setStartTime(new Date());
 
     toast.success("Please wait up to 10s for the data to be updated");
 
-    await delay(2000).then(() => {
+    await delay(5000).then(() => {
       currentAccount && dispatch(fetchUserBalance({ currentAccount, api }));
       fetchTokenBalance();
+      fetchMyPoolsList();
     });
   }
 
-  const [myPoolList, setMyPoolList] = useState([]);
+  const [myNFTPoolList, setMyNFTPoolList] = useState([]);
 
-  useEffect(() => {
-    const fetchMyPools = async () => {
-      const { status, ret } = await APICall.getUserStakingPools({
+  const fetchMyPoolsList = useCallback(
+    async (isUnmounted) => {
+      const { status, ret } = await APICall.getUserNFTLP({
         owner: currentAccount?.address,
       });
 
       if (status === "OK") {
-        setMyPoolList(ret);
+        const nftLPListAddNftInfo = await Promise.all(
+          ret?.map(async (nftLP) => {
+            // get collection info
+            const { ret } = await APICall.getCollectionByAddressFromArtZero({
+              collection_address: nftLP?.NFTtokenContract,
+            });
+
+            if (ret[0]) {
+              nftLP = { ...nftLP, nftInfo: ret[0] };
+            }
+
+            return nftLP;
+          })
+        );
+
+        if (isUnmounted) return;
+        setMyNFTPoolList(nftLPListAddNftInfo);
       }
-    };
-    fetchMyPools();
-  }, [currentAccount?.address]);
+    },
+    [currentAccount?.address]
+  );
+
+  useEffect(() => {
+    let isUnmounted;
+
+    fetchMyPoolsList(isUnmounted);
+  }, [currentAccount?.address, fetchMyPoolsList]);
 
   const tableData = {
     tableHeader: [
       {
-        name: "poolContract",
+        name: "nftInfo",
         hasTooltip: false,
         tooltipContent: "",
-        label: "Pool Address",
+        label: "Stake Collection",
       },
-
       {
         name: "tokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
-        label: "Symbol",
+        label: "Earn",
       },
       {
-        name: "tokenDecimal",
+        name: "totalStaked",
         hasTooltip: false,
         tooltipContent: "",
-        label: "Decimal",
-      },
-      {
-        name: "tokenTotalSupply",
-        hasTooltip: false,
-        tooltipContent: "",
-        label: "Initial Mint",
-      },
-      {
-        name: "apy",
-        hasTooltip: false,
-        tooltipContent: "",
-        label: "APY",
+        label: "TVL",
       },
       {
         name: "rewardPool",
@@ -247,30 +286,30 @@ export default function CreateStakePoolPage({ api }) {
         label: "Reward Pool",
       },
       {
-        name: "totalStaked",
-        hasTooltip: false,
+        name: "multiplier",
+        hasTooltip: true,
         tooltipContent: "",
-        label: "TVL",
+        label: "Multiplier",
       },
-
       {
-        name: "duration",
+        name: "startTime",
         hasTooltip: false,
         tooltipContent: "",
-        label: "End in",
+        label: "Expired In",
       },
     ],
 
-    tableBody: [...myPoolList],
+    tableBody: [...myNFTPoolList],
   };
+
   return (
     <>
       <SectionContainer
         mt={{ base: "0px", xl: "20px" }}
-        title="Create  Staking Pools"
+        title="Create ArtZero's NFT Yield Farms"
         description={
           <span>
-            Staker earns tokens at fixed APR. The creation costs
+            NFT Stakers get rewards in selected token. The creation costs
             <Text as="span" fontWeight="700" color="text.1">
               {" "}
               {createTokenFee} WAL
@@ -288,16 +327,46 @@ export default function CreateStakePoolPage({ api }) {
           >
             <Box w="full">
               <Heading as="h4" size="h4" mb="12px">
-                Token Contract Address
+                Select NFT Collection
               </Heading>
               <Select
-                label="Token Contract Address"
-                value={selectedContractAddr}
+                value={selectedCollectionAddr}
                 // isDisabled={accountInfoLoading}
-                id="token"
+                id="nft-collection"
+                placeholder="Select Collection"
+                onChange={({ target }) => {
+                  setSelectedCollectionAddr(target.value);
+                }}
+              >
+                {collectionList?.map((token, idx) => (
+                  <option key={idx} value={token.nftContractAddress}>
+                    {token?.name} -{" "}
+                    {addressShortener(token?.nftContractAddress)}
+                  </option>
+                ))}
+              </Select>
+            </Box>
+
+            <Box w="full">
+              <IWInput
+                onChange={({ target }) =>
+                  setSelectedCollectionAddr(target.value)
+                }
+                value={selectedCollectionAddr}
+                placeholder="Contract Address"
+                label="or enter collection contract address"
+              />
+            </Box>
+
+            <Box w="full">
+              <Heading as="h4" size="h4" mb="12px">
+                Select Token To Reward Stakers
+              </Heading>
+              <Select
+                value={selectedContractAddr}
+                id="token-collection"
                 placeholder="Select token"
                 onChange={({ target }) => {
-
                   setSelectedContractAddr(target.value);
                 }}
               >
@@ -309,11 +378,12 @@ export default function CreateStakePoolPage({ api }) {
                 ))}
               </Select>
             </Box>
+
             <Box w="full">
               <IWInput
                 onChange={({ target }) => setSelectedContractAddr(target.value)}
                 value={selectedContractAddr}
-                placeholder="Address to check"
+                placeholder="Contract Address"
                 label="or enter token contract address"
               />
             </Box>
@@ -365,10 +435,10 @@ export default function CreateStakePoolPage({ api }) {
             <Box w="full">
               <IWInput
                 type="number"
-                placeholder="0%"
-                label="Annual Percentage Yield (APR) %"
-                value={apy}
-                onChange={({ target }) => setApy(target.value)}
+                placeholder="0"
+                label="Multiplier "
+                value={multiplier}
+                onChange={({ target }) => setMultiplier(target.value)}
               />
             </Box>
 
@@ -381,19 +451,16 @@ export default function CreateStakePoolPage({ api }) {
             </Box>
           </SimpleGrid>
 
-          <Button
-            w="full"
-            maxW={{ lg: "220px" }}
-            onClick={createStakingPoolHandler}
-          >
-            Create Staking Pool{" "}
+          <Button w="full" maxW={{ lg: "260px" }} onClick={createNFTLPHandler}>
+            Create NFT Yield Farms
           </Button>
         </VStack>
       </SectionContainer>
 
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
-        title="My Staking Pools"
+        title="My ArtZero's Yield Farms Pools
+        "
         description=""
       >
         <IWTable {...tableData} />

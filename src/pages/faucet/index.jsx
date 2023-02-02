@@ -5,9 +5,284 @@ import SectionContainer from "components/container/SectionContainer";
 import { AzeroLogo } from "components/icons/Icons";
 import IWInput from "components/input/Input";
 
-import React from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-export default function FaucetPage() {
+import psp22Contract from "utils/contracts/psp22_contract";
+import azt_contract from "utils/contracts/azt_contract";
+
+import { formatQueryResultToNumber } from "utils";
+import { execContractQuery } from "utils/contracts";
+import { addressShortener } from "utils";
+import { APICall } from "api/client";
+import { isAddressValid } from "utils";
+import { toastMessages } from "constants";
+import { toast } from "react-hot-toast";
+import { delay } from "utils";
+import { execContractTx } from "utils/contracts";
+import { formatNumToBN } from "utils";
+import { fetchUserBalance } from "redux/slices/walletSlice";
+
+const walContractAddress = azt_contract.CONTRACT_ADDRESS;
+
+export default function FaucetPage({ api }) {
+  const { currentAccount } = useSelector((s) => s.wallet);
+
+  const dispatch = useDispatch();
+
+  const walBalance = currentAccount?.balance?.wal ?? 0;
+  const azeroBalance = currentAccount?.balance?.azero ?? 0;
+  const [selectedContractAddress, setSelectedContractAddress] = useState(null);
+
+  const [faucetTokensList, setFaucetTokensList] = useState([]);
+
+  const [walMaxCap, setWalMaxCap] = useState(0);
+  const [walMintingCap, setWalMintingCap] = useState(0);
+  const [walTotalMinted, setWalTotalMinted] = useState(0);
+  const [walTotalSupply, setWalTotalSupply] = useState(0);
+  const [availableMint, setAvailableMint] = useState(0);
+  const [walBuyAmount, setWalBuyAmount] = useState(0);
+
+  useEffect(() => {
+    const getFaucetTokensListData = async () => {
+      let { ret, status, message } = await APICall.getFaucetTokensList();
+
+      if (status === "OK") {
+        setFaucetTokensList(ret);
+        return;
+      }
+
+      toast.error(`Get faucet tokens list failed. ${message}`);
+    };
+    getFaucetTokensListData();
+  }, [api, currentAccount, currentAccount?.address]);
+
+  const [accountInfo, setAccountInfo] = useState(null);
+  // eslint-disable-next-line no-unused-vars
+  const [accountInfoLoading, setAccountInfoLoading] = useState(false);
+
+  const prepareAccountInfoData = useCallback(() => {
+    setAccountInfoLoading(true);
+
+    const fetch = async () => {
+      let ret = [
+        {
+          title: "Account Address",
+          content: !currentAccount?.address
+            ? "No account selected"
+            : addressShortener(currentAccount?.address),
+        },
+        { title: "Azero Balance", content: `${azeroBalance} AZERO` },
+        { title: "WAL Balance", content: `${walBalance} WAL` },
+      ];
+
+      try {
+        if (selectedContractAddress) {
+          let balance = await execContractQuery(
+            currentAccount?.address,
+            api,
+            psp22Contract.CONTRACT_ABI,
+            selectedContractAddress,
+            0,
+            "psp22::balanceOf",
+            currentAccount?.address
+          );
+
+          const symbol = faucetTokensList.find(
+            (item) => item.contractAddress === selectedContractAddress
+          )?.symbol;
+
+          ret.push({
+            title: `${symbol} Balance`,
+            content: `${formatQueryResultToNumber(balance)} ${symbol}`,
+          });
+        }
+        setAccountInfoLoading(false);
+        setAccountInfo((prev) => {
+          return ret;
+        });
+      } catch (error) {
+        setAccountInfoLoading(false);
+        toast.error(error.message);
+        console.log("error", error);
+      }
+    };
+
+    fetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    api,
+    azeroBalance,
+    currentAccount?.address,
+    faucetTokensList,
+    selectedContractAddress,
+    walBalance,
+    walTotalSupply,
+  ]);
+
+  useEffect(() => {
+    prepareAccountInfoData();
+  }, [prepareAccountInfoData]);
+
+  const faucetHandler = async (selectedContractAddress) => {
+    if (!api) {
+      toast.error(toastMessages.ERR_API_CONN);
+      return;
+    }
+
+    if (!currentAccount) {
+      toast.error(toastMessages.NO_WALLET);
+      return;
+    }
+
+    if (!selectedContractAddress) {
+      toast.error(toastMessages.NO_TOKEN_SELECTED);
+      return;
+    }
+
+    if (!isAddressValid(selectedContractAddress)) {
+      toast.error(toastMessages.INVALID_ADDRESS);
+      return;
+    }
+
+    await execContractTx(
+      currentAccount,
+      api,
+      psp22Contract.CONTRACT_ABI,
+      selectedContractAddress,
+      0, //-> value
+      "faucet"
+    );
+
+    await delay(2000).then(() => {
+      prepareAccountInfoData();
+    });
+  };
+
+  const getWalMintingCapAndTotalSupply = useCallback(async () => {
+    if (!currentAccount) {
+      setWalTotalSupply(0);
+      setWalMintingCap(0);
+      return;
+    }
+
+    let result = await execContractQuery(
+      currentAccount?.address,
+      api,
+      azt_contract.CONTRACT_ABI,
+      azt_contract.CONTRACT_ADDRESS,
+      0,
+      "tokenMintCapTrait::mintingCap"
+    );
+    const walMintingCap = formatQueryResultToNumber(result);
+
+    setWalMintingCap(walMintingCap);
+
+    if (!api) return setWalTotalSupply(0);
+
+    let result1 = await execContractQuery(
+      currentAccount?.address,
+      api,
+      azt_contract.CONTRACT_ABI,
+      azt_contract.CONTRACT_ADDRESS,
+      0,
+      "psp22::totalSupply"
+    );
+    const walTotalSupply = formatQueryResultToNumber(result1);
+
+    setWalTotalSupply(walTotalSupply);
+
+    const availableMint = ((result - result1) / 10 ** 12).toFixed(4);
+
+    setAvailableMint(availableMint);
+  }, [api, currentAccount?.address]);
+
+  const [walMintingFee, setWalMintingFee] = useState(0);
+
+  useEffect(() => {
+    const getWalMaxCap = async () => {
+      if (!currentAccount) return setWalMaxCap(0);
+
+      let result = await execContractQuery(
+        currentAccount?.address,
+        api,
+        azt_contract.CONTRACT_ABI,
+        azt_contract.CONTRACT_ADDRESS,
+        0,
+        "tokenMintCapTrait::cap"
+      );
+      const walMaxCap = formatQueryResultToNumber(result);
+
+      setWalMaxCap(walMaxCap);
+    };
+    getWalMaxCap();
+
+    getWalMintingCapAndTotalSupply();
+
+    const getWalTotalMinted = async () => {
+      if (!currentAccount) return setWalTotalMinted(0);
+
+      let result = await execContractQuery(
+        currentAccount?.address,
+        api,
+        azt_contract.CONTRACT_ABI,
+        azt_contract.CONTRACT_ADDRESS,
+        0,
+        "tokenMintCapTrait::totalMinted"
+      );
+      const walTotalMinted = formatQueryResultToNumber(result);
+
+      setWalTotalMinted(walTotalMinted);
+    };
+    getWalTotalMinted();
+
+    const getWalMintingFee = async () => {
+      if (!currentAccount) return setWalMintingFee(1);
+
+      let result = await execContractQuery(
+        currentAccount?.address,
+        api,
+        azt_contract.CONTRACT_ABI,
+        azt_contract.CONTRACT_ADDRESS,
+        0,
+        "tokenMintCapTrait::mintingFee"
+      );
+      const mintingFee = formatQueryResultToNumber(result);
+
+      setWalMintingFee(mintingFee);
+    };
+    getWalMintingFee();
+  }, [api, currentAccount, getWalMintingCapAndTotalSupply]);
+
+  const walPublicMintHandler = async () => {
+    if (!api) {
+      toast.error(toastMessages.ERR_API_CONN);
+      return;
+    }
+
+    if (!currentAccount) {
+      toast.error(toastMessages.NO_WALLET);
+      return;
+    }
+
+    await execContractTx(
+      currentAccount,
+      api,
+      azt_contract.CONTRACT_ABI,
+      azt_contract.CONTRACT_ADDRESS,
+      formatNumToBN(parseFloat(walMintingFee) * walBuyAmount), //-> value
+      "tokenMintCapTrait::publicMint",
+      formatNumToBN(walBuyAmount) // -> token_amount, <...args>
+    );
+
+    await delay(2000).then(() => {
+      getWalMintingCapAndTotalSupply();
+
+      setWalBuyAmount(0);
+      dispatch(fetchUserBalance({ currentAccount, api }));
+    });
+  };
+
   return (
     <>
       <SectionContainer
@@ -33,14 +308,7 @@ export default function FaucetPage() {
           alignItems="start"
           direction={{ base: "column", lg: "row" }}
         >
-          <IWCardOneColumn
-            title="My Account"
-            data={[
-              { title: "Account Address", content: "5Dthb...4hiX" },
-              { title: "Azero Balance", content: "25,000.948" },
-              { title: "WAL Balance", content: "99,999.000" },
-            ]}
-          />
+          <IWCardOneColumn title="My Account" data={accountInfo} />
 
           <IWCard w="full" variant="outline" title="Get Test Tokens">
             <IWCard mt="16px" w="full" variant="solid">
@@ -50,15 +318,42 @@ export default function FaucetPage() {
                 direction={{ base: "column", xl: "row" }}
                 align={{ base: "column", xl: "center" }}
               >
-                <Select id="token" defaultValue="Select token">
-                  {["Token A", "Token B", "Token C"].map((item, idx) => (
-                    <option key={idx} value={item}>
-                      {item}
+                {/* {
+                  "_id": "63b44de4e1fde59c4e809c81",
+                  "name": "Azero Monkey",
+                  "symbol": "AZM",
+                  "decimal": 12,
+                  "contractAddress": "5E2NYJjLDU4wMnU9EUs6ujTqZkGLEZicQAeyYRq9EDgvPbsh",
+                  "creator": "5CHujJTu8KgKZ76yKYuYgdMbz7jj4XuALZZYf4mNnuFjCcvw",
+                  "mintTo": "5CHujJTu8KgKZ76yKYuYgdMbz7jj4XuALZZYf4mNnuFjCcvw",
+                  "totalSupply": 500000,
+                  "index": 49,
+                  "__v": 0
+                 } */}
+
+                <Select
+                  // isDisabled={accountInfoLoading}
+                  id="token"
+                  placeholder="Select token"
+                  onChange={({ target }) =>
+                    setSelectedContractAddress(target.value)
+                  }
+                >
+                  {faucetTokensList?.map((token, idx) => (
+                    <option key={idx} value={token.contractAddress}>
+                      {token?.symbol} ({token?.name}) -{" "}
+                      {addressShortener(token?.contractAddress)}
                     </option>
                   ))}
                 </Select>
 
-                <Button minW="130px">Send me</Button>
+                <Button
+                  // isDisabled={accountInfoLoading}
+                  minW="130px"
+                  onClick={() => faucetHandler(selectedContractAddress)}
+                >
+                  Send me
+                </Button>
               </Stack>
             </IWCard>
           </IWCard>
@@ -68,7 +363,14 @@ export default function FaucetPage() {
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
         title="WAL Tokens"
-        description={`WAL tokens are used as transaction fee. 100M WAL tokens are available at 0.05 per WAL. You can trade WAL on PanoramaSwap in due time.`}
+        description={
+          <>
+            WAL tokens are used as transaction fee. 100M WAL tokens are
+            available at {walMintingFee}
+            <AzeroLogo w="14px" h="14px" ml="2px" mb="3px" /> per WAL. You can
+            trade WAL on PanoramaSwap in due time.
+          </>
+        }
       >
         <Stack
           w="full"
@@ -80,8 +382,11 @@ export default function FaucetPage() {
             title="Information"
             data={[
               { title: "Total Name", content: "Ink Whale Token" },
-              { title: "Contract Address", content: "5Dth...34hiX" },
-              { title: "Total Supply", content: "10,036,000.000" },
+              {
+                title: "Contract Address",
+                content: addressShortener(walContractAddress),
+              },
+              { title: "Total Supply", content: walTotalSupply },
               { title: "Token Symbol", content: "WAL" },
             ]}
           />
@@ -95,6 +400,8 @@ export default function FaucetPage() {
                 align={{ base: "column", xl: "center" }}
               >
                 <IWInput
+                  value={walBuyAmount}
+                  onChange={({ target }) => setWalBuyAmount(target.value)}
                   type="number"
                   placeholder="Enter WAL amount"
                   inputRightElementIcon={
@@ -105,139 +412,25 @@ export default function FaucetPage() {
                 />
 
                 <IWInput
+                  value={walBuyAmount * parseFloat(walMintingFee)}
+                  isDisabled={true}
                   type="number"
                   placeholder="0.000000000"
                   inputRightElementIcon={<AzeroLogo />}
                 />
 
                 <Text textAlign="left" w="full" fontSize="md" lineHeight="28px">
-                  (There are 20,952.000 WAL tokens available to mint){" "}
+                  (There are {availableMint} WAL tokens available to mint){" "}
                 </Text>
 
-                <Button w="full">Get WAL</Button>
+                <Button w="full" onClick={() => walPublicMintHandler()}>
+                  Get WAL
+                </Button>
               </Stack>
             </IWCard>
           </IWCard>
         </Stack>
       </SectionContainer>
-
-      {/* <SimpleGrid gap="10px" p={{ base: "30px", md: "80px", xl: "80px" }}>
-        <Heading as="h2" size="h2">
-          Colors
-        </Heading>
-        <Heading as="h5" size="h5">
-          Primary
-        </Heading>
-        <HStack spacing="0">
-          <Square size="50px" bg="brand.100" />
-          <Square size="50px" bg="brand.200" />
-          <Square size="50px" bg="brand.300" />
-          <Square size="50px" bg="brand.400" />
-          <Square size="50px" bg="brand.500" />
-          <Square size="50px" bg="brand.600" />
-          <Square size="50px" bg="brand.700" />
-          <Square size="50px" bg="brand.800" />
-          <Square size="50px" bg="brand.900" />
-        </HStack>
-
-        <HStack>
-          <Circle size="100px" bg="brand.500" />
-        </HStack>
-        <Heading as="h5" size="h5">
-          Text
-        </Heading>
-        <HStack>
-          <Circle size="100px" bg="text.1" />
-          <Circle size="100px" bg="text.2" />
-          <Circle size="100px" bg="text.3" border="1px solid lightgrey" />
-        </HStack>
-        <Heading as="h5" size="h5">
-          Background
-        </Heading>
-        <HStack>
-          <Circle size="100px" bg="bg.1" />
-          <Circle size="100px" bg="bg.2" />
-          <Circle size="100px" bg="bg.3" />
-          <Circle size="100px" bg="bg.4" />
-          <Circle size="100px" bg="bg.5" />
-          <Circle size="100px" bg="bg.6" border="1px solid lightgrey" />
-        </HStack>
-        <Heading as="h5" size="h5">
-          Border
-        </Heading>
-        <HStack>
-          <Circle size="100px" bg="border" />
-        </HStack>
-        <Heading as="h5" size="h5">
-          Decoration
-        </Heading>
-        <HStack>
-          <Circle size="100px" bg="decoration.1" />
-          <Circle size="100px" bg="decoration.2" />
-          <Circle size="100px" bg="decoration.3" />
-          <Circle size="100px" bg="decoration.4" />
-          <Circle size="100px" bg="decoration.5" />
-        </HStack>
-        <Divider />
-        <Heading as="h2" size="h2">
-          Typography
-        </Heading>
-        <>
-          <Heading my="20px" as="h1" size="display" noOfLines={1}>
-            Display -Bold-60/70
-          </Heading>
-          <Heading my="20px" as="h1" size="h1">
-            Heading 01-Outfit-Bold-36/auto
-          </Heading>
-          <Heading my="20px" as="h2" size="h2">
-            Heading 02-Outfit-Bold-30/auto
-          </Heading>
-          <Heading my="20px" as="h3" size="h3">
-            Heading 03-Outfit-Bold-24/auto
-          </Heading>
-          <Heading my="20px" as="h4" size="h4">
-            Heading 04-Outfit-Bold-20/auto
-          </Heading>
-          <Heading my="20px" as="h5" size="h5">
-            Heading 05-Outfit-Bold-18/auto
-          </Heading>{" "}
-          <Heading my="20px" as="h5" size="h6">
-            Heading 06-Outfit-Bold-16/auto
-          </Heading>
-          <Heading my="20px" as="h6" size="menu">
-            Menu-Outfit-Bold-16/auto
-          </Heading>
-          <Text>Body medium-Outfit-Regular -18/30</Text>
-          <Text fontSize="md" lineHeight="28px">
-            Body small-Outfit-Regular -16/28
-          </Text>
-        </>
-        <HStack>
-          <Button w="200px" variant="primary">
-            Button Primary
-          </Button>
-          <Button isDisabled w="200px" variant="primary">
-            Button Primary
-          </Button>
-        </HStack>
-        <HStack>
-          <Button w="200px" variant="secondary">
-            Button Secondary
-          </Button>
-          <Button isDisabled w="200px" variant="secondary">
-            Button Secondary
-          </Button>
-        </HStack>
-        <HStack>
-          <Button w="200px" variant="outline">
-            Button outline
-          </Button>
-          <Button isDisabled w="200px" variant="outline">
-            Button outline
-          </Button>
-        </HStack>
-        <Link>Link</Link>
-      </SimpleGrid> */}
     </>
   );
 }

@@ -7,7 +7,7 @@ export default function IWCardOneColumn(props) {
     w = { base: "full", lg: "30%" },
     title,
     children,
-    data,
+    data = [],
     ...rest
   } = props;
   const styles = useStyleConfig("IWCard", { variant });
