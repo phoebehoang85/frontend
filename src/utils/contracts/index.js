@@ -4,9 +4,9 @@ import { formatBalance } from "@polkadot/util";
 import { toastMessages } from "constants";
 import { toast } from "react-hot-toast";
 
-import {getGasLimit} from "./dryRun";
+import { getGasLimit } from "./dryRun";
 
-import { BN, BN_ONE } from '@polkadot/util';
+import { BN, BN_ONE } from "@polkadot/util";
 const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
 
 let wsApi;
@@ -68,7 +68,7 @@ export function initialApi(a) {
 // For read-only queries we don't need the exact gas limit
 // as the account will not be charged for making the call.
 export function readOnlyGasLimit(api) {
-  return api.registry.createType('WeightV2', {
+  return api.registry.createType("WeightV2", {
     refTime: new BN(1_000_000_000_000),
     proofSize: MAX_CALL_WEIGHT,
   });
@@ -121,7 +121,7 @@ export async function execContractTx(
     wsApi,
     address: caller?.address,
   });
-  
+
   // console.log("azeroBalance = ", azeroBalance);
 
   if (azeroBalance < 0.005) {
@@ -132,7 +132,7 @@ export async function execContractTx(
   const contract = new ContractPromise(wsApi, contractAbi, contractAddress);
 
   let unsubscribe;
-  
+
   const { signer } = await web3FromSource(caller?.meta?.source);
 
   // gasLimit = await getEstimatedGas(

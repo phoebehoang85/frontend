@@ -22,6 +22,7 @@ import { execContractTx } from "utils/contracts";
 import { formatNumToBN } from "utils";
 import { fetchUserBalance } from "redux/slices/walletSlice";
 import { formatNumDynDecimal } from "utils";
+import { formatChainStringToNumber } from "utils";
 
 const inwContractAddress = azt_contract.CONTRACT_ADDRESS;
 
@@ -154,6 +155,8 @@ export default function FaucetPage({ api }) {
       "tokenMintCapTrait::mintingCap"
     );
 
+    const inwMintingCap = formatQueryResultToNumber(result);
+
     let result1 = await execContractQuery(
       process.env.REACT_APP_PUBLIC_ADDRESS,
       api,
@@ -162,11 +165,14 @@ export default function FaucetPage({ api }) {
       0,
       "psp22::totalSupply"
     );
+
     const inwTotalSupply = formatQueryResultToNumber(result1);
 
     setInwTotalSupply(inwTotalSupply);
 
-    const availableMint = ((result - result1) / 10 ** 12).toFixed(4);
+    const availableMint =
+      formatChainStringToNumber(inwMintingCap) -
+      formatChainStringToNumber(inwTotalSupply);
 
     setAvailableMint(availableMint);
   }, [api]);
@@ -215,12 +221,24 @@ export default function FaucetPage({ api }) {
       formatNumToBN(inwBuyAmount) // -> token_amount, <...args>
     );
 
-    await delay(2000).then(() => {
-      getInwMintingCapAndTotalSupply();
+    await delay(5000);
 
-      setInwBuyAmount(0);
-      dispatch(fetchUserBalance({ currentAccount, api }));
-    });
+    toast.promise(
+      delay(1000).then(() => {
+        if (currentAccount) {
+          dispatch(fetchUserBalance({ currentAccount, api }));
+        }
+
+        getInwMintingCapAndTotalSupply();
+
+        setInwBuyAmount("");
+      }),
+      {
+        loading: "Fetching new data ... ",
+        success: "Done !",
+        error: "Could not fetch data!!!",
+      }
+    );
   };
 
   return (
@@ -235,9 +253,9 @@ export default function FaucetPage({ api }) {
             <Link
               isExternal
               color="text.1"
-              href="https://faucet-smartnet.test.azero.dev"
+              href="https://faucet.test.azero.dev"
             >
-              https://faucet-smartnet.test.azero.dev
+              https://faucet.test.azero.dev
             </Link>
           </span>
         }

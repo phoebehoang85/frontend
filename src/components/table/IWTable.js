@@ -2,6 +2,7 @@ import { QuestionOutlineIcon } from "@chakra-ui/icons";
 import {
   Circle,
   Flex,
+  Heading,
   Image,
   Skeleton,
   Table,
@@ -114,28 +115,38 @@ export function IWTable({
               </Tr>
             </>
           ) : (
-            tableBody?.map((itemObj, idx) => {
-              return (
-                <Fragment key={idx}>
-                  <Tr
-                    h="60px"
-                    cursor="pointer"
-                    _hover={{ bg: "bg.1" }}
-                    onClick={() => onClickRowHandler(itemObj)}
-                  >
-                    {tableHeader?.map((i, idx) => {
-                      return (
-                        <Td key={idx}>
-                          <FadeIn>
-                            {formatDataCellTable(itemObj, i?.name, mode)}
-                          </FadeIn>
-                        </Td>
-                      );
-                    })}
-                  </Tr>
-                </Fragment>
-              );
-            })
+            <>
+              {tableBody?.length === 0 ? (
+                <Tr>
+                  <Td colSpan={tableHeader?.length} textAlign="center">
+                    <Heading size="h3">No data found!</Heading>
+                  </Td>
+                </Tr>
+              ) : (
+                tableBody?.map((itemObj, idx) => {
+                  return (
+                    <Fragment key={idx}>
+                      <Tr
+                        h="60px"
+                        cursor="pointer"
+                        _hover={{ bg: "bg.1" }}
+                        onClick={() => onClickRowHandler(itemObj)}
+                      >
+                        {tableHeader?.map((i, idx) => {
+                          return (
+                            <Td key={idx}>
+                              <FadeIn>
+                                {formatDataCellTable(itemObj, i?.name, mode)}
+                              </FadeIn>
+                            </Td>
+                          );
+                        })}
+                      </Tr>
+                    </Fragment>
+                  );
+                })
+              )}
+            </>
           )}
         </Tbody>
       </Table>
