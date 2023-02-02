@@ -97,8 +97,8 @@ export default function PoolDetailPage({ api }) {
 
     cardValue: {
       ...state,
-      rewardPool: currentPool?.rewardPool,
       totalStaked: currentPool?.totalStaked,
+      rewardPool: currentPool?.rewardPool,
     },
   };
 
@@ -352,13 +352,13 @@ const MyStakeRewardInfo = ({
   }
 
   async function handleStake() {
-    if (isPoolEnded(startTime, duration)) {
-      toast.error("Pool is ended!");
+    if (!currentAccount) {
+      toast.error(toastMessages.NO_WALLET);
       return;
     }
 
-    if (!currentAccount) {
-      toast.error(toastMessages.NO_WALLET);
+    if (isPoolEnded(startTime, duration)) {
+      toast.error("Pool is ended!");
       return;
     }
 
@@ -367,7 +367,7 @@ const MyStakeRewardInfo = ({
       return;
     }
 
-    if (!rewardPool || parseInt(rewardPool) < 0) {
+    if (!rewardPool || parseInt(rewardPool) <= 0) {
       toast.error("There is no reward balance in this pool!");
       return;
     }
@@ -422,6 +422,13 @@ const MyStakeRewardInfo = ({
   async function handleUnstake() {
     if (!currentAccount) {
       toast.error(toastMessages.NO_WALLET);
+      return;
+    }
+
+    if (
+      parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) < unstakeFee
+    ) {
+      toast.error(`You don't have enough INW. Unstake costs ${unstakeFee} INW!`);
       return;
     }
 

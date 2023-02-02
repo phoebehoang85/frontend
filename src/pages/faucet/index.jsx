@@ -14,7 +14,6 @@ import azt_contract from "utils/contracts/azt_contract";
 import { formatQueryResultToNumber } from "utils";
 import { execContractQuery } from "utils/contracts";
 import { addressShortener } from "utils";
-import { APICall } from "api/client";
 import { isAddressValid } from "utils";
 import { toastMessages } from "constants";
 import { toast } from "react-hot-toast";
@@ -28,7 +27,7 @@ const inwContractAddress = azt_contract.CONTRACT_ADDRESS;
 
 export default function FaucetPage({ api }) {
   const { currentAccount } = useSelector((s) => s.wallet);
-  const { allTokensList, loading } = useSelector((s) => s.allPools);
+  const { allTokensList } = useSelector((s) => s.allPools);
 
   const dispatch = useDispatch();
 
