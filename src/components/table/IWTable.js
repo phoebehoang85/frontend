@@ -119,7 +119,9 @@ export function IWTable({
               {tableBody?.length === 0 ? (
                 <Tr>
                   <Td colSpan={tableHeader?.length} textAlign="center">
-                    <Heading size="h3">No data found!</Heading>
+                    <Text textAlign="center" w="full">
+                      No data found!
+                    </Text>
                   </Td>
                 </Tr>
               ) : (

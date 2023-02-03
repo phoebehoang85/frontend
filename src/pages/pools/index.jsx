@@ -55,7 +55,7 @@ export default function PoolsPage({ api }) {
   const tableData = {
     tableHeader: [
       {
-        name: "tokenName",
+        name: "tokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Stake & Earn",

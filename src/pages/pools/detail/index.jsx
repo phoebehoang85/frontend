@@ -64,7 +64,7 @@ export default function PoolDetailPage({ api }) {
   const cardData = {
     cardHeaderList: [
       {
-        name: "tokenName",
+        name: "tokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Stake & Earn",

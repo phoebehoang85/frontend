@@ -58,7 +58,7 @@ export default function MyPoolDetailPage({ api }) {
     (s) => s.myPools
   );
   const { state } = useLocation();
-
+  console.log("MyPoolDetailPage state.mode", state?.mode);
   const currentStakingPool = useMemo(() => {
     return myStakingPoolsList?.find(
       (p) => p?.poolContract === state?.poolContract
@@ -82,7 +82,7 @@ export default function MyPoolDetailPage({ api }) {
   const stakingPoolCardData = {
     cardHeaderList: [
       {
-        name: "tokenName",
+        name: "tokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Stake & Earn",
@@ -121,13 +121,13 @@ export default function MyPoolDetailPage({ api }) {
   const tokenPoolCardData = {
     cardHeaderList: [
       {
-        name: "lptokenName",
+        name: "lptokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Stake",
       },
       {
-        name: "tokenName",
+        name: "tokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Earn",
@@ -172,7 +172,7 @@ export default function MyPoolDetailPage({ api }) {
         label: "Stake",
       },
       {
-        name: "tokenName",
+        name: "tokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Earn",
@@ -353,6 +353,8 @@ const MyPoolInfo = ({
   lptokenTotalSupply,
   ...rest
 }) => {
+  console.log("MyPoolInfo mode", mode);
+
   const dispatch = useDispatch();
 
   const { currentAccount, api } = useSelector((s) => s.wallet);
