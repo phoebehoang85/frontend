@@ -182,11 +182,7 @@ export default function PoolsPage({ api }) {
             >
               {[1, -1].map((item, idx) => (
                 <option key={idx} value={item}>
-                  {item === 1
-                    ? "Low to hight"
-                    : item === -1
-                    ? "Hight to low"
-                    : ""}
+                  {item === -1 ? "New to old" : item === 1 ? "Old to new" : ""}
                 </option>
               ))}
             </Select>

@@ -2,7 +2,6 @@ import { QuestionOutlineIcon } from "@chakra-ui/icons";
 import {
   Circle,
   Flex,
-  Heading,
   Image,
   Skeleton,
   Table,
