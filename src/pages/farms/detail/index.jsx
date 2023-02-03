@@ -316,7 +316,7 @@ const MyStakeRewardInfoNFT = ({
       currentAccount?.address
     );
 
-    let info = queryResult?.toHuman();
+    let info = queryResult?.toHuman().Ok;
 
     if (info) {
       info = {
@@ -387,7 +387,7 @@ const MyStakeRewardInfoNFT = ({
             idx
           );
 
-          let stakedID = queryResult?.toHuman();
+          let stakedID = queryResult?.toHuman().Ok;
 
           const { status, ret } = await APICall.getNFTByIdFromArtZero({
             collection_address: nftInfo?.nftContractAddress,
@@ -773,7 +773,7 @@ const MyStakeRewardInfoToken = ({
       currentAccount?.address
     );
 
-    let info = queryResult?.toHuman();
+    let info = queryResult?.toHuman().Ok;
 
     if (info) {
       info = {

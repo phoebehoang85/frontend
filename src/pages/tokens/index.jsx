@@ -73,7 +73,7 @@ export default function TokensPage() {
       0,
       "psp22Metadata::tokenSymbol"
     );
-    const tokenSymbol = queryResult1.toHuman();
+    const tokenSymbol = queryResult1.toHuman().Ok;
 
     setTokenInfo((prev) => {
       return { ...prev, title: tokenSymbol, content: balance };
@@ -319,7 +319,7 @@ const TokensTabTransferToken = ({
   const { currentAccount } = useSelector((s) => s.wallet);
 
   const [transferAddress, setTransferAddress] = useState("");
-  const [transferAmount, setTransferAmount] = useState(0);
+  const [transferAmount, setTransferAmount] = useState("");
 
   async function transferTokenHandler() {
     if (!currentAccount) {
@@ -365,7 +365,7 @@ const TokensTabTransferToken = ({
 
     await delay(2000).then(() => {
       setTransferAddress("");
-      setTransferAmount(0);
+      setTransferAmount("");
       loadTokenInfo();
     });
   }

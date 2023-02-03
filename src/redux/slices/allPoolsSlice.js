@@ -97,7 +97,7 @@ export const fetchAllStakingPools = createAsyncThunk(
             "genericPoolContractTrait::getStakeInfo",
             params?.currentAccount?.address
           );
-          let stakeInfo = queryResult?.toHuman();
+          let stakeInfo = queryResult?.toHuman().Ok;
 
           if (stakeInfo) {
             stakeInfo = {
@@ -156,7 +156,7 @@ export const fetchAllNFTPools = createAsyncThunk(
             params?.currentAccount?.address
           );
 
-          let stakeInfo = queryResult?.toHuman();
+          let stakeInfo = queryResult?.toHuman().Ok;
 
           if (stakeInfo) {
             stakeInfo = {
@@ -206,7 +206,7 @@ export const fetchAllTokenPools = createAsyncThunk(
             params?.currentAccount?.address
           );
 
-          let stakeInfo = queryResult?.toHuman();
+          let stakeInfo = queryResult?.toHuman().Ok;
 
           if (stakeInfo) {
             stakeInfo = {

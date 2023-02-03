@@ -4,60 +4,74 @@ import { formatBalance } from "@polkadot/util";
 import { toastMessages } from "constants";
 import { toast } from "react-hot-toast";
 
+import { getGasLimit } from "./dryRun";
+
+import { BN, BN_ONE } from "@polkadot/util";
+const MAX_CALL_WEIGHT = new BN(5_000_000_000_000).isub(BN_ONE);
+
 let wsApi;
 
 export function initialApi(a) {
   wsApi = a;
 }
 // getEstimatedGas
-export async function getEstimatedGas(
-  address,
-  contract,
-  value,
-  queryName,
-  ...args
-) {
-  const fetchGas = async () => {
-    let ret = -1;
-    // let gasLimit = 6946816000 * 5;
+// export async function getEstimatedGas(
+//   address,
+//   contract,
+//   value,
+//   queryName,
+//   ...args
+// ) {
+//   const fetchGas = async () => {
+//     let ret = -1;
+//     // let gasLimit = 6946816000 * 5;
 
-    try {
-      const { gasRequired, result, output } = await contract.query[queryName](
-        address,
-        { gasLimit: ret, storageDepositLimit: null, value },
-        ...args
-      );
+//     try {
+//       const { gasRequired, result, output } = await contract.query[queryName](
+//         address,
+//         { gasLimit: ret, storageDepositLimit: null, value },
+//         ...args
+//       );
 
-      if (output?.isErr) {
-        toast.error("error: ", output.value.toString());
-        console.log("error getEstimatedGas xx>>", output.value.toString());
-        return output.value.toString();
-      }
+//       if (output?.isErr) {
+//         toast.error("error: ", output.value.toString());
+//         console.log("error getEstimatedGas xx>>", output.value.toString());
+//         return output.value.toString();
+//       }
 
-      if (result?.isOk) {
-        ret = gasRequired.toString();
-      }
-    } catch (error) {
-      console.log("error fetchGas xx>>", error.message);
-    }
+//       if (result?.isOk) {
+//         ret = gasRequired.toString();
+//       }
+//     } catch (error) {
+//       console.log("error fetchGas xx>>", error.message);
+//     }
 
-    return ret;
-  };
+//     return ret;
+//   };
 
-  let result;
+//   let result;
 
-  await toast.promise(
-    fetchGas().then((data) => (result = data)),
-    {
-      success: `Estimated transaction fee...`,
-      error: "Could not fetching gas!",
-    },
-    {
-      success: { icon: "🔥" },
-    }
-  );
+//   await toast.promise(
+//     fetchGas().then((data) => (result = data)),
+//     {
+//       success: `Estimated transaction fee...`,
+//       error: "Could not fetching gas!",
+//     },
+//     {
+//       success: { icon: "🔥" },
+//     }
+//   );
 
-  return result;
+//   return result;
+// }
+
+// For read-only queries we don't need the exact gas limit
+// as the account will not be charged for making the call.
+export function readOnlyGasLimit(api) {
+  return api.registry.createType("WeightV2", {
+    refTime: new BN(1_000_000_000_000),
+    proofSize: MAX_CALL_WEIGHT,
+  });
 }
 
 export async function execContractQuery(
@@ -73,10 +87,12 @@ export async function execContractQuery(
   // console.log("execContractQuery", queryName);
   // let gasLimit = 6946816000 * 5;
 
+  const gasLimit = readOnlyGasLimit(wsApi);
+
   try {
     const { result, output } = await contract.query[queryName](
       callerAddress,
-      { gasLimit: -1, storageDepositLimit: null, value },
+      { gasLimit, storageDepositLimit: null, value },
       ...args
     );
 
@@ -106,6 +122,8 @@ export async function execContractTx(
     address: caller?.address,
   });
 
+  // console.log("azeroBalance = ", azeroBalance);
+
   if (azeroBalance < 0.005) {
     toast.error("Account low balance! Please top up!");
     return;
@@ -114,18 +132,35 @@ export async function execContractTx(
   const contract = new ContractPromise(wsApi, contractAbi, contractAddress);
 
   let unsubscribe;
-  let gasLimit = 6946816000 * 5;
 
   const { signer } = await web3FromSource(caller?.meta?.source);
 
-  gasLimit = await getEstimatedGas(
+  // gasLimit = await getEstimatedGas(
+  //   caller?.address,
+  //   contract,
+  //   value,
+  //   queryName,
+  //   ...args
+  // );
+
+  const gasLimitResult = await getGasLimit(
+    wsApi,
     caller?.address,
-    contract,
-    value,
     queryName,
-    ...args
+    contract,
+    {},
+    args
   );
+
+  if (!gasLimitResult.ok) {
+    console.log(gasLimitResult.error);
+    return;
+  }
+
+  const { value: gasLimit } = gasLimitResult;
+
   // console.log("gasLimit", gasLimit);
+
   const txNotSign = contract.tx[queryName]({ gasLimit, value }, ...args);
 
   await txNotSign

@@ -256,7 +256,7 @@ const MyStakeRewardInfo = ({
       currentAccount?.address
     );
 
-    let info = queryResult?.toHuman();
+    let info = queryResult?.toHuman().Ok;
 
     if (info) {
       info = {

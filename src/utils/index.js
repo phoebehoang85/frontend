@@ -7,10 +7,12 @@ import numeral from "numeral";
 
 // "12,345" (string) or 12,345 (string) -> 12345 (number)
 export const formatChainStringToNumber = (str) => {
+  if (typeof str !== "string") return str;
+
   return parseFloat(str.replace(/,/g, "").replace(/"/g, ""));
 };
 export const formatQueryResultToNumber = (result, chainDecimals = 12) => {
-  const ret = result?.toHuman()?.replaceAll(",", "");
+  const ret = result?.toHuman()?.Ok.replaceAll(",", "");
 
   const formattedStrBal = formatBalance(ret, {
     withSi: false,
