@@ -1,5 +1,5 @@
-import { BN } from '@polkadot/util';
-// import { ContractPromise } from '@polkadot/api-contract';
+import { BN, bnToBn } from '@polkadot/util';
+import { convertWeight  } from '@polkadot/api-contract/base/util';
 // import { AbiMessage, ContractOptions } from '@polkadot/api-contract/types';
 // import { ApiPromise } from '@polkadot/api';
 // type Result<T, E = Error> = { ok: true; value: T } | { ok: false; error: E };
@@ -45,5 +45,11 @@ export const getGasLimit = async (
     abiMessage.value.toU8a(args)
   );
 
-  return { ok: true, value: result.gasRequired };
+  const {v2Weight} = convertWeight(result.gasRequired);
+  const gasRequired = api.registry.createType("WeightV2", {
+    refTime: v2Weight.refTime.add(new BN(25_000_000_000)),
+    proofSize: v2Weight.proofSize,
+  });
+
+  return { ok: true, value: gasRequired };
 };
