@@ -1,17 +1,13 @@
-import { BN, bnToBn } from '@polkadot/util';
-import { convertWeight  } from '@polkadot/api-contract/base/util';
-// import { AbiMessage, ContractOptions } from '@polkadot/api-contract/types';
-// import { ApiPromise } from '@polkadot/api';
-// type Result<T, E = Error> = { ok: true; value: T } | { ok: false; error: E };
+import { BN } from "@polkadot/util";
+import { convertWeight } from "@polkadot/api-contract/base/util";
 
-const toContractAbiMessage = (
-  contractPromise,
-  message
-) => {
+const toContractAbiMessage = (contractPromise, message) => {
   const value = contractPromise.abi.messages.find((m) => m.method === message);
 
   if (!value) {
-    const messages = contractPromise?.abi.messages.map((m) => m.method).join(', ');
+    const messages = contractPromise?.abi.messages
+      .map((m) => m.method)
+      .join(", ");
 
     const error = `"${message}" not found in metadata.spec.messages: [${messages}]`;
     console.error(error);
@@ -45,9 +41,10 @@ export const getGasLimit = async (
     abiMessage.value.toU8a(args)
   );
 
-  const {v2Weight} = convertWeight(result.gasRequired);
+  const { v2Weight } = convertWeight(result.gasRequired);
+
   const gasRequired = api.registry.createType("WeightV2", {
-    refTime: v2Weight.refTime.add(new BN(25_000_000_000)),
+    refTime: v2Weight.refTime.mul(new BN(2)),
     proofSize: v2Weight.proofSize,
   });
 

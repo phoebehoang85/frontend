@@ -22,12 +22,11 @@ import { updateAccountsList } from "redux/slices/walletSlice";
 import { useDispatch, useSelector } from "react-redux";
 import IWCard from "components/card/Card";
 import { supportWallets } from "constants";
-import { Fragment } from "react-is";
 import { MyPoolsIcon } from "components/icons/Icons";
 import { MyNFTFarmsIcon } from "components/icons/Icons";
 import { MyLPFarmsIcon } from "components/icons/Icons";
 import { MenuArrowRightIcon } from "components/icons/Icons";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { MenuIconBorder } from "components/icons/Icons";
 import { MenuIconBackground } from "components/icons/Icons";
 import { setCurrentAccount } from "redux/slices/walletSlice";
@@ -43,7 +42,7 @@ import { logOutMyPools } from "redux/slices/myPoolsSlice";
 export default function WalletButton({ currentAccountAddress }) {
   const dispatch = useDispatch();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const currentAccount = useSelector((state) => state.wallet?.currentAccount);
+  const { currentAccount, allAccounts } = useSelector((state) => state.wallet);
 
   const setWalletExtension = async function () {
     const extension = await web3Enable(process.env.REACT_APP_NAME);
@@ -74,6 +73,7 @@ export default function WalletButton({ currentAccountAddress }) {
     // one account connect only
     if (accounts.length === 1) {
       dispatch(setCurrentAccount(accounts[0]));
+      localStorage.setItem("localCurrentAccount", JSON.stringify(accounts[0]));
       return;
     }
 
@@ -81,6 +81,7 @@ export default function WalletButton({ currentAccountAddress }) {
       toast.error(toastMessages.NO_ACCOUNT);
       return;
     }
+
     onOpen();
   };
 
@@ -101,8 +102,6 @@ export default function WalletButton({ currentAccountAddress }) {
       console.log("@_@ error", error);
     }
   }
-
-  const allAccounts = useSelector((state) => state.wallet?.allAccounts);
 
   const accountsFiltered = useMemo(() => {
     return allAccounts.filter((i) => i.meta?.source === selectedWalletExt);
@@ -206,6 +205,7 @@ const WalletNotConnect = ({ onClick }) => {
 
 export const WalletConnect = () => {
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
   const { currentAccount } = useSelector((state) => state.wallet);
 
@@ -331,7 +331,11 @@ export const WalletConnect = () => {
             onClick={() => {
               dispatch(disconnectCurrentAccount());
               dispatch(logOutMyPools());
-              history.push("/faucet");
+              localStorage.removeItem("localCurrentAccount");
+
+              if (location?.pathname === "/my-pools") {
+                history.push("/faucet");
+              }
             }}
           >
             Log out

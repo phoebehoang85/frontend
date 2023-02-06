@@ -25,6 +25,7 @@ export default function WalletModal({ isOpen, onClose, accounts }) {
 
   function onClickHandler(account) {
     dispatch(setCurrentAccount(account));
+    localStorage.setItem("localCurrentAccount", JSON.stringify(account));
 
     onClose();
   }
