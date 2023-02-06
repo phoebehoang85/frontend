@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import SectionContainer from "components/container/SectionContainer";
 
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import IWCard from "components/card/Card";
 import IWTabs from "components/tabs/IWTabs";
 import ConfirmModal from "components/modal/ConfirmModal";
@@ -50,28 +50,31 @@ import { fetchUserBalance } from "redux/slices/walletSlice";
 import { fetchAllNFTPools } from "redux/slices/allPoolsSlice";
 import { fetchAllTokenPools } from "redux/slices/allPoolsSlice";
 import { isPoolEnded } from "utils";
+import useInterval from "hook/useInterval";
 
 export default function FarmDetailPage() {
-  const { state } = useLocation();
+  const params = useParams();
 
   const { currentAccount } = useSelector((s) => s.wallet);
   const { allNFTPoolsList, allTokenPoolsList } = useSelector((s) => s.allPools);
 
   const currentNFTPool = useMemo(() => {
     return allNFTPoolsList?.find(
-      (p) => p?.poolContract === state?.poolContract
+      (p) => p?.poolContract === params?.contractAddress
     );
-  }, [allNFTPoolsList, state?.poolContract]);
+  }, [allNFTPoolsList, params?.contractAddress]);
 
   const currentTokenPool = useMemo(() => {
     return allTokenPoolsList?.find(
-      (p) => p?.poolContract === state?.poolContract
+      (p) => p?.poolContract === params?.contractAddress
     );
-  }, [allTokenPoolsList, state?.poolContract]);
+  }, [allTokenPoolsList, params?.contractAddress]);
 
-  const location = useLocation();
-
-  const currMode = location?.state?.mode;
+  const currMode = currentNFTPool?.NFTtokenContract
+    ? "NFT_FARM"
+    : currentTokenPool?.lptokenContract
+    ? "TOKEN_FARM"
+    : "NO_MODE";
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -118,13 +121,14 @@ export default function FarmDetailPage() {
     ],
 
     cardValue: {
-      ...state,
+      ...currentNFTPool,
+      ...currentTokenPool,
       totalStaked:
-        state?.mode === "NFT_FARM"
+        currMode === "NFT_FARM"
           ? currentNFTPool?.totalStaked
           : currentTokenPool?.totalStaked,
       rewardPool:
-        state?.mode === "NFT_FARM"
+        currMode === "NFT_FARM"
           ? currentNFTPool?.rewardPool
           : currentTokenPool?.rewardPool,
     },
@@ -135,9 +139,9 @@ export default function FarmDetailPage() {
       label: "My Stakes & Rewards",
       component:
         currMode === "NFT_FARM" ? (
-          <MyStakeRewardInfoNFT {...state} {...currentAccount} />
+          <MyStakeRewardInfoNFT {...currentNFTPool} {...currentAccount} />
         ) : (
-          <MyStakeRewardInfoToken {...state} {...currentAccount} />
+          <MyStakeRewardInfoToken {...currentTokenPool} {...currentAccount} />
         ),
       isDisabled: false,
     },
@@ -149,14 +153,15 @@ export default function FarmDetailPage() {
       ),
       component: (
         <PoolInfo
-          {...state}
+          {...currentNFTPool}
+          {...currentTokenPool}
           rewardPool={
-            state?.mode === "NFT_FARM"
+            currMode === "NFT_FARM"
               ? currentNFTPool?.rewardPool
               : currentTokenPool?.rewardPool
           }
           totalStaked={
-            state?.mode === "NFT_FARM"
+            currMode === "NFT_FARM"
               ? currentNFTPool?.totalStaked
               : currentTokenPool?.totalStaked
           }
@@ -419,8 +424,6 @@ const MyStakeRewardInfoNFT = ({
 
   useEffect(() => {
     const fetchFee = async () => {
-      if (!currentAccount?.balance) return;
-
       const result = await execContractQuery(
         currentAccount?.address,
         "api",
@@ -646,6 +649,19 @@ const MyStakeRewardInfoNFT = ({
     );
   }
 
+  const [unclaimedRewardNFT, setUnclaimedRewardNFT] = useState(0);
+
+  const updateStakingInfo = () => {
+    const ret = calcUnclaimedRewardNftLP({
+      ...stakeInfo,
+      multiplier,
+      tokenDecimal,
+    });
+    setUnclaimedRewardNFT(ret);
+  };
+
+  useInterval(() => updateStakingInfo(), 1000);
+
   return (
     <>
       <Stack
@@ -700,11 +716,7 @@ const MyStakeRewardInfoNFT = ({
             },
             {
               title: "My Unclaimed Rewards (FOD)",
-              content: `${calcUnclaimedRewardNftLP({
-                ...stakeInfo,
-                multiplier,
-                tokenDecimal,
-              })}`,
+              content: `${unclaimedRewardNFT}`,
             },
           ]}
         >
@@ -761,8 +773,6 @@ const MyStakeRewardInfoToken = ({
   const [LPtokenBalance, setLPTokenBalance] = useState();
 
   const fetchUserStakeInfo = useCallback(async () => {
-    if (!currentAccount?.balance) return;
-
     let queryResult = await execContractQuery(
       currentAccount?.address,
       "api",
@@ -785,11 +795,9 @@ const MyStakeRewardInfoToken = ({
     }
 
     setStakeInfo(info);
-  }, [currentAccount?.address, currentAccount?.balance, poolContract]);
+  }, [currentAccount, poolContract]);
 
   const fetchTokenBalance = useCallback(async () => {
-    if (!currentAccount?.balance) return;
-
     const result = await execContractQuery(
       currentAccount?.address,
       "api",
@@ -814,12 +822,7 @@ const MyStakeRewardInfoToken = ({
 
     const balanceLP = formatQueryResultToNumber(resultLP);
     setLPTokenBalance(balanceLP);
-  }, [
-    currentAccount?.address,
-    currentAccount?.balance,
-    lptokenContract,
-    tokenContract,
-  ]);
+  }, [currentAccount?.address, lptokenContract, tokenContract]);
 
   useEffect(() => {
     fetchUserStakeInfo();
@@ -1039,6 +1042,19 @@ const MyStakeRewardInfoToken = ({
     );
   }
 
+  const [unclaimedRewardToken, setUnclaimedRewardToken] = useState(0);
+
+  const updateStakingInfo = () => {
+    const ret = calcUnclaimedRewardTokenLP({
+      ...stakeInfo,
+      multiplier,
+      tokenDecimal,
+    });
+    setUnclaimedRewardToken(ret);
+  };
+
+  useInterval(() => updateStakingInfo(), 1000);
+
   return (
     <>
       <Stack
@@ -1099,11 +1115,7 @@ const MyStakeRewardInfoToken = ({
             },
             {
               title: "My Unclaimed Rewards (FOD)",
-              content: `${calcUnclaimedRewardTokenLP({
-                ...stakeInfo,
-                multiplier,
-                tokenDecimal,
-              })}`,
+              content: `${unclaimedRewardToken}`,
             },
           ]}
         >

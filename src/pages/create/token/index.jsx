@@ -23,7 +23,7 @@ import psp22_contract from "utils/contracts/psp22_contract";
 export default function CreateTokenPage({ api }) {
   const dispatch = useDispatch();
   const { currentAccount } = useSelector((s) => s.wallet);
-  const { allTokensList, loading } = useSelector((s) => s.allPools);
+  const { allTokensList } = useSelector((s) => s.allPools);
 
   const [tokenName, setTokenName] = useState("");
   const [mintAddress, setMintAddress] = useState("");
@@ -270,7 +270,7 @@ export default function CreateTokenPage({ api }) {
         title="Recent Tokens"
         description={``}
       >
-        <IWTable {...tableData} isDisableRowClick={true} loading={loading} />
+        <IWTable {...tableData} isDisableRowClick={true} />
       </SectionContainer>
     </>
   );

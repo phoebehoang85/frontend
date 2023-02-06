@@ -58,7 +58,7 @@ export default function MyPoolDetailPage({ api }) {
     (s) => s.myPools
   );
   const { state } = useLocation();
-  console.log("MyPoolDetailPage state.mode", state?.mode);
+
   const currentStakingPool = useMemo(() => {
     return myStakingPoolsList?.find(
       (p) => p?.poolContract === state?.poolContract
@@ -353,8 +353,6 @@ const MyPoolInfo = ({
   lptokenTotalSupply,
   ...rest
 }) => {
-  console.log("MyPoolInfo mode", mode);
-
   const dispatch = useDispatch();
 
   const { currentAccount, api } = useSelector((s) => s.wallet);
