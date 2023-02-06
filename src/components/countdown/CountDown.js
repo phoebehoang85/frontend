@@ -28,7 +28,7 @@ export default function IWCountDown({ date }) {
   };
   return (
     <span>
-      <Countdown date={date} renderer={renderer}></Countdown>
+      <Countdown key={date.toString()} date={date} renderer={renderer} />
     </span>
   );
 }

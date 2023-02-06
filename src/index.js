@@ -40,6 +40,7 @@ import { fetchAllTokensList } from "redux/slices/allPoolsSlice";
 import { fetchAllStakingPools } from "redux/slices/allPoolsSlice";
 import { fetchAllNFTPools } from "redux/slices/allPoolsSlice";
 import { fetchAllTokenPools } from "redux/slices/allPoolsSlice";
+import { web3Enable } from "@polkadot/extension-dapp";
 
 const providerUrl = process.env.REACT_APP_PROVIDER_URL;
 
@@ -96,6 +97,8 @@ const App = () => {
         // setLastChainBlock(lastBlock);
         // setLastBlockParent(lastHeader.parentHash.toRawType);
       });
+
+      await web3Enable(process.env.REACT_APP_NAME);
     };
 
     setupProvider().catch((error) => {
@@ -145,33 +148,50 @@ const App = () => {
 
   return (
     <HashRouter>
-        <DefaultLayout>    
-          <Switch>
-              <Redirect exact from="/" to="/faucet" />
-              <Route exact path={`/faucet`}><FaucetPage api={api} /></Route>
-             
-              <Route exact path={`/pools/:contractAddress`}><PoolDetailPage api={api} /></Route>
-              <Route exact path={`/pools`}><PoolsPage api={api} /></Route>
-             
-              <Route exact path={`/farms/:contractAddress`} component={FarmDetailPage} />
-              <Route exact path={`/farms`} component={FarmsPage} />{" "}
-             
-              <Route exact path={`/tokens`} component={TokensPage} />
-             
-              <Route exact path={`/create/token`} component={CreateTokenPage} />
-              <Route exact path={`/create/stake-pool`} component={CreateStakePoolPage}/>
-              <Route exact path={`/create/nft-lp`} component={CreateNFTLPPage} />
-              <Route exact path={`/create/token-lp`} component={CreateTokenLPPage}/>
-             
-              <Route exact path={`/account`} component={MyBalancePage} />
-              <Route exact path={`/account/my-balance`} component={MyBalancePage} />
-             
-              <Route exact path={`/my-pools`} component={MyPoolsPage} />
-              <Route exact path={`/my-pools/:contractAddress`} component={MyPoolDetailPage}/>{" "}
-             
-              <Route><FaucetPage /></Route>
-          </Switch>
-        </DefaultLayout>
+      <DefaultLayout>
+        <Switch>
+          <Redirect exact from="/" to="/faucet" />
+          <Route exact path={`/faucet`}>
+            <FaucetPage api={api} />
+          </Route>
+          <Route exact path={`/pools/:contractAddress`}>
+            <PoolDetailPage api={api} />
+          </Route>
+          <Route exact path={`/pools`}>
+            <PoolsPage api={api} />
+          </Route>
+          <Route
+            exact
+            path={`/farms/:contractAddress`}
+            component={FarmDetailPage}
+          />
+          <Route exact path={`/farms`} component={FarmsPage} />{" "}
+          <Route exact path={`/tokens`} component={TokensPage} />
+          <Route exact path={`/create/token`} component={CreateTokenPage} />
+          <Route
+            exact
+            path={`/create/stake-pool`}
+            component={CreateStakePoolPage}
+          />
+          <Route exact path={`/create/nft-lp`} component={CreateNFTLPPage} />
+          <Route
+            exact
+            path={`/create/token-lp`}
+            component={CreateTokenLPPage}
+          />
+          <Route exact path={`/account`} component={MyBalancePage} />
+          <Route exact path={`/account/my-balance`} component={MyBalancePage} />
+          <Route exact path={`/my-pools`} component={MyPoolsPage} />
+          <Route
+            exact
+            path={`/my-pools/:contractAddress`}
+            component={MyPoolDetailPage}
+          />{" "}
+          <Route>
+            <FaucetPage />
+          </Route>
+        </Switch>
+      </DefaultLayout>
     </HashRouter>
   );
 };

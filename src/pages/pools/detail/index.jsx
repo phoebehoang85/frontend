@@ -9,6 +9,7 @@ import {
   Stack,
   Text,
   Tooltip,
+  useInterval,
 } from "@chakra-ui/react";
 import SectionContainer from "components/container/SectionContainer";
 import IWInput from "components/input/Input";
@@ -19,7 +20,7 @@ import ConfirmModal from "components/modal/ConfirmModal";
 import IWCardOneColumn from "components/card/CardOneColumn";
 import CardThreeColumn from "components/card/CardThreeColumn";
 import CardTwoColumn from "components/card/CardTwoColumn";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { formatDataCellTable } from "components/table/IWTable";
 import { addressShortener } from "utils";
 import { formatNumDynDecimal } from "utils";
@@ -46,16 +47,16 @@ import { useMemo } from "react";
 import { fetchUserBalance } from "redux/slices/walletSlice";
 
 export default function PoolDetailPage({ api }) {
-  const { state } = useLocation();
+  const params = useParams();
 
   const { currentAccount } = useSelector((s) => s.wallet);
   const { allStakingPoolsList } = useSelector((s) => s.allPools);
 
   const currentPool = useMemo(() => {
     return allStakingPoolsList?.find(
-      (p) => p?.poolContract === state?.poolContract
+      (p) => p?.poolContract === params?.contractAddress
     );
-  }, [allStakingPoolsList, state?.poolContract]);
+  }, [allStakingPoolsList, params?.contractAddress]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -96,7 +97,7 @@ export default function PoolDetailPage({ api }) {
     ],
 
     cardValue: {
-      ...state,
+      ...currentPool,
       totalStaked: currentPool?.totalStaked,
       rewardPool: currentPool?.rewardPool,
     },
@@ -105,7 +106,7 @@ export default function PoolDetailPage({ api }) {
   const tabsData = [
     {
       label: "My Stakes & Rewards",
-      component: <MyStakeRewardInfo {...state} {...currentAccount} />,
+      component: <MyStakeRewardInfo {...currentPool} {...currentAccount} />,
       isDisabled: false,
     },
     {
@@ -116,7 +117,7 @@ export default function PoolDetailPage({ api }) {
       ),
       component: (
         <PoolInfo
-          {...state}
+          {...currentPool}
           rewardPool={currentPool?.rewardPool}
           totalStaked={currentPool?.totalStaked}
         />
@@ -231,6 +232,7 @@ const MyStakeRewardInfo = ({
   rewardPool,
   duration,
   startTime,
+  tokenDecimal,
   ...rest
 }) => {
   const dispatch = useDispatch();
@@ -272,19 +274,22 @@ const MyStakeRewardInfo = ({
 
   const fetchTokenBalance = useCallback(async () => {
     if (!currentAccount?.balance) return;
+    try {
+      const result = await execContractQuery(
+        currentAccount?.address,
+        api,
+        psp22_contract.CONTRACT_ABI,
+        tokenContract,
+        0,
+        "psp22::balanceOf",
+        currentAccount?.address
+      );
 
-    const result = await execContractQuery(
-      currentAccount?.address,
-      api,
-      psp22_contract.CONTRACT_ABI,
-      tokenContract,
-      0,
-      "psp22::balanceOf",
-      currentAccount?.address
-    );
-
-    const balance = formatQueryResultToNumber(result);
-    setTokenBalance(balance);
+      const balance = formatQueryResultToNumber(result);
+      setTokenBalance(balance);
+    } catch (error) {
+      console.log(error);
+    }
   }, [api, currentAccount?.address, currentAccount?.balance, tokenContract]);
 
   useEffect(() => {
@@ -303,17 +308,21 @@ const MyStakeRewardInfo = ({
     const fetchFee = async () => {
       if (!currentAccount?.balance) return;
 
-      const result = await execContractQuery(
-        currentAccount?.address,
-        api,
-        pool_contract.CONTRACT_ABI,
-        poolContract,
-        0,
-        "genericPoolContractTrait::unstakeFee"
-      );
+      try {
+        const result = await execContractQuery(
+          currentAccount?.address,
+          api,
+          pool_contract.CONTRACT_ABI,
+          poolContract,
+          0,
+          "genericPoolContractTrait::unstakeFee"
+        );
 
-      const fee = formatQueryResultToNumber(result);
-      setUnstakeFee(fee);
+        const fee = formatQueryResultToNumber(result);
+        setUnstakeFee(fee);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     fetchFee();
@@ -329,17 +338,20 @@ const MyStakeRewardInfo = ({
     //   toast.error("No reward tokens!");
     //   return;
     // }
+    try {
+      await execContractTx(
+        currentAccount,
+        api,
+        pool_contract.CONTRACT_ABI,
+        poolContract,
+        0, //-> value
+        "claimReward"
+      );
 
-    await execContractTx(
-      currentAccount,
-      api,
-      pool_contract.CONTRACT_ABI,
-      poolContract,
-      0, //-> value
-      "claimReward"
-    );
-
-    await APICall.askBEupdate({ type: "pool", poolContract });
+      await APICall.askBEupdate({ type: "pool", poolContract });
+    } catch (error) {
+      console.log(error);
+    }
 
     await delay(6000).then(() => {
       if (currentAccount) {
@@ -377,36 +389,40 @@ const MyStakeRewardInfo = ({
       return;
     }
 
-    //Approve
-    toast.success("Step 1: Approving...");
+    try {
+      //Approve
+      toast.success("Step 1: Approving...");
 
-    let approve = await execContractTx(
-      currentAccount,
-      api,
-      psp22_contract.CONTRACT_ABI,
-      tokenContract,
-      0, //-> value
-      "psp22::approve",
-      poolContract,
-      formatNumToBN(amount)
-    );
-    if (!approve) return;
+      let approve = await execContractTx(
+        currentAccount,
+        api,
+        psp22_contract.CONTRACT_ABI,
+        tokenContract,
+        0, //-> value
+        "psp22::approve",
+        poolContract,
+        formatNumToBN(amount)
+      );
+      if (!approve) return;
 
-    await delay(3000);
+      await delay(3000);
 
-    toast.success("Step 2: Process...");
+      toast.success("Step 2: Process...");
 
-    await execContractTx(
-      currentAccount,
-      api,
-      pool_contract.CONTRACT_ABI,
-      poolContract,
-      0, //-> value
-      "stake",
-      formatNumToBN(amount)
-    );
+      await execContractTx(
+        currentAccount,
+        api,
+        pool_contract.CONTRACT_ABI,
+        poolContract,
+        0, //-> value
+        "stake",
+        formatNumToBN(amount)
+      );
 
-    await APICall.askBEupdate({ type: "pool", poolContract });
+      await APICall.askBEupdate({ type: "pool", poolContract });
+    } catch (error) {
+      console.log(error);
+    }
 
     await delay(6000).then(() => {
       if (currentAccount) {
@@ -428,7 +444,9 @@ const MyStakeRewardInfo = ({
     if (
       parseInt(currentAccount?.balance?.inw?.replaceAll(",", "")) < unstakeFee
     ) {
-      toast.error(`You don't have enough INW. Unstake costs ${unstakeFee} INW!`);
+      toast.error(
+        `You don't have enough INW. Unstake costs ${unstakeFee} INW!`
+      );
       return;
     }
 
@@ -485,6 +503,19 @@ const MyStakeRewardInfo = ({
     });
   }
 
+  const [unclaimedReward, setUnclaimedReward] = useState(0);
+
+  const updateStakingInfo = () => {
+    const ret = calcUnclaimedReward({
+      ...stakeInfo,
+      apy,
+      tokenDecimal,
+    });
+    setUnclaimedReward(ret);
+  };
+
+  useInterval(() => updateStakingInfo(), 1000);
+
   return (
     <Stack
       w="full"
@@ -537,7 +568,7 @@ const MyStakeRewardInfo = ({
           },
           {
             title: "My Unclaimed Rewards (FOD)",
-            content: `${calcUnclaimedReward({ ...stakeInfo, apy })}`,
+            content: `${unclaimedReward}`,
           },
         ]}
       >
