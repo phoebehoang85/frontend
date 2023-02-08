@@ -1,7 +1,7 @@
-import { SearchIcon } from "@chakra-ui/icons";
+// import { SearchIcon } from "@chakra-ui/icons";
+// import IWInput from "components/input/Input";
 import { Stack } from "@chakra-ui/react";
 import SectionContainer from "components/container/SectionContainer";
-import IWInput from "components/input/Input";
 
 import { IWTable } from "components/table/IWTable";
 import MyPoolsPage from "../my-pools";
@@ -25,7 +25,7 @@ export default function MyBalancePage() {
           alignItems="start"
           direction={{ base: "column" }}
         >
-          <Stack
+          {/* <Stack
             w="100%"
             spacing="20px"
             direction={{ base: "column" }}
@@ -36,7 +36,7 @@ export default function MyBalancePage() {
               placeholder="Search"
               inputRightElementIcon={<SearchIcon color="text.1" />}
             />
-          </Stack>
+          </Stack> */}
 
           <IWTable {...tableData} />
         </Stack>
