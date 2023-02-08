@@ -139,9 +139,17 @@ export default function FarmDetailPage() {
       label: "My Stakes & Rewards",
       component:
         currMode === "NFT_FARM" ? (
-          <MyStakeRewardInfoNFT {...currentNFTPool} {...currentAccount} />
+          <MyStakeRewardInfoNFT
+            mode={currMode}
+            {...currentNFTPool}
+            {...currentAccount}
+          />
         ) : (
-          <MyStakeRewardInfoToken {...currentTokenPool} {...currentAccount} />
+          <MyStakeRewardInfoToken
+            mode={currMode}
+            {...currentTokenPool}
+            {...currentAccount}
+          />
         ),
       isDisabled: false,
     },
@@ -729,6 +737,7 @@ const MyStakeRewardInfoNFT = ({
           />
         </CardThreeColumn>
       </Stack>
+
       {mode === "NFT_FARM" ? (
         <SectionContainer
           px="0px"
