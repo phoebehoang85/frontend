@@ -113,8 +113,6 @@ export async function execContractTx(
   queryName,
   ...args
 ) {
-  // NOTE: amount need to convert before passing in
-  // const totalAmount = new BN(token_amount * 10 ** 6).mul(new BN(10 ** 6)).toString();
   console.log("execContractTx ", queryName);
 
   const azeroBalance = await getAzeroBalanceOfAddress({
@@ -135,20 +133,12 @@ export async function execContractTx(
 
   const { signer } = await web3FromSource(caller?.meta?.source);
 
-  // gasLimit = await getEstimatedGas(
-  //   caller?.address,
-  //   contract,
-  //   value,
-  //   queryName,
-  //   ...args
-  // );
-
   const gasLimitResult = await getGasLimit(
     wsApi,
     caller?.address,
     queryName,
     contract,
-    {},
+    { value },
     args
   );
 
@@ -159,24 +149,32 @@ export async function execContractTx(
 
   const { value: gasLimit } = gasLimitResult;
 
-  // console.log("gasLimit", gasLimit);
-
   const txNotSign = contract.tx[queryName]({ gasLimit, value }, ...args);
 
   await txNotSign
-    .signAndSend(caller.address, { signer }, ({ events = [], status }) => {
-      if (Object.keys(status.toHuman())[0] === "0") {
-        toast.success(`Processing ...`);
-      }
-
-      events.forEach(({ event: { method } }) => {
-        if (method === "ExtrinsicSuccess" && status.type === "InBlock") {
-          toast.success("Successful!");
-        } else if (method === "ExtrinsicFailed") {
-          toast.error(`${toastMessages.CUSTOM} ${method}.`);
+    .signAndSend(
+      caller.address,
+      { signer },
+      ({ events = [], status, dispatchError }) => {
+        txResponseErrorHandler({
+          status,
+          dispatchError,
+          txType: queryName,
+          api: wsApi,
+        });
+        if (Object.keys(status.toHuman())[0] === "0") {
+          toast.success(`Processing ...`);
         }
-      });
-    })
+
+        events.forEach(({ event: { method } }) => {
+          if (method === "ExtrinsicSuccess" && status.type === "InBlock") {
+            toast.success("Successful!");
+          } else if (method === "ExtrinsicFailed") {
+            toast.error(`${toastMessages.CUSTOM} ${method}.`);
+          }
+        });
+      }
+    )
     .then((unsub) => (unsubscribe = unsub))
     .catch((error) => {
       console.log("error", error);
@@ -222,3 +220,96 @@ export async function getAzeroBalanceOfAddress({ api, address }) {
 
   return formattedNumBal;
 }
+
+export const txResponseErrorHandler = async ({
+  status,
+  dispatchError,
+  txType,
+  api,
+}) => {
+  const url = `https://test.azero.dev/#/explorer/query/`;
+  const statusToHuman = Object.entries(status.toHuman());
+
+  if (dispatchError) {
+    if (dispatchError.isModule) {
+      toast.error(`There is some error with your request... ..`);
+
+      if (statusToHuman[0][0] === "Finalized") {
+        const apiAt = await api?.at(statusToHuman[0][1]);
+        const allEventsRecords = await apiAt?.query.system.events();
+
+        const data = {
+          ContractCall: txType,
+          Reserved: 0,
+          ReserveRepatriated: 0,
+          FeePaid: 0,
+          TotalCharge: 0,
+          TxHash: "",
+        };
+
+        allEventsRecords.forEach(({ event }, index) => {
+          if (api.events.transactionPayment?.TransactionFeePaid.is(event)) {
+            data.FeePaid = -event.data[1]?.toString() / 10 ** 12;
+          }
+
+          if (api.events.balances?.Reserved.is(event)) {
+            data.Reserved = -event.data[1]?.toString() / 10 ** 12;
+          }
+
+          if (api.events.balances?.ReserveRepatriated.is(event)) {
+            data.ReserveRepatriated = event.data[2]?.toString() / 10 ** 12;
+          }
+        });
+
+        data.TxHash = statusToHuman[0][1];
+
+        data.TotalCharge =
+          data.FeePaid + data.Reserved + data.ReserveRepatriated;
+
+        console.log("Err tx fee: ", data);
+
+        console.log("Err Tx Finalized at ", `${url}${statusToHuman[0][1]}`);
+      }
+    } else {
+      console.log("dispatchError.toString()", dispatchError.toString());
+    }
+  }
+
+  if (!dispatchError && status) {
+    if (statusToHuman[0][0] === "Finalized") {
+      const apiAt = await api.at(statusToHuman[0][1]);
+      const allEventsRecords = await apiAt?.query?.system.events();
+
+      const data = {
+        ContractCall: txType,
+        Reserved: 0,
+        ReserveRepatriated: 0,
+        FeePaid: 0,
+        TotalCharge: 0,
+        TxHash: "",
+      };
+
+      allEventsRecords.forEach(({ event }, index) => {
+        if (api.events.transactionPayment?.TransactionFeePaid.is(event)) {
+          data.FeePaid = -event.data[1]?.toString() / 10 ** 12;
+        }
+
+        if (api.events.balances?.Reserved.is(event)) {
+          data.Reserved = -event.data[1]?.toString() / 10 ** 12;
+        }
+
+        if (api.events.balances?.ReserveRepatriated.is(event)) {
+          data.ReserveRepatriated = event.data[2]?.toString() / 10 ** 12;
+        }
+      });
+
+      data.TxHash = statusToHuman[0][1];
+
+      data.TotalCharge = data.FeePaid + data.Reserved + data.ReserveRepatriated;
+
+      console.log("Success tx fee: ", data);
+
+      console.log("Tx Finalized at ", `${url}${statusToHuman[0][1]}`);
+    }
+  }
+};
