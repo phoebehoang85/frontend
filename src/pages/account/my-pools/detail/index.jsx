@@ -82,7 +82,7 @@ export default function MyPoolDetailPage({ api }) {
   const stakingPoolCardData = {
     cardHeaderList: [
       {
-        name: "tokenName",
+        name: "tokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Stake & Earn",
@@ -121,13 +121,13 @@ export default function MyPoolDetailPage({ api }) {
   const tokenPoolCardData = {
     cardHeaderList: [
       {
-        name: "lptokenName",
+        name: "lptokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Stake",
       },
       {
-        name: "tokenName",
+        name: "tokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Earn",
@@ -172,7 +172,7 @@ export default function MyPoolDetailPage({ api }) {
         label: "Stake",
       },
       {
-        name: "tokenName",
+        name: "tokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Earn",

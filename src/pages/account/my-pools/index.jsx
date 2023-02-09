@@ -23,7 +23,7 @@ export default function MyPoolsPage({ api }) {
   const tableData = {
     tableHeader: [
       {
-        name: "tokenName",
+        name: "tokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Stake & Earn",
@@ -130,13 +130,13 @@ const MyNFTAndTokenPoolsTab = () => {
   const tableDataToken = {
     tableHeader: [
       {
-        name: "tokenName",
+        name: "lptokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Stake",
       },
       {
-        name: "lptokenSymbol",
+        name: "tokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Earn",

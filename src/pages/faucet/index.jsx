@@ -126,14 +126,18 @@ export default function FaucetPage({ api }) {
       return;
     }
 
-    await execContractTx(
-      currentAccount,
-      api,
-      psp22Contract.CONTRACT_ABI,
-      selectedContractAddress,
-      0, //-> value
-      "faucet"
-    );
+    try {
+      await execContractTx(
+        currentAccount,
+        api,
+        psp22Contract.CONTRACT_ABI,
+        selectedContractAddress,
+        0, //-> value
+        "faucet"
+      );
+    } catch (error) {
+      console.log(error);
+    }
 
     await delay(2000).then(() => {
       prepareAccountInfoData();

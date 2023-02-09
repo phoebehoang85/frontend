@@ -7,10 +7,14 @@ import { formatQueryResultToNumber } from "utils";
 import { getAzeroBalanceOfAddress } from "utils/contracts";
 import { formatNumDynDecimal } from "utils";
 
+const localCurrentAccount = window?.localStorage?.getItem(
+  "localCurrentAccount"
+);
+
 const initialState = {
   api: null,
   allAccounts: [],
-  currentAccount: null,
+  currentAccount: JSON.parse(localCurrentAccount) || null,
 };
 
 export const walletSlice = createSlice({
@@ -18,9 +22,7 @@ export const walletSlice = createSlice({
   initialState,
   reducers: {
     setCurrentAccount: (state, action) => {
-      state.currentAccount = current(state).allAccounts.includes(action.payload)
-        ? action.payload
-        : null;
+      state.currentAccount = action.payload;
     },
 
     setCurrentApi: (state, action) => {

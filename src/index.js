@@ -40,6 +40,7 @@ import { fetchAllTokensList } from "redux/slices/allPoolsSlice";
 import { fetchAllStakingPools } from "redux/slices/allPoolsSlice";
 import { fetchAllNFTPools } from "redux/slices/allPoolsSlice";
 import { fetchAllTokenPools } from "redux/slices/allPoolsSlice";
+import { web3Enable } from "@polkadot/extension-dapp";
 
 const providerUrl = process.env.REACT_APP_PROVIDER_URL;
 
@@ -58,8 +59,8 @@ const App = () => {
   } = useSelector((s) => s.allPools);
 
   const [api, setApi] = useState(null);
-  const [, setLastChainBlock] = useState(null);
-  const [, setLastBlockParent] = useState(null);
+  // const [, setLastChainBlock] = useState(null);
+  // const [, setLastBlockParent] = useState(null);
 
   const uiColorMode = localStorage.getItem("chakra-ui-color-mode");
 
@@ -69,6 +70,7 @@ const App = () => {
 
   useEffect(() => {
     const setupProvider = async () => {
+      toast(`Connecting to ${providerUrl}...`);
       const provider = new WsProvider(providerUrl);
 
       const wsApi = await ApiPromise.create({
@@ -80,19 +82,23 @@ const App = () => {
       if (!wsApi) return;
 
       console.log(`Successfully connected to: ${providerUrl}`);
+      toast.success(`Successfully connected !`);
 
       setApi(wsApi);
 
       initialApi(wsApi);
 
       await wsApi.rpc.chain.subscribeNewHeads((lastHeader) => {
+        // eslint-disable-next-line no-unused-vars
         const lastBlock = formatChainStringToNumber(
           JSON.stringify(lastHeader.number.toHuman())
         );
 
-        setLastChainBlock(lastBlock);
-        setLastBlockParent(lastHeader.parentHash.toRawType);
+        // setLastChainBlock(lastBlock);
+        // setLastBlockParent(lastHeader.parentHash.toRawType);
       });
+
+      await web3Enable(process.env.REACT_APP_NAME);
     };
 
     setupProvider().catch((error) => {
@@ -102,7 +108,7 @@ const App = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    delay(1000);
+    delay(100);
 
     if (!allNFTPoolsList) {
       dispatch(fetchAllNFTPools({ currentAccount }));
@@ -142,28 +148,25 @@ const App = () => {
 
   return (
     <HashRouter>
-      <Switch>
-        <DefaultLayout>
-          <Route path={`/faucet`}>
+      <DefaultLayout>
+        <Switch>
+          <Redirect exact from="/" to="/faucet" />
+          <Route exact path={`/faucet`}>
             <FaucetPage api={api} />
           </Route>
-
           <Route exact path={`/pools/:contractAddress`}>
             <PoolDetailPage api={api} />
           </Route>
-
           <Route exact path={`/pools`}>
             <PoolsPage api={api} />
           </Route>
-
           <Route
             exact
             path={`/farms/:contractAddress`}
             component={FarmDetailPage}
           />
-          <Route exact path={`/farms`} component={FarmsPage} />
+          <Route exact path={`/farms`} component={FarmsPage} />{" "}
           <Route exact path={`/tokens`} component={TokensPage} />
-
           <Route exact path={`/create/token`} component={CreateTokenPage} />
           <Route
             exact
@@ -176,21 +179,19 @@ const App = () => {
             path={`/create/token-lp`}
             component={CreateTokenLPPage}
           />
-          <Redirect from="/create" to="/create/token" />
-
           <Route exact path={`/account`} component={MyBalancePage} />
           <Route exact path={`/account/my-balance`} component={MyBalancePage} />
-          <Redirect from="/account" to="/account/my-balance" />
-
           <Route exact path={`/my-pools`} component={MyPoolsPage} />
           <Route
             exact
             path={`/my-pools/:contractAddress`}
             component={MyPoolDetailPage}
-          />
-          <Redirect from="/" to="/faucet" />
-        </DefaultLayout>
-      </Switch>
+          />{" "}
+          <Route>
+            <FaucetPage />
+          </Route>
+        </Switch>
+      </DefaultLayout>
     </HashRouter>
   );
 };

@@ -1,4 +1,5 @@
-import { SearchIcon } from "@chakra-ui/icons";
+// import { SearchIcon } from "@chakra-ui/icons";
+// import IWInput from "components/input/Input";
 import {
   Box,
   Flex,
@@ -11,7 +12,6 @@ import {
 } from "@chakra-ui/react";
 import { delay } from "utils";
 import SectionContainer from "components/container/SectionContainer";
-import IWInput from "components/input/Input";
 
 import { IWTable } from "components/table/IWTable";
 import { useEffect } from "react";
@@ -55,7 +55,7 @@ export default function PoolsPage({ api }) {
   const tableData = {
     tableHeader: [
       {
-        name: "tokenName",
+        name: "tokenSymbol",
         hasTooltip: false,
         tooltipContent: "",
         label: "Stake & Earn",
@@ -109,7 +109,7 @@ export default function PoolsPage({ api }) {
         alignItems="start"
         direction={{ base: "column" }}
       >
-        <Stack
+        {/* <Stack
           w="100%"
           spacing="20px"
           direction={{ base: "column" }}
@@ -120,7 +120,7 @@ export default function PoolsPage({ api }) {
             placeholder="Search"
             inputRightElementIcon={<SearchIcon color="text.1" />}
           />
-        </Stack>
+        </Stack> */}
 
         <HStack
           color="text.1"
@@ -182,11 +182,7 @@ export default function PoolsPage({ api }) {
             >
               {[1, -1].map((item, idx) => (
                 <option key={idx} value={item}>
-                  {item === 1
-                    ? "Low to hight"
-                    : item === -1
-                    ? "Hight to low"
-                    : ""}
+                  {item === -1 ? "New to old" : item === 1 ? "Old to new" : ""}
                 </option>
               ))}
             </Select>
