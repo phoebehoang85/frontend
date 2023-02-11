@@ -22,3 +22,8 @@ REACT_APP_PUBLIC_ADDRESS=5CGUvruJMqB1VMkq14FC8QgR9t4qzjBGbY82tKVp2D6g9LQc
 
 NODE_ENV=development
 ```
+- Deploy token sale
+- Deploy token contract
+- Deploy token generator
+- Deploy pool contracts
+- Deploy pool generators

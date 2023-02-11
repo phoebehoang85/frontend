@@ -1,0 +1,69 @@
+.about--wrapperbox {
+  padding: 30px 0 50px;
+  position: relative;
+}
+
+.about--wrapperbox .section--titlebox {
+  margin-bottom: 30px;
+}
+
+.about--contentbox {
+  padding: 48px 100px 50px;
+  max-width: 970px;
+  margin-left: auto;
+  margin-right: auto;
+  background: rgba(26, 29, 30, 0.7);
+  border-radius: 15px;
+  margin-bottom: 285px;
+}
+.about--contentbox .top--description {
+  margin-bottom: 48px;
+  font-family: var(--font-base);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.7);
+}
+.about--cardcontItems-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 96px;
+}
+.about-contentcard .desc {
+  font-family: var(--font-base);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 29px;
+}
+.bottom-textbox {
+  text-align: center;
+}
+.bottom-textbox .title-text {
+  font-family: var(--font-base);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 30px;
+  letter-spacing: 0em;
+  text-align: center;
+  margin-bottom: 0;
+  color: rgba(255, 255, 255, 0.6);
+}
+.bottom-textbox .desc {
+  font-family: var(--font-base);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: 0em;
+  text-align: center;
+  margin-bottom: 0;
+  color: rgba(255, 255, 255, 0.6);
+}
+.bottom-textbox .link {
+  color: var(--color-white);
+}
