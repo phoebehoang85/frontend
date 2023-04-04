@@ -82,7 +82,7 @@ export default function NavbarLinks(props) {
             </Flex>
           ))}
 
-          {!currentAccount ? null : (
+          {/* {!currentAccount ? null : (
             <Flex
               _hover={{ textDecoration: "none", bg: "bg.1" }}
               p="6px 10px"
@@ -106,7 +106,7 @@ export default function NavbarLinks(props) {
                 </Text>
               </Link>
             </Flex>
-          )}
+          )} */}
 
           <CreateMenuDropdown
             setCurrentAnchor={setCurrentAnchor}
@@ -157,21 +157,21 @@ NavbarLinks.propTypes = {
 
 export const menuListData = [
   {
-    title: "Faucet",
-    href: "/faucet",
+    title: "INW Token",
+    href: "/token",
   },
-  {
-    title: "Pools",
-    href: "/pools",
-  },
-  {
-    title: "Farms",
-    href: "/farms",
-  },
-  {
-    title: "Tokens",
-    href: "/tokens",
-  },
+  // {
+  //   title: "Pools",
+  //   href: "/pools",
+  // },
+  // {
+  //   title: "Farms",
+  //   href: "/farms",
+  // },
+  // {
+  //   title: "Tokens",  
+  //   href: "/tokens",
+  // },
 ];
 
 export const CreateMenuDropdown = ({
@@ -183,7 +183,7 @@ export const CreateMenuDropdown = ({
 
   return (
     <Menu placement="bottom-end">
-      <MenuButton
+      {/* <MenuButton
         p="0px"
         _hover={{ bg: "bg.1" }}
         bg={currentAnchor === "/create" ? "bg.1" : "transparent"}
@@ -195,7 +195,7 @@ export const CreateMenuDropdown = ({
             <Text fontSize="md">Create</Text>
           </Link>
         </Flex>
-      </MenuButton>
+      </MenuButton> */}
 
       <MenuList
         p="0px"

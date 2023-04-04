@@ -16,7 +16,7 @@ export default function MyPoolsPage({ api }) {
 
   useEffect(() => {
     if (!currentAccount?.address) {
-      history.push("/faucet");
+      history.push("/token");
     }
   }, [currentAccount, history]);
 

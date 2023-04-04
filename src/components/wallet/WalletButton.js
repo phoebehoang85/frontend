@@ -334,7 +334,7 @@ export const WalletConnect = () => {
               localStorage.removeItem("localCurrentAccount");
 
               if (location?.pathname === "/my-pools") {
-                history.push("/faucet");
+                history.push("/token");
               }
             }}
           >
