@@ -170,10 +170,9 @@ export default function FaucetPage({ api }) {
       0,
       "psp22Capped::cap"
     );
-      console.log(result1, 'result1');
     const inwTotalSupply = formatQueryResultToNumber(result1);
 
-    setInwTotalSupply(inwTotalSupply);
+    setInwTotalSupply(inwTotalSupply.replace('.0000', ''));
 
     let result2 = await execContractQuery(
       process.env.REACT_APP_PUBLIC_ADDRESS,
@@ -183,10 +182,9 @@ export default function FaucetPage({ api }) {
       0,
       "psp22::totalSupply"
     );
-    console.log(result2, 'result2');
     const inwInCUr = formatQueryResultToNumber(result2);
 
-    setInwInCur(inwInCUr);
+    setInwInCur(inwInCUr.replace('.0000', '.00'));
 
     const availableMint =
       formatChainStringToNumber(inwMintingCap) -
@@ -332,7 +330,7 @@ export default function FaucetPage({ api }) {
             available at {inwMintingFee}
             <AzeroLogo w="14px" h="14px" ml="2px" mb="3px" /> per INW. You can
             trade INW on PanoramaSwap in due time. */}
-            INW will be airdropped to ArtZero's Early Contributors; Public Sale Participants; and Validator Stakers on 19th April 2023. <Link
+            INW will be airdropped to ArtZero's Early Contributors; Public Sale Participants; and Validator Stakers after 18th April 2023 <Link
           isExternal
           fontWeight="400"
           color={"text.1"}
@@ -349,16 +347,15 @@ export default function FaucetPage({ api }) {
           direction={{ base: "column", lg: "row" }}
         >
           <IWCardOneColumn
-            title="Information"
+            title="Ink Whale Token"
             data={[
-              { title: "Total Name", content: "Ink Whale Token" },
+              { title: "Token Symbol", content: "INW" },
               {
                 title: "Contract Address",
                 content: <AddressCopier address={inwContractAddress} />,
               },
               { title: "Max Supply", content: `${inwTotalSupply} INW` },
               { title: "In Circulation: ", content: `${inwInCur} INW` },
-              { title: "Token Symbol", content: "INW" },
               {title: "Your Balance: ", content: `${inwBalance} INW`}
             ]}
           />
