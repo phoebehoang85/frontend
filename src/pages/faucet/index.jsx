@@ -355,7 +355,7 @@ export default function FaucetPage({ api }) {
                 content: <AddressCopier address={inwContractAddress} />,
               },
               { title: "Max Supply", content: `${inwTotalSupply} INW` },
-              { title: "In Circulation: ", content: `${inwInCur} INW` },
+              // { title: "In Circulation: ", content: `${inwInCur} INW` },
               {title: "Your Balance: ", content: `${inwBalance} INW`}
             ]}
           />
