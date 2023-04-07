@@ -15,8 +15,8 @@
 
 REACT_APP_NAME=inkwhale.net
 REACT_APP_PROVIDER_URL=wss://ws.test.azero.dev
-REACT_APP_API_BASE_URL=https://api.inkwhale.net
-REACT_APP_ARTZERO_API_BASE_URL=https://api.artzero.io
+REACT_APP_API_BASE_URL=https://api-dev.inkwhale.net
+REACT_APP_ARTZERO_API_BASE_URL=https://a0-test-api.artzero.io
 REACT_APP_IPFS_BASE_URL=https://artzeronft.infura-ipfs.io/ipfs
 REACT_APP_PUBLIC_ADDRESS=5CGUvruJMqB1VMkq14FC8QgR9t4qzjBGbY82tKVp2D6g9LQc
 
