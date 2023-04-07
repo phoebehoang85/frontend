@@ -1,5 +1,5 @@
 const core_contract = {
-  CONTRACT_ADDRESS: "5HesiTaAEspLo2FchoShKniiLhZZDDUwpiFGYnmMfvWm9Qid",
+  CONTRACT_ADDRESS: "5HKkHC3NfJLeySHdjFuEMmDQgHKxtLGoWJMw78DFvgT8y9hS",
   CONTRACT_ABI: {
 	  "source": {
 		"hash": "0xe0a75783d73ae373a55ca8772f13a84f8372c7d2f796372c25217cee601c5637",
