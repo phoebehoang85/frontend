@@ -6,7 +6,6 @@ git clone https://github.com/InkWhale-net/frontend
 ```
 
 ### 2. Install node v18.15.0
-
 ### 2.1. Install nvm
 ```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
@@ -17,14 +16,12 @@ source ~/.bashrc
 ```
 nvm install 18.15.0
 ```
-
 ### 2.3. Use node v18.15.0
 ```
 nvm use 18.15.0
 ```
 
 ### 3. Config `.env` file. Sample is as below: 
-
 ```
 PORT=3001
 
@@ -49,4 +46,8 @@ yarn
 yarn start
 ```
 
+### 6. FE sample
+```
+https://testnet.inkwhale.net
+```
 
