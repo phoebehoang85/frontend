@@ -1,13 +1,13 @@
 const azt_contract = {
-  CONTRACT_ADDRESS: "5GiYkqRjQ5JXSvHzYwQZh9RHSrpqq6yPhCewPnpNbCBt2Psq",
-  CONTRACT_ABI: {
+	CONTRACT_ADDRESS: "5H4aCwLKUpVpct6XGJzDGPPXFockNKQU2JUVNgUw6BXEPzST",
+	CONTRACT_ABI: {
 	  "source": {
-		"hash": "0x3bec72649462742418fce962a3acfc060015e5dfb7cd69c0a919e6807d44b08b",
-		"language": "ink! 4.0.0-beta",
+		"hash": "0x64b49954be22afc476d581ee34697faf475ce39df00960e20c4269907891e4d8",
+		"language": "ink! 4.1.0",
 		"compiler": "rustc 1.70.0-nightly",
 		"build_info": {
-		  "build_mode": "Release",
-		  "cargo_contract_version": "2.0.2",
+		  "build_mode": "Debug",
+		  "cargo_contract_version": "2.0.0-rc",
 		  "rust_toolchain": "nightly-x86_64-unknown-linux-gnu",
 		  "wasm_opt_settings": {
 			"keep_debug_symbols": false,
@@ -16,10 +16,10 @@ const azt_contract = {
 		}
 	  },
 	  "contract": {
-		"name": "my_psp22_sale",
-		"version": "0.1.0",
+		"name": "psp22_standard",
+		"version": "1.0.0",
 		"authors": [
-		  "Support <contact@artzero.io>"
+		  "InkWhale <admin@artzero.io>"
 		]
 	  },
 	  "spec": {
@@ -27,34 +27,7 @@ const azt_contract = {
 		  {
 			"args": [
 			  {
-				"label": "contract_owner",
-				"type": {
-				  "displayName": [
-					"AccountId"
-				  ],
-				  "type": 2
-				}
-			  },
-			  {
 				"label": "cap",
-				"type": {
-				  "displayName": [
-					"Balance"
-				  ],
-				  "type": 0
-				}
-			  },
-			  {
-				"label": "minting_fee",
-				"type": {
-				  "displayName": [
-					"Balance"
-				  ],
-				  "type": 0
-				}
-			  },
-			  {
-				"label": "minting_cap",
 				"type": {
 				  "displayName": [
 					"Balance"
@@ -68,7 +41,7 @@ const azt_contract = {
 				  "displayName": [
 					"String"
 				  ],
-				  "type": 5
+				  "type": 6
 				}
 			  },
 			  {
@@ -77,7 +50,7 @@ const azt_contract = {
 				  "displayName": [
 					"String"
 				  ],
-				  "type": 5
+				  "type": 6
 				}
 			  },
 			  {
@@ -86,7 +59,7 @@ const azt_contract = {
 				  "displayName": [
 					"u8"
 				  ],
-				  "type": 4
+				  "type": 3
 				}
 			  }
 			],
@@ -98,7 +71,7 @@ const azt_contract = {
 				"ink_primitives",
 				"ConstructorResult"
 			  ],
-			  "type": 6
+			  "type": 7
 			},
 			"selector": "0x9bae9d5e"
 		  }
@@ -110,109 +83,9 @@ const azt_contract = {
 			"ink",
 			"LangError"
 		  ],
-		  "type": 7
+		  "type": 8
 		},
 		"messages": [
-		  {
-			"args": [
-			  {
-				"label": "cap",
-				"type": {
-				  "displayName": [
-					"Balance"
-				  ],
-				  "type": 0
-				}
-			  },
-			  {
-				"label": "minting_fee",
-				"type": {
-				  "displayName": [
-					"Balance"
-				  ],
-				  "type": 0
-				}
-			  },
-			  {
-				"label": "minting_cap",
-				"type": {
-				  "displayName": [
-					"Balance"
-				  ],
-				  "type": 0
-				}
-			  },
-			  {
-				"label": "name",
-				"type": {
-				  "displayName": [
-					"String"
-				  ],
-				  "type": 5
-				}
-			  },
-			  {
-				"label": "symbol",
-				"type": {
-				  "displayName": [
-					"String"
-				  ],
-				  "type": 5
-				}
-			  },
-			  {
-				"label": "decimal",
-				"type": {
-				  "displayName": [
-					"u8"
-				  ],
-				  "type": 4
-				}
-			  }
-			],
-			"docs": [],
-			"label": "initialize",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 8
-			},
-			"selector": "0xf2f6dba3"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "owner",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"BalanceOfInput1"
-				  ],
-				  "type": 2
-				}
-			  }
-			],
-			"docs": [
-			  " Returns the account Balance for the specified `owner`.",
-			  "",
-			  " Returns `0` if the account is non-existent."
-			],
-			"label": "PSP22::balance_of",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 14
-			},
-			"selector": "0x6568382f"
-		  },
 		  {
 			"args": [
 			  {
@@ -222,7 +95,7 @@ const azt_contract = {
 					"psp22_external",
 					"IncreaseAllowanceInput1"
 				  ],
-				  "type": 2
+				  "type": 4
 				}
 			  },
 			  {
@@ -255,7 +128,7 @@ const azt_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 15
+			  "type": 9
 			},
 			"selector": "0x96d6b57a"
 		  },
@@ -268,7 +141,7 @@ const azt_contract = {
 					"psp22_external",
 					"TransferFromInput1"
 				  ],
-				  "type": 2
+				  "type": 4
 				}
 			  },
 			  {
@@ -278,7 +151,7 @@ const azt_contract = {
 					"psp22_external",
 					"TransferFromInput2"
 				  ],
-				  "type": 2
+				  "type": 4
 				}
 			  },
 			  {
@@ -298,7 +171,7 @@ const azt_contract = {
 					"psp22_external",
 					"TransferFromInput4"
 				  ],
-				  "type": 5
+				  "type": 2
 				}
 			  }
 			],
@@ -331,75 +204,9 @@ const azt_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 15
+			  "type": 9
 			},
 			"selector": "0x54b3c76e"
-		  },
-		  {
-			"args": [],
-			"docs": [
-			  " Returns the total token supply."
-			],
-			"label": "PSP22::total_supply",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 14
-			},
-			"selector": "0x162df8c2"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "spender",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"ApproveInput1"
-				  ],
-				  "type": 2
-				}
-			  },
-			  {
-				"label": "value",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"ApproveInput2"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [
-			  " Allows `spender` to withdraw from the caller's account multiple times, up to",
-			  " the `value` amount.",
-			  "",
-			  " If this function is called again it overwrites the current allowance with `value`.",
-			  "",
-			  " An `Approval` event is emitted.",
-			  "",
-			  " # Errors",
-			  "",
-			  " Returns `ZeroSenderAddress` error if sender's address is zero.",
-			  "",
-			  " Returns `ZeroRecipientAddress` error if recipient's address is zero."
-			],
-			"label": "PSP22::approve",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 15
-			},
-			"selector": "0xb20f1bbd"
 		  },
 		  {
 			"args": [
@@ -408,28 +215,18 @@ const azt_contract = {
 				"type": {
 				  "displayName": [
 					"psp22_external",
-					"AllowanceInput1"
+					"BalanceOfInput1"
 				  ],
-				  "type": 2
-				}
-			  },
-			  {
-				"label": "spender",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"AllowanceInput2"
-				  ],
-				  "type": 2
+				  "type": 4
 				}
 			  }
 			],
 			"docs": [
-			  " Returns the amount which `spender` is still allowed to withdraw from `owner`.",
+			  " Returns the account Balance for the specified `owner`.",
 			  "",
-			  " Returns `0` if no allowance has been set `0`."
+			  " Returns `0` if the account is non-existent."
 			],
-			"label": "PSP22::allowance",
+			"label": "PSP22::balance_of",
 			"mutates": false,
 			"payable": false,
 			"returnType": {
@@ -437,9 +234,9 @@ const azt_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 14
+			  "type": 12
 			},
-			"selector": "0x4d47d921"
+			"selector": "0x6568382f"
 		  },
 		  {
 			"args": [
@@ -450,7 +247,7 @@ const azt_contract = {
 					"psp22_external",
 					"DecreaseAllowanceInput1"
 				  ],
-				  "type": 2
+				  "type": 4
 				}
 			  },
 			  {
@@ -486,7 +283,7 @@ const azt_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 15
+			  "type": 9
 			},
 			"selector": "0xfecb57d5"
 		  },
@@ -499,7 +296,7 @@ const azt_contract = {
 					"psp22_external",
 					"TransferInput1"
 				  ],
-				  "type": 2
+				  "type": 4
 				}
 			  },
 			  {
@@ -519,7 +316,7 @@ const azt_contract = {
 					"psp22_external",
 					"TransferInput3"
 				  ],
-				  "type": 5
+				  "type": 2
 				}
 			  }
 			],
@@ -546,9 +343,183 @@ const azt_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 15
+			  "type": 9
 			},
 			"selector": "0xdb20f9f5"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "owner",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"AllowanceInput1"
+				  ],
+				  "type": 4
+				}
+			  },
+			  {
+				"label": "spender",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"AllowanceInput2"
+				  ],
+				  "type": 4
+				}
+			  }
+			],
+			"docs": [
+			  " Returns the amount which `spender` is still allowed to withdraw from `owner`.",
+			  "",
+			  " Returns `0` if no allowance has been set `0`."
+			],
+			"label": "PSP22::allowance",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 12
+			},
+			"selector": "0x4d47d921"
+		  },
+		  {
+			"args": [],
+			"docs": [
+			  " Returns the total token supply."
+			],
+			"label": "PSP22::total_supply",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 12
+			},
+			"selector": "0x162df8c2"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "spender",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"ApproveInput1"
+				  ],
+				  "type": 4
+				}
+			  },
+			  {
+				"label": "value",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"ApproveInput2"
+				  ],
+				  "type": 0
+				}
+			  }
+			],
+			"docs": [
+			  " Allows `spender` to withdraw from the caller's account multiple times, up to",
+			  " the `value` amount.",
+			  "",
+			  " If this function is called again it overwrites the current allowance with `value`.",
+			  "",
+			  " An `Approval` event is emitted.",
+			  "",
+			  " # Errors",
+			  "",
+			  " Returns `ZeroSenderAddress` error if sender's address is zero.",
+			  "",
+			  " Returns `ZeroRecipientAddress` error if recipient's address is zero."
+			],
+			"label": "PSP22::approve",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 9
+			},
+			"selector": "0xb20f1bbd"
+		  },
+		  {
+			"args": [],
+			"docs": [
+			  " Returns the token decimals."
+			],
+			"label": "PSP22Metadata::token_decimals",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 13
+			},
+			"selector": "0x7271b782"
+		  },
+		  {
+			"args": [],
+			"docs": [
+			  " Returns the token name."
+			],
+			"label": "PSP22Metadata::token_name",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 14
+			},
+			"selector": "0x3d261bd4"
+		  },
+		  {
+			"args": [],
+			"docs": [
+			  " Returns the token symbol."
+			],
+			"label": "PSP22Metadata::token_symbol",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 14
+			},
+			"selector": "0x34205be5"
+		  },
+		  {
+			"args": [],
+			"docs": [
+			  " Returns the token's cap"
+			],
+			"label": "PSP22Capped::cap",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 12
+			},
+			"selector": "0xf40366b4"
 		  },
 		  {
 			"args": [],
@@ -573,26 +544,9 @@ const azt_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 17
+			  "type": 16
 			},
 			"selector": "0x5e228753"
-		  },
-		  {
-			"args": [],
-			"docs": [
-			  " Returns the address of the current owner."
-			],
-			"label": "Ownable::owner",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 19
-			},
-			"selector": "0x4fa43c8c"
 		  },
 		  {
 			"args": [
@@ -603,7 +557,7 @@ const azt_contract = {
 					"ownable_external",
 					"TransferOwnershipInput1"
 				  ],
-				  "type": 2
+				  "type": 4
 				}
 			  }
 			],
@@ -627,17 +581,55 @@ const azt_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 17
+			  "type": 16
 			},
 			"selector": "0x11f43efd"
 		  },
 		  {
 			"args": [],
 			"docs": [
-			  " Returns the token name."
+			  " Returns the address of the current owner."
 			],
-			"label": "PSP22Metadata::token_name",
+			"label": "Ownable::owner",
 			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 19
+			},
+			"selector": "0x4fa43c8c"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "value",
+				"type": {
+				  "displayName": [
+					"admintrait_external",
+					"WithdrawFeeInput1"
+				  ],
+				  "type": 0
+				}
+			  },
+			  {
+				"label": "receiver",
+				"type": {
+				  "displayName": [
+					"admintrait_external",
+					"WithdrawFeeInput2"
+				  ],
+				  "type": 4
+				}
+			  }
+			],
+			"docs": [
+			  " This function allows contract owner to withdraw contract balance to his account."
+			],
+			"label": "AdminTrait::withdraw_fee",
+			"mutates": true,
 			"payable": false,
 			"returnType": {
 			  "displayName": [
@@ -646,15 +638,46 @@ const azt_contract = {
 			  ],
 			  "type": 20
 			},
-			"selector": "0x3d261bd4"
+			"selector": "0x07573e99"
 		  },
 		  {
-			"args": [],
-			"docs": [
-			  " Returns the token symbol."
+			"args": [
+			  {
+				"label": "psp22_contract_address",
+				"type": {
+				  "displayName": [
+					"admintrait_external",
+					"TranferPsp22Input1"
+				  ],
+				  "type": 4
+				}
+			  },
+			  {
+				"label": "amount",
+				"type": {
+				  "displayName": [
+					"admintrait_external",
+					"TranferPsp22Input2"
+				  ],
+				  "type": 0
+				}
+			  },
+			  {
+				"label": "receiver",
+				"type": {
+				  "displayName": [
+					"admintrait_external",
+					"TranferPsp22Input3"
+				  ],
+				  "type": 4
+				}
+			  }
 			],
-			"label": "PSP22Metadata::token_symbol",
-			"mutates": false,
+			"docs": [
+			  " This function allow contract owner withdraw PSP22 to an account in case there is any token sent to contract by mistake"
+			],
+			"label": "AdminTrait::tranfer_psp22",
+			"mutates": true,
 			"payable": false,
 			"returnType": {
 			  "displayName": [
@@ -663,24 +686,7 @@ const azt_contract = {
 			  ],
 			  "type": 20
 			},
-			"selector": "0x34205be5"
-		  },
-		  {
-			"args": [],
-			"docs": [
-			  " Returns the token decimals."
-			],
-			"label": "PSP22Metadata::token_decimals",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 22
-			},
-			"selector": "0x7271b782"
+			"selector": "0xd9aad284"
 		  },
 		  {
 			"args": [
@@ -691,7 +697,7 @@ const azt_contract = {
 					"psp22burnable_external",
 					"BurnInput1"
 				  ],
-				  "type": 2
+				  "type": 4
 				}
 			  },
 			  {
@@ -714,35 +720,35 @@ const azt_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 15
+			  "type": 9
 			},
 			"selector": "0x7a9da510"
 		  },
 		  {
 			"args": [
 			  {
-				"label": "mint_to",
+				"label": "account",
 				"type": {
 				  "displayName": [
-					"tokenmintcaptrait_external",
-					"OwnerMintInput1"
+					"psp22mintable_external",
+					"MintInput1"
 				  ],
-				  "type": 2
+				  "type": 4
 				}
 			  },
 			  {
 				"label": "amount",
 				"type": {
 				  "displayName": [
-					"tokenmintcaptrait_external",
-					"OwnerMintInput2"
+					"psp22mintable_external",
+					"MintInput2"
 				  ],
 				  "type": 0
 				}
 			  }
 			],
 			"docs": [],
-			"label": "TokenMintCapTrait::owner_mint",
+			"label": "PSP22Mintable::mint",
 			"mutates": true,
 			"payable": false,
 			"returnType": {
@@ -750,363 +756,9 @@ const azt_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 15
+			  "type": 9
 			},
-			"selector": "0x57102ff8"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "TokenMintCapTrait::minting_fee",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 14
-			},
-			"selector": "0x9a581b7a"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "cap",
-				"type": {
-				  "displayName": [
-					"tokenmintcaptrait_external",
-					"SetCapInput1"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [],
-			"label": "TokenMintCapTrait::set_cap",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 15
-			},
-			"selector": "0xef31e5bb"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "TokenMintCapTrait::minting_cap",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 14
-			},
-			"selector": "0x73a46329"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "TokenMintCapTrait::total_minted",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 14
-			},
-			"selector": "0x950dee6e"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "minting_cap",
-				"type": {
-				  "displayName": [
-					"tokenmintcaptrait_external",
-					"SetMintingCapInput1"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [],
-			"label": "TokenMintCapTrait::set_minting_cap",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 15
-			},
-			"selector": "0x504cffab"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "amount",
-				"type": {
-				  "displayName": [
-					"tokenmintcaptrait_external",
-					"PublicMintInput1"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [],
-			"label": "TokenMintCapTrait::public_mint",
-			"mutates": true,
-			"payable": true,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 15
-			},
-			"selector": "0x49e5f576"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "value",
-				"type": {
-				  "displayName": [
-					"tokenmintcaptrait_external",
-					"WithdrawFeeInput1"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [
-			  " Withdraw Fees - only Owner"
-			],
-			"label": "TokenMintCapTrait::withdraw_fee",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 8
-			},
-			"selector": "0x8e723dd2"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "minting_fee",
-				"type": {
-				  "displayName": [
-					"tokenmintcaptrait_external",
-					"SetMintingFeeInput1"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [],
-			"label": "TokenMintCapTrait::set_minting_fee",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 15
-			},
-			"selector": "0x58f9c527"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "TokenMintCapTrait::cap",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 14
-			},
-			"selector": "0xad78cc2e"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "value",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"WithdrawFeeInput1"
-				  ],
-				  "type": 0
-				}
-			  },
-			  {
-				"label": "receiver",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"WithdrawFeeInput2"
-				  ],
-				  "type": 2
-				}
-			  }
-			],
-			"docs": [
-			  " This function allows contract owner to withdraw contract balance to his account."
-			],
-			"label": "AdminTrait::withdraw_fee",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 8
-			},
-			"selector": "0x07573e99"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "nft_contract_address",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"TranferNftInput1"
-				  ],
-				  "type": 2
-				}
-			  },
-			  {
-				"label": "token_id",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"TranferNftInput2"
-				  ],
-				  "type": 23
-				}
-			  },
-			  {
-				"label": "receiver",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"TranferNftInput3"
-				  ],
-				  "type": 2
-				}
-			  }
-			],
-			"docs": [
-			  " This function allow contract owner withdraw NFT to an account in case there is any NFT sent to contract by mistake"
-			],
-			"label": "AdminTrait::tranfer_nft",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 8
-			},
-			"selector": "0xed1e1dfa"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "psp22_contract_address",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"TranferPsp22Input1"
-				  ],
-				  "type": 2
-				}
-			  },
-			  {
-				"label": "amount",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"TranferPsp22Input2"
-				  ],
-				  "type": 0
-				}
-			  },
-			  {
-				"label": "receiver",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"TranferPsp22Input3"
-				  ],
-				  "type": 2
-				}
-			  }
-			],
-			"docs": [
-			  " This function allow contract owner withdraw PSP22 to an account in case there is any token sent to contract by mistake"
-			],
-			"label": "AdminTrait::tranfer_psp22",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 8
-			},
-			"selector": "0xd9aad284"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "code_hash",
-				"type": {
-				  "displayName": [
-					"upgradeabletrait_external",
-					"SetCodeInput1"
-				  ],
-				  "type": 3
-				}
-			  }
-			],
-			"docs": [
-			  " This function allow contract owner modifies the code which is used to execute calls to this contract address (`AccountId`)."
-			],
-			"label": "UpgradeableTrait::set_code",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 8
-			},
-			"selector": "0x9e32fab2"
+			"selector": "0xfc3c75d4"
 		  }
 		]
 	  },
@@ -1197,15 +849,6 @@ const azt_contract = {
 					  "fields": [
 						{
 						  "layout": {
-							"leaf": {
-							  "key": "0x00000000",
-							  "ty": 2
-							}
-						  },
-						  "name": "owner"
-						},
-						{
-						  "layout": {
 							"enum": {
 							  "dispatchKey": "0x00000000",
 							  "name": "Option",
@@ -1220,46 +863,7 @@ const azt_contract = {
 									  "layout": {
 										"leaf": {
 										  "key": "0x00000000",
-										  "ty": 1
-										}
-									  },
-									  "name": "0"
-									}
-								  ],
-								  "name": "Some"
-								}
-							  }
-							}
-						  },
-						  "name": "_reserved"
-						}
-					  ],
-					  "name": "Data"
-					}
-				  },
-				  "name": "ownable"
-				},
-				{
-				  "layout": {
-					"struct": {
-					  "fields": [
-						{
-						  "layout": {
-							"enum": {
-							  "dispatchKey": "0x00000000",
-							  "name": "Option",
-							  "variants": {
-								"0": {
-								  "fields": [],
-								  "name": "None"
-								},
-								"1": {
-								  "fields": [
-									{
-									  "layout": {
-										"leaf": {
-										  "key": "0x00000000",
-										  "ty": 5
+										  "ty": 2
 										}
 									  },
 									  "name": "0"
@@ -1288,7 +892,7 @@ const azt_contract = {
 									  "layout": {
 										"leaf": {
 										  "key": "0x00000000",
-										  "ty": 5
+										  "ty": 2
 										}
 									  },
 									  "name": "0"
@@ -1305,7 +909,7 @@ const azt_contract = {
 						  "layout": {
 							"leaf": {
 							  "key": "0x00000000",
-							  "ty": 4
+							  "ty": 3
 							}
 						  },
 						  "name": "decimals"
@@ -1353,37 +957,10 @@ const azt_contract = {
 						  "layout": {
 							"leaf": {
 							  "key": "0x00000000",
-							  "ty": 0
+							  "ty": 4
 							}
 						  },
-						  "name": "cap"
-						},
-						{
-						  "layout": {
-							"leaf": {
-							  "key": "0x00000000",
-							  "ty": 0
-							}
-						  },
-						  "name": "minting_fee"
-						},
-						{
-						  "layout": {
-							"leaf": {
-							  "key": "0x00000000",
-							  "ty": 0
-							}
-						  },
-						  "name": "minting_cap"
-						},
-						{
-						  "layout": {
-							"leaf": {
-							  "key": "0x00000000",
-							  "ty": 0
-							}
-						  },
-						  "name": "total_minted"
+						  "name": "owner"
 						},
 						{
 						  "layout": {
@@ -1418,7 +995,55 @@ const azt_contract = {
 					  "name": "Data"
 					}
 				  },
-				  "name": "token_mint_cap"
+				  "name": "ownable"
+				},
+				{
+				  "layout": {
+					"struct": {
+					  "fields": [
+						{
+						  "layout": {
+							"leaf": {
+							  "key": "0x00000000",
+							  "ty": 0
+							}
+						  },
+						  "name": "cap"
+						},
+						{
+						  "layout": {
+							"enum": {
+							  "dispatchKey": "0x00000000",
+							  "name": "Option",
+							  "variants": {
+								"0": {
+								  "fields": [],
+								  "name": "None"
+								},
+								"1": {
+								  "fields": [
+									{
+									  "layout": {
+										"leaf": {
+										  "key": "0x00000000",
+										  "ty": 1
+										}
+									  },
+									  "name": "0"
+									}
+								  ],
+								  "name": "Some"
+								}
+							  }
+							}
+						  },
+						  "name": "_reserved"
+						}
+					  ],
+					  "name": "Data"
+					}
+				  },
+				  "name": "cap"
 				},
 				{
 				  "layout": {
@@ -1458,48 +1083,9 @@ const azt_contract = {
 					}
 				  },
 				  "name": "admin_data"
-				},
-				{
-				  "layout": {
-					"struct": {
-					  "fields": [
-						{
-						  "layout": {
-							"enum": {
-							  "dispatchKey": "0x00000000",
-							  "name": "Option",
-							  "variants": {
-								"0": {
-								  "fields": [],
-								  "name": "None"
-								},
-								"1": {
-								  "fields": [
-									{
-									  "layout": {
-										"leaf": {
-										  "key": "0x00000000",
-										  "ty": 1
-										}
-									  },
-									  "name": "0"
-									}
-								  ],
-								  "name": "Some"
-								}
-							  }
-							}
-						  },
-						  "name": "_reserved"
-						}
-					  ],
-					  "name": "Data"
-					}
-				  },
-				  "name": "upgradeable_data"
 				}
 			  ],
-			  "name": "MyPsp22"
+			  "name": "Psp22Nft"
 			}
 		  },
 		  "root_key": "0x00000000"
@@ -1526,10 +1112,28 @@ const azt_contract = {
 		  "id": 2,
 		  "type": {
 			"def": {
+			  "sequence": {
+				"type": 3
+			  }
+			}
+		  }
+		},
+		{
+		  "id": 3,
+		  "type": {
+			"def": {
+			  "primitive": "u8"
+			}
+		  }
+		},
+		{
+		  "id": 4,
+		  "type": {
+			"def": {
 			  "composite": {
 				"fields": [
 				  {
-					"type": 3,
+					"type": 5,
 					"typeName": "[u8; 32]"
 				  }
 				]
@@ -1543,36 +1147,26 @@ const azt_contract = {
 		  }
 		},
 		{
-		  "id": 3,
+		  "id": 5,
 		  "type": {
 			"def": {
 			  "array": {
 				"len": 32,
-				"type": 4
-			  }
-			}
-		  }
-		},
-		{
-		  "id": 4,
-		  "type": {
-			"def": {
-			  "primitive": "u8"
-			}
-		  }
-		},
-		{
-		  "id": 5,
-		  "type": {
-			"def": {
-			  "sequence": {
-				"type": 4
+				"type": 3
 			  }
 			}
 		  }
 		},
 		{
 		  "id": 6,
+		  "type": {
+			"def": {
+			  "primitive": "str"
+			}
+		  }
+		},
+		{
+		  "id": 7,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1589,7 +1183,7 @@ const azt_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 7
+						"type": 8
 					  }
 					],
 					"index": 1,
@@ -1605,7 +1199,7 @@ const azt_contract = {
 			  },
 			  {
 				"name": "E",
-				"type": 7
+				"type": 8
 			  }
 			],
 			"path": [
@@ -1614,7 +1208,7 @@ const azt_contract = {
 		  }
 		},
 		{
-		  "id": 7,
+		  "id": 8,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1633,48 +1227,6 @@ const azt_contract = {
 		  }
 		},
 		{
-		  "id": 8,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 9
-					  }
-					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 7
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 9
-			  },
-			  {
-				"name": "E",
-				"type": 7
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
 		  "id": 9,
 		  "type": {
 			"def": {
@@ -1683,7 +1235,7 @@ const azt_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 1
+						"type": 10
 					  }
 					],
 					"index": 0,
@@ -1692,7 +1244,7 @@ const azt_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 10
+						"type": 8
 					  }
 					],
 					"index": 1,
@@ -1704,11 +1256,11 @@ const azt_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 1
+				"type": 10
 			  },
 			  {
 				"name": "E",
-				"type": 10
+				"type": 8
 			  }
 			],
 			"path": [
@@ -1718,301 +1270,6 @@ const azt_contract = {
 		},
 		{
 		  "id": 10,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 5,
-						"typeName": "String"
-					  }
-					],
-					"index": 0,
-					"name": "Custom"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 11,
-						"typeName": "PSP22Error"
-					  }
-					],
-					"index": 1,
-					"name": "PSP22Error"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 12,
-						"typeName": "PSP34Error"
-					  }
-					],
-					"index": 2,
-					"name": "PSP34Error"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 13,
-						"typeName": "OwnableError"
-					  }
-					],
-					"index": 3,
-					"name": "OwnableError"
-				  },
-				  {
-					"index": 4,
-					"name": "CannotTransfer"
-				  },
-				  {
-					"index": 5,
-					"name": "NotEnoughBalance"
-				  },
-				  {
-					"index": 6,
-					"name": "WithdrawFeeError"
-				  },
-				  {
-					"index": 7,
-					"name": "WithdrawNFTError"
-				  },
-				  {
-					"index": 8,
-					"name": "WithdrawPSP22Error"
-				  }
-				]
-			  }
-			},
-			"path": [
-			  "inkwhale_project",
-			  "traits",
-			  "error",
-			  "Error"
-			]
-		  }
-		},
-		{
-		  "id": 11,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 5,
-						"typeName": "String"
-					  }
-					],
-					"index": 0,
-					"name": "Custom"
-				  },
-				  {
-					"index": 1,
-					"name": "InsufficientBalance"
-				  },
-				  {
-					"index": 2,
-					"name": "InsufficientAllowance"
-				  },
-				  {
-					"index": 3,
-					"name": "ZeroRecipientAddress"
-				  },
-				  {
-					"index": 4,
-					"name": "ZeroSenderAddress"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 5,
-						"typeName": "String"
-					  }
-					],
-					"index": 5,
-					"name": "SafeTransferCheckFailed"
-				  }
-				]
-			  }
-			},
-			"path": [
-			  "openbrush_contracts",
-			  "traits",
-			  "errors",
-			  "psp22",
-			  "PSP22Error"
-			]
-		  }
-		},
-		{
-		  "id": 12,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 5,
-						"typeName": "String"
-					  }
-					],
-					"index": 0,
-					"name": "Custom"
-				  },
-				  {
-					"index": 1,
-					"name": "SelfApprove"
-				  },
-				  {
-					"index": 2,
-					"name": "NotApproved"
-				  },
-				  {
-					"index": 3,
-					"name": "TokenExists"
-				  },
-				  {
-					"index": 4,
-					"name": "TokenNotExists"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 5,
-						"typeName": "String"
-					  }
-					],
-					"index": 5,
-					"name": "SafeTransferCheckFailed"
-				  }
-				]
-			  }
-			},
-			"path": [
-			  "openbrush_contracts",
-			  "traits",
-			  "errors",
-			  "psp34",
-			  "PSP34Error"
-			]
-		  }
-		},
-		{
-		  "id": 13,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"index": 0,
-					"name": "CallerIsNotOwner"
-				  },
-				  {
-					"index": 1,
-					"name": "NewOwnerIsZero"
-				  }
-				]
-			  }
-			},
-			"path": [
-			  "openbrush_contracts",
-			  "traits",
-			  "errors",
-			  "ownable",
-			  "OwnableError"
-			]
-		  }
-		},
-		{
-		  "id": 14,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 0
-					  }
-					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 7
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 0
-			  },
-			  {
-				"name": "E",
-				"type": 7
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
-		  "id": 15,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 16
-					  }
-					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 7
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 16
-			  },
-			  {
-				"name": "E",
-				"type": 7
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
-		  "id": 16,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -2054,7 +1311,7 @@ const azt_contract = {
 		  }
 		},
 		{
-		  "id": 17,
+		  "id": 11,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -2062,7 +1319,61 @@ const azt_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 18
+						"type": 2,
+						"typeName": "String"
+					  }
+					],
+					"index": 0,
+					"name": "Custom"
+				  },
+				  {
+					"index": 1,
+					"name": "InsufficientBalance"
+				  },
+				  {
+					"index": 2,
+					"name": "InsufficientAllowance"
+				  },
+				  {
+					"index": 3,
+					"name": "ZeroRecipientAddress"
+				  },
+				  {
+					"index": 4,
+					"name": "ZeroSenderAddress"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 2,
+						"typeName": "String"
+					  }
+					],
+					"index": 5,
+					"name": "SafeTransferCheckFailed"
+				  }
+				]
+			  }
+			},
+			"path": [
+			  "openbrush_contracts",
+			  "traits",
+			  "errors",
+			  "psp22",
+			  "PSP22Error"
+			]
+		  }
+		},
+		{
+		  "id": 12,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"fields": [
+					  {
+						"type": 0
 					  }
 					],
 					"index": 0,
@@ -2071,7 +1382,7 @@ const azt_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 7
+						"type": 8
 					  }
 					],
 					"index": 1,
@@ -2083,11 +1394,11 @@ const azt_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 18
+				"type": 0
 			  },
 			  {
 				"name": "E",
-				"type": 7
+				"type": 8
 			  }
 			],
 			"path": [
@@ -2096,7 +1407,166 @@ const azt_contract = {
 		  }
 		},
 		{
-		  "id": 18,
+		  "id": 13,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"fields": [
+					  {
+						"type": 3
+					  }
+					],
+					"index": 0,
+					"name": "Ok"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 8
+					  }
+					],
+					"index": 1,
+					"name": "Err"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 3
+			  },
+			  {
+				"name": "E",
+				"type": 8
+			  }
+			],
+			"path": [
+			  "Result"
+			]
+		  }
+		},
+		{
+		  "id": 14,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"fields": [
+					  {
+						"type": 15
+					  }
+					],
+					"index": 0,
+					"name": "Ok"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 8
+					  }
+					],
+					"index": 1,
+					"name": "Err"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 15
+			  },
+			  {
+				"name": "E",
+				"type": 8
+			  }
+			],
+			"path": [
+			  "Result"
+			]
+		  }
+		},
+		{
+		  "id": 15,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"index": 0,
+					"name": "None"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 2
+					  }
+					],
+					"index": 1,
+					"name": "Some"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 2
+			  }
+			],
+			"path": [
+			  "Option"
+			]
+		  }
+		},
+		{
+		  "id": 16,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"fields": [
+					  {
+						"type": 17
+					  }
+					],
+					"index": 0,
+					"name": "Ok"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 8
+					  }
+					],
+					"index": 1,
+					"name": "Err"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 17
+			  },
+			  {
+				"name": "E",
+				"type": 8
+			  }
+			],
+			"path": [
+			  "Result"
+			]
+		  }
+		},
+		{
+		  "id": 17,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -2113,7 +1583,7 @@ const azt_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 13
+						"type": 18
 					  }
 					],
 					"index": 1,
@@ -2129,11 +1599,37 @@ const azt_contract = {
 			  },
 			  {
 				"name": "E",
-				"type": 13
+				"type": 18
 			  }
 			],
 			"path": [
 			  "Result"
+			]
+		  }
+		},
+		{
+		  "id": 18,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"index": 0,
+					"name": "CallerIsNotOwner"
+				  },
+				  {
+					"index": 1,
+					"name": "NewOwnerIsZero"
+				  }
+				]
+			  }
+			},
+			"path": [
+			  "openbrush_contracts",
+			  "traits",
+			  "errors",
+			  "ownable",
+			  "OwnableError"
 			]
 		  }
 		},
@@ -2146,7 +1642,7 @@ const azt_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 2
+						"type": 4
 					  }
 					],
 					"index": 0,
@@ -2155,7 +1651,7 @@ const azt_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 7
+						"type": 8
 					  }
 					],
 					"index": 1,
@@ -2167,11 +1663,11 @@ const azt_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 2
+				"type": 4
 			  },
 			  {
 				"name": "E",
-				"type": 7
+				"type": 8
 			  }
 			],
 			"path": [
@@ -2197,7 +1693,7 @@ const azt_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 7
+						"type": 8
 					  }
 					],
 					"index": 1,
@@ -2213,7 +1709,7 @@ const azt_contract = {
 			  },
 			  {
 				"name": "E",
-				"type": 7
+				"type": 8
 			  }
 			],
 			"path": [
@@ -2228,17 +1724,22 @@ const azt_contract = {
 			  "variant": {
 				"variants": [
 				  {
+					"fields": [
+					  {
+						"type": 1
+					  }
+					],
 					"index": 0,
-					"name": "None"
+					"name": "Ok"
 				  },
 				  {
 					"fields": [
 					  {
-						"type": 5
+						"type": 22
 					  }
 					],
 					"index": 1,
-					"name": "Some"
+					"name": "Err"
 				  }
 				]
 			  }
@@ -2246,11 +1747,15 @@ const azt_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 5
+				"type": 1
+			  },
+			  {
+				"name": "E",
+				"type": 22
 			  }
 			],
 			"path": [
-			  "Option"
+			  "Result"
 			]
 		  }
 		},
@@ -2263,143 +1768,239 @@ const azt_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 4
+						"type": 6,
+						"typeName": "String"
 					  }
 					],
 					"index": 0,
-					"name": "Ok"
+					"name": "Custom"
 				  },
 				  {
-					"fields": [
-					  {
-						"type": 7
-					  }
-					],
 					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 4
-			  },
-			  {
-				"name": "E",
-				"type": 7
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
-		  "id": 23,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 4,
-						"typeName": "u8"
-					  }
-					],
-					"index": 0,
-					"name": "U8"
+					"name": "OnlyOwner"
 				  },
 				  {
-					"fields": [
-					  {
-						"type": 24,
-						"typeName": "u16"
-					  }
-					],
-					"index": 1,
-					"name": "U16"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 25,
-						"typeName": "u32"
-					  }
-					],
 					"index": 2,
-					"name": "U32"
+					"name": "OnlyAdmin"
 				  },
 				  {
-					"fields": [
-					  {
-						"type": 26,
-						"typeName": "u64"
-					  }
-					],
 					"index": 3,
-					"name": "U64"
+					"name": "InvalidCaller"
 				  },
 				  {
-					"fields": [
-					  {
-						"type": 0,
-						"typeName": "u128"
-					  }
-					],
 					"index": 4,
-					"name": "U128"
+					"name": "InvalidFee"
+				  },
+				  {
+					"index": 5,
+					"name": "TokenOwnerNotMatch"
+				  },
+				  {
+					"index": 6,
+					"name": "NotApproved"
+				  },
+				  {
+					"index": 7,
+					"name": "CannotTransfer"
+				  },
+				  {
+					"index": 8,
+					"name": "CannotMint"
+				  },
+				  {
+					"index": 9,
+					"name": "NotPublicMint"
+				  },
+				  {
+					"index": 10,
+					"name": "NotEnoughBalance"
+				  },
+				  {
+					"index": 11,
+					"name": "MaxSupply"
+				  },
+				  {
+					"index": 12,
+					"name": "AlreadyInit"
+				  },
+				  {
+					"index": 13,
+					"name": "NotOwner"
+				  },
+				  {
+					"index": 14,
+					"name": "NotTokenOwner"
+				  },
+				  {
+					"index": 15,
+					"name": "ProjectNotExist"
+				  },
+				  {
+					"index": 16,
+					"name": "ProjectOwnerAndAdmin"
+				  },
+				  {
+					"index": 17,
+					"name": "InvalidStartTimeAndEndTime"
+				  },
+				  {
+					"index": 18,
+					"name": "InvalidPhaseCount"
+				  },
+				  {
+					"index": 19,
+					"name": "CollectionOwnerAndAdmin"
+				  },
+				  {
+					"index": 20,
+					"name": "CollectionNotActive"
+				  },
+				  {
+					"index": 21,
+					"name": "CollectionNotExist"
+				  },
+				  {
+					"index": 22,
+					"name": "InvalidInput"
+				  },
+				  {
+					"index": 23,
+					"name": "InvalidType"
+				  },
+				  {
+					"index": 24,
+					"name": "ClaimedAll"
+				  },
+				  {
+					"index": 25,
+					"name": "TokenLimitReached"
+				  },
+				  {
+					"index": 26,
+					"name": "UpdatePhase"
+				  },
+				  {
+					"index": 27,
+					"name": "PhaseNotExist"
+				  },
+				  {
+					"index": 28,
+					"name": "PhaseExpired"
+				  },
+				  {
+					"index": 29,
+					"name": "PhaseDeactivate"
+				  },
+				  {
+					"index": 30,
+					"name": "WhitelistNotExist"
+				  },
+				  {
+					"index": 31,
+					"name": "WithdrawFeeError"
+				  },
+				  {
+					"index": 32,
+					"name": "WithdrawNFTError"
+				  },
+				  {
+					"index": 33,
+					"name": "WithdrawPSP22Error"
+				  },
+				  {
+					"index": 34,
+					"name": "NotListed"
+				  },
+				  {
+					"index": 35,
+					"name": "BidAlreadyExist"
+				  },
+				  {
+					"index": 36,
+					"name": "BidNotExist"
+				  },
+				  {
+					"index": 37,
+					"name": "NotInMarket"
+				  },
+				  {
+					"index": 38,
+					"name": "NotForSale"
+				  },
+				  {
+					"index": 39,
+					"name": "NotInSaleList"
+				  },
+				  {
+					"index": 40,
+					"name": "InvalidBidLength"
+				  },
+				  {
+					"index": 41,
+					"name": "InvalidCollectionOwner"
+				  },
+				  {
+					"index": 42,
+					"name": "InvalidTime"
+				  },
+				  {
+					"index": 43,
+					"name": "RewardStarted"
+				  },
+				  {
+					"index": 44,
+					"name": "RewardNotStarted"
+				  },
+				  {
+					"index": 45,
+					"name": "RewardNotAdded"
+				  },
+				  {
+					"index": 46,
+					"name": "ClaimMustBeFalse"
+				  },
+				  {
+					"index": 47,
+					"name": "HoldAmountBidderNotExist"
 				  },
 				  {
 					"fields": [
 					  {
-						"type": 5,
-						"typeName": "Vec<u8>"
+						"type": 18,
+						"typeName": "OwnableError"
 					  }
 					],
-					"index": 5,
-					"name": "Bytes"
+					"index": 48,
+					"name": "OwnableError"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 11,
+						"typeName": "PSP22Error"
+					  }
+					],
+					"index": 49,
+					"name": "PSP22Error"
+				  },
+				  {
+					"index": 50,
+					"name": "CheckedOperations"
 				  }
 				]
 			  }
 			},
 			"path": [
-			  "openbrush_contracts",
+			  "inkwhale_project",
 			  "traits",
-			  "types",
-			  "Id"
+			  "error",
+			  "Error"
 			]
-		  }
-		},
-		{
-		  "id": 24,
-		  "type": {
-			"def": {
-			  "primitive": "u16"
-			}
-		  }
-		},
-		{
-		  "id": 25,
-		  "type": {
-			"def": {
-			  "primitive": "u32"
-			}
-		  }
-		},
-		{
-		  "id": 26,
-		  "type": {
-			"def": {
-			  "primitive": "u64"
-			}
 		  }
 		}
 	  ],
 	  "version": "4"
 	}
-};
-
-export default azt_contract;
+  };
+  
+  export default azt_contract;
