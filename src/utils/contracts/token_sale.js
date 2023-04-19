@@ -1,8 +1,8 @@
 const token_sale_contract = {
-  CONTRACT_ADDRESS: "5FDuamb2FnuKU7PxswWdMen4SmLoW1JvZ6Rqp7gw5o5GxsDC",
+  CONTRACT_ADDRESS: "5Du2UEavZEUFam7ooz6nescMLg8XZDiLrjAuBNeRLfy8KhGo",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0xc7d0d3097d06a44fbbdfbf1f18ebf75502bd054fbf99957accc9c189c8328462",
+		"hash": "0xd47a1f577da81a048237364fadaed2141302eaa9a462d4f7e174e50141f05596",
 		"language": "ink! 4.1.0",
 		"compiler": "rustc 1.70.0-nightly",
 		"build_info": {
@@ -137,6 +137,50 @@ const token_sale_contract = {
 			"selector": "0x155623af"
 		  },
 		  {
+			"args": [],
+			"docs": [
+			  " Returns the address of the current owner."
+			],
+			"label": "Ownable::owner",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 14
+			},
+			"selector": "0x4fa43c8c"
+		  },
+		  {
+			"args": [],
+			"docs": [
+			  " Leaves the contract without owner. It will not be possible to call",
+			  " owner's functions anymore. Can only be called by the current owner.",
+			  "",
+			  " NOTE: Renouncing ownership will leave the contract without an owner,",
+			  " thereby removing any functionality that is only available to the owner.",
+			  "",
+			  " On success a `OwnershipTransferred` event is emitted.",
+			  "",
+			  " # Errors",
+			  "",
+			  " Panics with `CallerIsNotOwner` error if caller is not owner"
+			],
+			"label": "Ownable::renounce_ownership",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 15
+			},
+			"selector": "0x5e228753"
+		  },
+		  {
 			"args": [
 			  {
 				"label": "new_owner",
@@ -169,91 +213,9 @@ const token_sale_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 14
+			  "type": 15
 			},
 			"selector": "0x11f43efd"
-		  },
-		  {
-			"args": [],
-			"docs": [
-			  " Returns the address of the current owner."
-			],
-			"label": "Ownable::owner",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 16
-			},
-			"selector": "0x4fa43c8c"
-		  },
-		  {
-			"args": [],
-			"docs": [
-			  " Leaves the contract without owner. It will not be possible to call",
-			  " owner's functions anymore. Can only be called by the current owner.",
-			  "",
-			  " NOTE: Renouncing ownership will leave the contract without an owner,",
-			  " thereby removing any functionality that is only available to the owner.",
-			  "",
-			  " On success a `OwnershipTransferred` event is emitted.",
-			  "",
-			  " # Errors",
-			  "",
-			  " Panics with `CallerIsNotOwner` error if caller is not owner"
-			],
-			"label": "Ownable::renounce_ownership",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 14
-			},
-			"selector": "0x5e228753"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "value",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"WithdrawFeeInput1"
-				  ],
-				  "type": 4
-				}
-			  },
-			  {
-				"label": "receiver",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"WithdrawFeeInput2"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [
-			  " This function allows contract owner to withdraw contract balance to his account."
-			],
-			"label": "AdminTrait::withdraw_fee",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 7
-			},
-			"selector": "0x07573e99"
 		  },
 		  {
 			"args": [
@@ -306,6 +268,44 @@ const token_sale_contract = {
 		  {
 			"args": [
 			  {
+				"label": "value",
+				"type": {
+				  "displayName": [
+					"admintrait_external",
+					"WithdrawFeeInput1"
+				  ],
+				  "type": 4
+				}
+			  },
+			  {
+				"label": "receiver",
+				"type": {
+				  "displayName": [
+					"admintrait_external",
+					"WithdrawFeeInput2"
+				  ],
+				  "type": 0
+				}
+			  }
+			],
+			"docs": [
+			  " This function allows contract owner to withdraw contract balance to his account."
+			],
+			"label": "AdminTrait::withdraw_fee",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 7
+			},
+			"selector": "0x07573e99"
+		  },
+		  {
+			"args": [
+			  {
 				"label": "code_hash",
 				"type": {
 				  "displayName": [
@@ -330,32 +330,6 @@ const token_sale_contract = {
 			  "type": 7
 			},
 			"selector": "0x9e32fab2"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "inw_contract",
-				"type": {
-				  "displayName": [
-					"tokensaletrait_external",
-					"SetInwContractInput1"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [],
-			"label": "TokenSaleTrait::set_inw_contract",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 7
-			},
-			"selector": "0x335d9241"
 		  },
 		  {
 			"args": [
@@ -386,6 +360,47 @@ const token_sale_contract = {
 		  {
 			"args": [],
 			"docs": [],
+			"label": "TokenSaleTrait::get_inw_contract",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 14
+			},
+			"selector": "0x7f9bf26f"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "inw_contract",
+				"type": {
+				  "displayName": [
+					"tokensaletrait_external",
+					"SetInwContractInput1"
+				  ],
+				  "type": 0
+				}
+			  }
+			],
+			"docs": [],
+			"label": "TokenSaleTrait::set_inw_contract",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 7
+			},
+			"selector": "0x335d9241"
+		  },
+		  {
+			"args": [],
+			"docs": [],
 			"label": "TokenSaleTrait::get_inw_price",
 			"mutates": false,
 			"payable": false,
@@ -397,21 +412,6 @@ const token_sale_contract = {
 			  "type": 17
 			},
 			"selector": "0xca6b299c"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "TokenSaleTrait::get_inw_contract",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 16
-			},
-			"selector": "0x7f9bf26f"
 		  }
 		]
 	  },
@@ -942,6 +942,14 @@ const token_sale_contract = {
 				  {
 					"index": 26,
 					"name": "NotEnoughRewardToWithdraw"
+				  },
+				  {
+					"index": 27,
+					"name": "NotTopupEnoughReward"
+				  },
+				  {
+					"index": 28,
+					"name": "NoAmount"
 				  }
 				]
 			  }
@@ -1061,7 +1069,7 @@ const token_sale_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 15
+						"type": 0
 					  }
 					],
 					"index": 0,
@@ -1082,7 +1090,7 @@ const token_sale_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 15
+				"type": 0
 			  },
 			  {
 				"name": "E",
@@ -1096,6 +1104,48 @@ const token_sale_contract = {
 		},
 		{
 		  "id": 15,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"fields": [
+					  {
+						"type": 16
+					  }
+					],
+					"index": 0,
+					"name": "Ok"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 6
+					  }
+					],
+					"index": 1,
+					"name": "Err"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 16
+			  },
+			  {
+				"name": "E",
+				"type": 6
+			  }
+			],
+			"path": [
+			  "Result"
+			]
+		  }
+		},
+		{
+		  "id": 16,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1129,48 +1179,6 @@ const token_sale_contract = {
 			  {
 				"name": "E",
 				"type": 11
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
-		  "id": 16,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 0
-					  }
-					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 6
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 0
-			  },
-			  {
-				"name": "E",
-				"type": 6
 			  }
 			],
 			"path": [
