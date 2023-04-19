@@ -8,7 +8,6 @@ import IWInput from "components/input/Input";
 import { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import psp22Contract from "utils/contracts/psp22_contract";
 import azt_contract from "utils/contracts/azt_contract";
 
 import { formatQueryResultToNumber } from "utils";
@@ -23,6 +22,7 @@ import { formatNumToBN } from "utils";
 import { fetchUserBalance } from "redux/slices/walletSlice";
 import { formatNumDynDecimal } from "utils";
 import { formatChainStringToNumber } from "utils";
+import AddressCopier from "components/address-copier/AddressCopier";
 
 const inwContractAddress = azt_contract.CONTRACT_ADDRESS;
 
@@ -39,6 +39,7 @@ export default function FaucetPage({ api }) {
   const [inwTotalSupply, setInwTotalSupply] = useState(0);
   const [availableMint, setAvailableMint] = useState(0);
   const [inwBuyAmount, setInwBuyAmount] = useState("");
+  const [inwInCur, setInwInCur] = useState(0);
 
   const [accountInfo, setAccountInfo] = useState(null);
   // eslint-disable-next-line no-unused-vars
@@ -64,7 +65,7 @@ export default function FaucetPage({ api }) {
           let balance = await execContractQuery(
             currentAccount?.address,
             api,
-            psp22Contract.CONTRACT_ABI,
+            azt_contract.CONTRACT_ABI,
             selectedContractAddress,
             0,
             "psp22::balanceOf",
@@ -130,7 +131,7 @@ export default function FaucetPage({ api }) {
       await execContractTx(
         currentAccount,
         api,
-        psp22Contract.CONTRACT_ABI,
+        azt_contract.CONTRACT_ABI,
         selectedContractAddress,
         0, //-> value
         "faucet"
@@ -167,12 +168,23 @@ export default function FaucetPage({ api }) {
       azt_contract.CONTRACT_ABI,
       azt_contract.CONTRACT_ADDRESS,
       0,
-      "psp22::totalSupply"
+      "psp22Capped::cap"
     );
-
     const inwTotalSupply = formatQueryResultToNumber(result1);
 
-    setInwTotalSupply(inwTotalSupply);
+    setInwTotalSupply(inwTotalSupply.replace('.0000', ''));
+
+    let result2 = await execContractQuery(
+      process.env.REACT_APP_PUBLIC_ADDRESS,
+      api,
+      azt_contract.CONTRACT_ABI,
+      azt_contract.CONTRACT_ADDRESS,
+      0,
+      "psp22::totalSupply"
+    );
+    const inwInCUr = formatQueryResultToNumber(result2);
+
+    setInwInCur(inwInCUr.replace('.0000', '.00'));
 
     const availableMint =
       formatChainStringToNumber(inwMintingCap) -
@@ -247,7 +259,7 @@ export default function FaucetPage({ api }) {
 
   return (
     <>
-      <SectionContainer
+      {/* <SectionContainer
         mt={{ base: "0px", xl: "20px" }}
         title="Faucet"
         description={
@@ -307,17 +319,24 @@ export default function FaucetPage({ api }) {
             </IWCard>
           </IWCard>
         </Stack>{" "}
-      </SectionContainer>
+      </SectionContainer> */}
 
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
         title="INW Tokens"
         description={
           <>
-            INW tokens are used as transaction fee. 100M INW tokens are
+            {/* INW tokens are used as transaction fee. 100M INW tokens are
             available at {inwMintingFee}
             <AzeroLogo w="14px" h="14px" ml="2px" mb="3px" /> per INW. You can
-            trade INW on PanoramaSwap in due time.
+            trade INW on PanoramaSwap in due time. */}
+            INW will be airdropped to ArtZero's Early Contributors; Public Sale Participants; and Validator Stakers after 18th April 2023 <Link
+          isExternal
+          fontWeight="400"
+          color={"text.1"}
+          _hover={{ color: "text.2" }}
+          href={"https://twitter.com/inkwhale_net"}
+        >Check out Twitter for more information</Link>
           </>
         }
       >
@@ -328,15 +347,16 @@ export default function FaucetPage({ api }) {
           direction={{ base: "column", lg: "row" }}
         >
           <IWCardOneColumn
-            title="Information"
+            title="Ink Whale Token"
             data={[
-              { title: "Total Name", content: "Ink Whale Token" },
+              { title: "Token Symbol", content: "INW" },
               {
                 title: "Contract Address",
-                content: addressShortener(inwContractAddress),
+                content: <AddressCopier address={inwContractAddress} />,
               },
-              { title: "Total Supply", content: inwTotalSupply },
-              { title: "Token Symbol", content: "INW" },
+              { title: "Max Supply", content: `${inwTotalSupply} INW` },
+              // { title: "In Circulation: ", content: `${inwInCur} INW` },
+              {title: "Your Balance: ", content: `${inwBalance} INW`}
             ]}
           />
 
@@ -369,11 +389,10 @@ export default function FaucetPage({ api }) {
                 />
 
                 <Text textAlign="left" w="full" fontSize="md" lineHeight="28px">
-                  (There are {formatNumDynDecimal(availableMint)} INW tokens
-                  available to mint){" "}
+                  (INW Public Sale Coming Soon){" "}
                 </Text>
 
-                <Button w="full" onClick={() => inwPublicMintHandler()}>
+                <Button w="full" disabled>
                   Get INW
                 </Button>
               </Stack>
