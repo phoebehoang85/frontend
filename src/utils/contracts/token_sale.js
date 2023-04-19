@@ -1,8 +1,8 @@
-const core_contract = {
-  CONTRACT_ADDRESS: "5Fc5WyMw4uvg3f3TPSDRvC5yyoTjrtNMDEM5MkyFeo7baUwh",
+const token_sale_contract = {
+  CONTRACT_ADDRESS: "5FDuamb2FnuKU7PxswWdMen4SmLoW1JvZ6Rqp7gw5o5GxsDC",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0x419eabe4f11473ebecf963755c44ff19287ec2dea8a2e7962f6a6ec0df18c60f",
+		"hash": "0xc7d0d3097d06a44fbbdfbf1f18ebf75502bd054fbf99957accc9c189c8328462",
 		"language": "ink! 4.1.0",
 		"compiler": "rustc 1.70.0-nightly",
 		"build_info": {
@@ -16,7 +16,7 @@ const core_contract = {
 		}
 	  },
 	  "contract": {
-		"name": "token_generator",
+		"name": "token_sale",
 		"version": "1.0.0",
 		"authors": [
 		  "InkWhale <admin@artzero.io>"
@@ -27,15 +27,6 @@ const core_contract = {
 		  {
 			"args": [
 			  {
-				"label": "psp22_hash",
-				"type": {
-				  "displayName": [
-					"Hash"
-				  ],
-				  "type": 4
-				}
-			  },
-			  {
 				"label": "inw_contract",
 				"type": {
 				  "displayName": [
@@ -45,12 +36,12 @@ const core_contract = {
 				}
 			  },
 			  {
-				"label": "creation_fee",
+				"label": "inw_price",
 				"type": {
 				  "displayName": [
 					"Balance"
 				  ],
-				  "type": 6
+				  "type": 4
 				}
 			  },
 			  {
@@ -71,7 +62,7 @@ const core_contract = {
 				"ink_primitives",
 				"ConstructorResult"
 			  ],
-			  "type": 7
+			  "type": 5
 			},
 			"selector": "0x9bae9d5e"
 		  }
@@ -83,20 +74,11 @@ const core_contract = {
 			"ink",
 			"LangError"
 		  ],
-		  "type": 8
+		  "type": 6
 		},
 		"messages": [
 		  {
 			"args": [
-			  {
-				"label": "psp22_hash",
-				"type": {
-				  "displayName": [
-					"Hash"
-				  ],
-				  "type": 4
-				}
-			  },
 			  {
 				"label": "inw_contract",
 				"type": {
@@ -107,12 +89,12 @@ const core_contract = {
 				}
 			  },
 			  {
-				"label": "creation_fee",
+				"label": "inw_price",
 				"type": {
 				  "displayName": [
 					"Balance"
 				  ],
-				  "type": 6
+				  "type": 4
 				}
 			  }
 			],
@@ -125,60 +107,24 @@ const core_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 9
+			  "type": 7
 			},
 			"selector": "0xf2f6dba3"
 		  },
 		  {
 			"args": [
 			  {
-				"label": "mint_to",
-				"type": {
-				  "displayName": [
-					"AccountId"
-				  ],
-				  "type": 0
-				}
-			  },
-			  {
-				"label": "cap",
+				"label": "amount",
 				"type": {
 				  "displayName": [
 					"Balance"
 				  ],
-				  "type": 6
-				}
-			  },
-			  {
-				"label": "name",
-				"type": {
-				  "displayName": [
-					"String"
-				  ],
-				  "type": 15
-				}
-			  },
-			  {
-				"label": "symbol",
-				"type": {
-				  "displayName": [
-					"String"
-				  ],
-				  "type": 15
-				}
-			  },
-			  {
-				"label": "decimal",
-				"type": {
-				  "displayName": [
-					"u8"
-				  ],
-				  "type": 2
+				  "type": 4
 				}
 			  }
 			],
 			"docs": [],
-			"label": "new_token",
+			"label": "buy_inkwhale",
 			"mutates": true,
 			"payable": true,
 			"returnType": {
@@ -186,36 +132,9 @@ const core_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 9
+			  "type": 7
 			},
-			"selector": "0x7d97ec7b"
-		  },
-		  {
-			"args": [],
-			"docs": [
-			  " Leaves the contract without owner. It will not be possible to call",
-			  " owner's functions anymore. Can only be called by the current owner.",
-			  "",
-			  " NOTE: Renouncing ownership will leave the contract without an owner,",
-			  " thereby removing any functionality that is only available to the owner.",
-			  "",
-			  " On success a `OwnershipTransferred` event is emitted.",
-			  "",
-			  " # Errors",
-			  "",
-			  " Panics with `CallerIsNotOwner` error if caller is not owner"
-			],
-			"label": "Ownable::renounce_ownership",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 16
-			},
-			"selector": "0x5e228753"
+			"selector": "0x155623af"
 		  },
 		  {
 			"args": [
@@ -250,7 +169,7 @@ const core_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 16
+			  "type": 14
 			},
 			"selector": "0x11f43efd"
 		  },
@@ -267,237 +186,26 @@ const core_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 18
+			  "type": 16
 			},
 			"selector": "0x4fa43c8c"
 		  },
 		  {
-			"args": [
-			  {
-				"label": "index",
-				"type": {
-				  "displayName": [
-					"tokenmanagertrait_external",
-					"GetTokenContractAddressInput1"
-				  ],
-				  "type": 5
-				}
-			  }
-			],
-			"docs": [],
-			"label": "TokenManagerTrait::get_token_contract_address",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 19
-			},
-			"selector": "0xf1cfb0f6"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "value",
-				"type": {
-				  "displayName": [
-					"tokenmanagertrait_external",
-					"WithdrawInwInput1"
-				  ],
-				  "type": 6
-				}
-			  }
-			],
-			"docs": [],
-			"label": "TokenManagerTrait::withdraw_inw",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 9
-			},
-			"selector": "0xceb024c7"
-		  },
-		  {
 			"args": [],
-			"docs": [],
-			"label": "TokenManagerTrait::get_creation_fee",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 21
-			},
-			"selector": "0x034ef9b9"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "TokenManagerTrait::get_contract_hash",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 22
-			},
-			"selector": "0xf39b5876"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "psp22_hash",
-				"type": {
-				  "displayName": [
-					"tokenmanagertrait_external",
-					"SetContractHashInput1"
-				  ],
-				  "type": 4
-				}
-			  }
-			],
-			"docs": [],
-			"label": "TokenManagerTrait::set_contract_hash",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 9
-			},
-			"selector": "0xf38784b8"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "creation_fee",
-				"type": {
-				  "displayName": [
-					"tokenmanagertrait_external",
-					"SetCreationFeeInput1"
-				  ],
-				  "type": 6
-				}
-			  }
-			],
-			"docs": [],
-			"label": "TokenManagerTrait::set_creation_fee",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 9
-			},
-			"selector": "0xa82ecdff"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "inw_contract",
-				"type": {
-				  "displayName": [
-					"tokenmanagertrait_external",
-					"SetInwContractInput1"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [],
-			"label": "TokenManagerTrait::set_inw_contract",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 9
-			},
-			"selector": "0x55f43bf5"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "TokenManagerTrait::get_token_count",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 23
-			},
-			"selector": "0xebabc233"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "TokenManagerTrait::get_inw_contract",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 18
-			},
-			"selector": "0x7d2a84a9"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "psp22_contract_address",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"TranferPsp22Input1"
-				  ],
-				  "type": 0
-				}
-			  },
-			  {
-				"label": "amount",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"TranferPsp22Input2"
-				  ],
-				  "type": 6
-				}
-			  },
-			  {
-				"label": "receiver",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"TranferPsp22Input3"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
 			"docs": [
-			  " This function allow contract owner withdraw PSP22 to an account in case there is any token sent to contract by mistake"
+			  " Leaves the contract without owner. It will not be possible to call",
+			  " owner's functions anymore. Can only be called by the current owner.",
+			  "",
+			  " NOTE: Renouncing ownership will leave the contract without an owner,",
+			  " thereby removing any functionality that is only available to the owner.",
+			  "",
+			  " On success a `OwnershipTransferred` event is emitted.",
+			  "",
+			  " # Errors",
+			  "",
+			  " Panics with `CallerIsNotOwner` error if caller is not owner"
 			],
-			"label": "AdminTrait::tranfer_psp22",
+			"label": "Ownable::renounce_ownership",
 			"mutates": true,
 			"payable": false,
 			"returnType": {
@@ -505,9 +213,9 @@ const core_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 9
+			  "type": 14
 			},
-			"selector": "0xd9aad284"
+			"selector": "0x5e228753"
 		  },
 		  {
 			"args": [
@@ -518,7 +226,7 @@ const core_contract = {
 					"admintrait_external",
 					"WithdrawFeeInput1"
 				  ],
-				  "type": 6
+				  "type": 4
 				}
 			  },
 			  {
@@ -543,9 +251,57 @@ const core_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 9
+			  "type": 7
 			},
 			"selector": "0x07573e99"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "psp22_contract_address",
+				"type": {
+				  "displayName": [
+					"admintrait_external",
+					"TranferPsp22Input1"
+				  ],
+				  "type": 0
+				}
+			  },
+			  {
+				"label": "amount",
+				"type": {
+				  "displayName": [
+					"admintrait_external",
+					"TranferPsp22Input2"
+				  ],
+				  "type": 4
+				}
+			  },
+			  {
+				"label": "receiver",
+				"type": {
+				  "displayName": [
+					"admintrait_external",
+					"TranferPsp22Input3"
+				  ],
+				  "type": 0
+				}
+			  }
+			],
+			"docs": [
+			  " This function allow contract owner withdraw PSP22 to an account in case there is any token sent to contract by mistake"
+			],
+			"label": "AdminTrait::tranfer_psp22",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 7
+			},
+			"selector": "0xd9aad284"
 		  },
 		  {
 			"args": [
@@ -571,9 +327,91 @@ const core_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 9
+			  "type": 7
 			},
 			"selector": "0x9e32fab2"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "inw_contract",
+				"type": {
+				  "displayName": [
+					"tokensaletrait_external",
+					"SetInwContractInput1"
+				  ],
+				  "type": 0
+				}
+			  }
+			],
+			"docs": [],
+			"label": "TokenSaleTrait::set_inw_contract",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 7
+			},
+			"selector": "0x335d9241"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "inw_price",
+				"type": {
+				  "displayName": [
+					"tokensaletrait_external",
+					"SetInwPriceInput1"
+				  ],
+				  "type": 4
+				}
+			  }
+			],
+			"docs": [],
+			"label": "TokenSaleTrait::set_inw_price",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 7
+			},
+			"selector": "0x2b619bcc"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "TokenSaleTrait::get_inw_price",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 17
+			},
+			"selector": "0xca6b299c"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "TokenSaleTrait::get_inw_contract",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 16
+			},
+			"selector": "0x7f9bf26f"
 		  }
 		]
 	  },
@@ -629,95 +467,6 @@ const core_contract = {
 					}
 				  },
 				  "name": "ownable"
-				},
-				{
-				  "layout": {
-					"struct": {
-					  "fields": [
-						{
-						  "layout": {
-							"leaf": {
-							  "key": "0x00000000",
-							  "ty": 4
-							}
-						  },
-						  "name": "standard_psp22_hash"
-						},
-						{
-						  "layout": {
-							"leaf": {
-							  "key": "0x00000000",
-							  "ty": 5
-							}
-						  },
-						  "name": "token_count"
-						},
-						{
-						  "layout": {
-							"leaf": {
-							  "key": "0x00000000",
-							  "ty": 0
-							}
-						  },
-						  "name": "inw_contract"
-						},
-						{
-						  "layout": {
-							"leaf": {
-							  "key": "0x00000000",
-							  "ty": 6
-							}
-						  },
-						  "name": "creation_fee"
-						},
-						{
-						  "layout": {
-							"root": {
-							  "layout": {
-								"leaf": {
-								  "key": "0x2dbd96e9",
-								  "ty": 0
-								}
-							  },
-							  "root_key": "0x2dbd96e9"
-							}
-						  },
-						  "name": "token_list"
-						},
-						{
-						  "layout": {
-							"enum": {
-							  "dispatchKey": "0x00000000",
-							  "name": "Option",
-							  "variants": {
-								"0": {
-								  "fields": [],
-								  "name": "None"
-								},
-								"1": {
-								  "fields": [
-									{
-									  "layout": {
-										"leaf": {
-										  "key": "0x00000000",
-										  "ty": 3
-										}
-									  },
-									  "name": "0"
-									}
-								  ],
-								  "name": "Some"
-								}
-							  }
-							}
-						  },
-						  "name": "_reserved"
-						}
-					  ],
-					  "name": "Data"
-					}
-				  },
-				  "name": "manager"
 				},
 				{
 				  "layout": {
@@ -796,9 +545,66 @@ const core_contract = {
 					}
 				  },
 				  "name": "upgradeable_data"
+				},
+				{
+				  "layout": {
+					"struct": {
+					  "fields": [
+						{
+						  "layout": {
+							"leaf": {
+							  "key": "0x00000000",
+							  "ty": 0
+							}
+						  },
+						  "name": "inw_contract"
+						},
+						{
+						  "layout": {
+							"leaf": {
+							  "key": "0x00000000",
+							  "ty": 4
+							}
+						  },
+						  "name": "inw_price"
+						},
+						{
+						  "layout": {
+							"enum": {
+							  "dispatchKey": "0x00000000",
+							  "name": "Option",
+							  "variants": {
+								"0": {
+								  "fields": [],
+								  "name": "None"
+								},
+								"1": {
+								  "fields": [
+									{
+									  "layout": {
+										"leaf": {
+										  "key": "0x00000000",
+										  "ty": 3
+										}
+									  },
+									  "name": "0"
+									}
+								  ],
+								  "name": "Some"
+								}
+							  }
+							}
+						  },
+						  "name": "_reserved"
+						}
+					  ],
+					  "name": "Data"
+					}
+				  },
+				  "name": "manager"
 				}
 			  ],
-			  "name": "TokenGenerator"
+			  "name": "TokenSale"
 			}
 		  },
 		  "root_key": "0x00000000"
@@ -856,40 +662,12 @@ const core_contract = {
 		  "id": 4,
 		  "type": {
 			"def": {
-			  "composite": {
-				"fields": [
-				  {
-					"type": 1,
-					"typeName": "[u8; 32]"
-				  }
-				]
-			  }
-			},
-			"path": [
-			  "ink_primitives",
-			  "types",
-			  "Hash"
-			]
-		  }
-		},
-		{
-		  "id": 5,
-		  "type": {
-			"def": {
-			  "primitive": "u64"
-			}
-		  }
-		},
-		{
-		  "id": 6,
-		  "type": {
-			"def": {
 			  "primitive": "u128"
 			}
 		  }
 		},
 		{
-		  "id": 7,
+		  "id": 5,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -906,7 +684,7 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 8
+						"type": 6
 					  }
 					],
 					"index": 1,
@@ -922,7 +700,7 @@ const core_contract = {
 			  },
 			  {
 				"name": "E",
-				"type": 8
+				"type": 6
 			  }
 			],
 			"path": [
@@ -931,7 +709,7 @@ const core_contract = {
 		  }
 		},
 		{
-		  "id": 8,
+		  "id": 6,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -950,7 +728,7 @@ const core_contract = {
 		  }
 		},
 		{
-		  "id": 9,
+		  "id": 7,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -958,7 +736,7 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 10
+						"type": 8
 					  }
 					],
 					"index": 0,
@@ -967,7 +745,7 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 8
+						"type": 6
 					  }
 					],
 					"index": 1,
@@ -979,11 +757,11 @@ const core_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 10
+				"type": 8
 			  },
 			  {
 				"name": "E",
-				"type": 8
+				"type": 6
 			  }
 			],
 			"path": [
@@ -992,7 +770,7 @@ const core_contract = {
 		  }
 		},
 		{
-		  "id": 10,
+		  "id": 8,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1009,7 +787,7 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 11
+						"type": 9
 					  }
 					],
 					"index": 1,
@@ -1025,7 +803,7 @@ const core_contract = {
 			  },
 			  {
 				"name": "E",
-				"type": 11
+				"type": 9
 			  }
 			],
 			"path": [
@@ -1034,7 +812,7 @@ const core_contract = {
 		  }
 		},
 		{
-		  "id": 11,
+		  "id": 9,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1042,7 +820,7 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 12,
+						"type": 10,
 						"typeName": "String"
 					  }
 					],
@@ -1052,7 +830,7 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 13,
+						"type": 11,
 						"typeName": "OwnableError"
 					  }
 					],
@@ -1062,7 +840,7 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 14,
+						"type": 12,
 						"typeName": "PSP22Error"
 					  }
 					],
@@ -1177,7 +955,7 @@ const core_contract = {
 		  }
 		},
 		{
-		  "id": 12,
+		  "id": 10,
 		  "type": {
 			"def": {
 			  "primitive": "str"
@@ -1185,7 +963,7 @@ const core_contract = {
 		  }
 		},
 		{
-		  "id": 13,
+		  "id": 11,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1211,7 +989,7 @@ const core_contract = {
 		  }
 		},
 		{
-		  "id": 14,
+		  "id": 12,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1219,7 +997,7 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 15,
+						"type": 13,
 						"typeName": "String"
 					  }
 					],
@@ -1245,7 +1023,7 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 15,
+						"type": 13,
 						"typeName": "String"
 					  }
 					],
@@ -1265,7 +1043,7 @@ const core_contract = {
 		  }
 		},
 		{
-		  "id": 15,
+		  "id": 13,
 		  "type": {
 			"def": {
 			  "sequence": {
@@ -1275,7 +1053,7 @@ const core_contract = {
 		  }
 		},
 		{
-		  "id": 16,
+		  "id": 14,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1283,7 +1061,7 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 17
+						"type": 15
 					  }
 					],
 					"index": 0,
@@ -1292,7 +1070,7 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 8
+						"type": 6
 					  }
 					],
 					"index": 1,
@@ -1304,11 +1082,11 @@ const core_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 17
+				"type": 15
 			  },
 			  {
 				"name": "E",
-				"type": 8
+				"type": 6
 			  }
 			],
 			"path": [
@@ -1317,7 +1095,7 @@ const core_contract = {
 		  }
 		},
 		{
-		  "id": 17,
+		  "id": 15,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1334,7 +1112,7 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 13
+						"type": 11
 					  }
 					],
 					"index": 1,
@@ -1350,7 +1128,7 @@ const core_contract = {
 			  },
 			  {
 				"name": "E",
-				"type": 13
+				"type": 11
 			  }
 			],
 			"path": [
@@ -1359,7 +1137,7 @@ const core_contract = {
 		  }
 		},
 		{
-		  "id": 18,
+		  "id": 16,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1373,129 +1151,12 @@ const core_contract = {
 					"index": 0,
 					"name": "Ok"
 				  },
-				  {
-					"fields": [
-					  {
-						"type": 8
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 0
-			  },
-			  {
-				"name": "E",
-				"type": 8
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
-		  "id": 19,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 20
-					  }
-					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 8
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 20
-			  },
-			  {
-				"name": "E",
-				"type": 8
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
-		  "id": 20,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"index": 0,
-					"name": "None"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 0
-					  }
-					],
-					"index": 1,
-					"name": "Some"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 0
-			  }
-			],
-			"path": [
-			  "Option"
-			]
-		  }
-		},
-		{
-		  "id": 21,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
 				  {
 					"fields": [
 					  {
 						"type": 6
 					  }
 					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 8
-					  }
-					],
 					"index": 1,
 					"name": "Err"
 				  }
@@ -1505,11 +1166,11 @@ const core_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 6
+				"type": 0
 			  },
 			  {
 				"name": "E",
-				"type": 8
+				"type": 6
 			  }
 			],
 			"path": [
@@ -1518,7 +1179,7 @@ const core_contract = {
 		  }
 		},
 		{
-		  "id": 22,
+		  "id": 17,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1535,7 +1196,7 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 8
+						"type": 6
 					  }
 					],
 					"index": 1,
@@ -1551,49 +1212,7 @@ const core_contract = {
 			  },
 			  {
 				"name": "E",
-				"type": 8
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
-		  "id": 23,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 5
-					  }
-					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 8
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 5
-			  },
-			  {
-				"name": "E",
-				"type": 8
+				"type": 6
 			  }
 			],
 			"path": [
@@ -1606,4 +1225,4 @@ const core_contract = {
 	}
 };
 
-export default core_contract;
+export default token_sale_contract;

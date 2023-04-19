@@ -1,13 +1,13 @@
 const psp22_contract = {
-  CONTRACT_ADDRESS: "5EUB5uRR754QzqPWkCMk1tzAztDoRqikhCEDTpm7QE8oN9tg",
+  CONTRACT_ADDRESS: "5G8DoFYjzstKtjJDxFeg7hg3zFdxMrKVZ2N6EbGjKWwVv1GG",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0xdf0fc8c29fecf6e219084db71b1459e68fd5384ec7bfd550146e1cf7ffd3ad0d",
-		"language": "ink! 4.0.0-beta",
-		"compiler": "rustc 1.68.0-nightly",
+		"hash": "0x36d170547cb6003708fa40cd9e7a6de869b08939a2c3bc2b4b4d0c49c511bfde",
+		"language": "ink! 4.1.0",
+		"compiler": "rustc 1.70.0-nightly",
 		"build_info": {
-		  "build_mode": "Debug",
-		  "cargo_contract_version": "2.0.0-rc",
+		  "build_mode": "Release",
+		  "cargo_contract_version": "2.0.2",
 		  "rust_toolchain": "nightly-x86_64-unknown-linux-gnu",
 		  "wasm_opt_settings": {
 			"keep_debug_symbols": false,
@@ -16,8 +16,8 @@ const psp22_contract = {
 		}
 	  },
 	  "contract": {
-		"name": "my_psp22",
-		"version": "0.1.0",
+		"name": "token_standard",
+		"version": "1.0.0",
 		"authors": [
 		  "Support <contact@artzero.io>"
 		]
@@ -32,16 +32,16 @@ const psp22_contract = {
 				  "displayName": [
 					"AccountId"
 				  ],
-				  "type": 0
+				  "type": 4
 				}
 			  },
 			  {
-				"label": "total_supply",
+				"label": "cap",
 				"type": {
 				  "displayName": [
 					"Balance"
 				  ],
-				  "type": 4
+				  "type": 0
 				}
 			  },
 			  {
@@ -50,7 +50,7 @@ const psp22_contract = {
 				  "displayName": [
 					"String"
 				  ],
-				  "type": 5
+				  "type": 2
 				}
 			  },
 			  {
@@ -59,7 +59,7 @@ const psp22_contract = {
 				  "displayName": [
 					"String"
 				  ],
-				  "type": 5
+				  "type": 2
 				}
 			  },
 			  {
@@ -68,7 +68,7 @@ const psp22_contract = {
 				  "displayName": [
 					"u8"
 				  ],
-				  "type": 2
+				  "type": 3
 				}
 			  }
 			],
@@ -96,9 +96,43 @@ const psp22_contract = {
 		},
 		"messages": [
 		  {
-			"args": [],
-			"docs": [],
-			"label": "faucet",
+			"args": [
+			  {
+				"label": "spender",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"DecreaseAllowanceInput1"
+				  ],
+				  "type": 4
+				}
+			  },
+			  {
+				"label": "delta_value",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"DecreaseAllowanceInput2"
+				  ],
+				  "type": 0
+				}
+			  }
+			],
+			"docs": [
+			  " Atomically decreases the allowance granted to `spender` by the caller.",
+			  "",
+			  " An `Approval` event is emitted.",
+			  "",
+			  " # Errors",
+			  "",
+			  " Returns `InsufficientAllowance` error if there are not enough tokens allowed",
+			  " by owner for `spender`.",
+			  "",
+			  " Returns `ZeroSenderAddress` error if sender's address is zero.",
+			  "",
+			  " Returns `ZeroRecipientAddress` error if recipient's address is zero."
+			],
+			"label": "PSP22::decrease_allowance",
 			"mutates": true,
 			"payable": false,
 			"returnType": {
@@ -108,24 +142,67 @@ const psp22_contract = {
 			  ],
 			  "type": 8
 			},
-			"selector": "0x91bd0a53"
+			"selector": "0xfecb57d5"
 		  },
 		  {
-			"args": [],
-			"docs": [
-			  " Returns the total token supply."
+			"args": [
+			  {
+				"label": "to",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"TransferInput1"
+				  ],
+				  "type": 4
+				}
+			  },
+			  {
+				"label": "value",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"TransferInput2"
+				  ],
+				  "type": 0
+				}
+			  },
+			  {
+				"label": "data",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"TransferInput3"
+				  ],
+				  "type": 2
+				}
+			  }
 			],
-			"label": "PSP22::total_supply",
-			"mutates": false,
+			"docs": [
+			  " Transfers `value` amount of tokens from the caller's account to account `to`",
+			  " with additional `data` in unspecified format.",
+			  "",
+			  " On success a `Transfer` event is emitted.",
+			  "",
+			  " # Errors",
+			  "",
+			  " Returns `InsufficientBalance` error if there are not enough tokens on",
+			  " the caller's account Balance.",
+			  "",
+			  " Returns `ZeroSenderAddress` error if sender's address is zero.",
+			  "",
+			  " Returns `ZeroRecipientAddress` error if recipient's address is zero."
+			],
+			"label": "PSP22::transfer",
+			"mutates": true,
 			"payable": false,
 			"returnType": {
 			  "displayName": [
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 11
+			  "type": 8
 			},
-			"selector": "0x162df8c2"
+			"selector": "0xdb20f9f5"
 		  },
 		  {
 			"args": [
@@ -136,7 +213,7 @@ const psp22_contract = {
 					"psp22_external",
 					"TransferFromInput1"
 				  ],
-				  "type": 0
+				  "type": 4
 				}
 			  },
 			  {
@@ -146,7 +223,7 @@ const psp22_contract = {
 					"psp22_external",
 					"TransferFromInput2"
 				  ],
-				  "type": 0
+				  "type": 4
 				}
 			  },
 			  {
@@ -156,7 +233,7 @@ const psp22_contract = {
 					"psp22_external",
 					"TransferFromInput3"
 				  ],
-				  "type": 4
+				  "type": 0
 				}
 			  },
 			  {
@@ -166,7 +243,7 @@ const psp22_contract = {
 					"psp22_external",
 					"TransferFromInput4"
 				  ],
-				  "type": 5
+				  "type": 2
 				}
 			  }
 			],
@@ -212,7 +289,7 @@ const psp22_contract = {
 					"psp22_external",
 					"IncreaseAllowanceInput1"
 				  ],
-				  "type": 0
+				  "type": 4
 				}
 			  },
 			  {
@@ -222,7 +299,7 @@ const psp22_contract = {
 					"psp22_external",
 					"IncreaseAllowanceInput2"
 				  ],
-				  "type": 4
+				  "type": 0
 				}
 			  }
 			],
@@ -252,92 +329,13 @@ const psp22_contract = {
 		  {
 			"args": [
 			  {
-				"label": "spender",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"DecreaseAllowanceInput1"
-				  ],
-				  "type": 0
-				}
-			  },
-			  {
-				"label": "delta_value",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"DecreaseAllowanceInput2"
-				  ],
-				  "type": 4
-				}
-			  }
-			],
-			"docs": [
-			  " Atomically decreases the allowance granted to `spender` by the caller.",
-			  "",
-			  " An `Approval` event is emitted.",
-			  "",
-			  " # Errors",
-			  "",
-			  " Returns `InsufficientAllowance` error if there are not enough tokens allowed",
-			  " by owner for `spender`.",
-			  "",
-			  " Returns `ZeroSenderAddress` error if sender's address is zero.",
-			  "",
-			  " Returns `ZeroRecipientAddress` error if recipient's address is zero."
-			],
-			"label": "PSP22::decrease_allowance",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 8
-			},
-			"selector": "0xfecb57d5"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "owner",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"BalanceOfInput1"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [
-			  " Returns the account Balance for the specified `owner`.",
-			  "",
-			  " Returns `0` if the account is non-existent."
-			],
-			"label": "PSP22::balance_of",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 11
-			},
-			"selector": "0x6568382f"
-		  },
-		  {
-			"args": [
-			  {
 				"label": "owner",
 				"type": {
 				  "displayName": [
 					"psp22_external",
 					"AllowanceInput1"
 				  ],
-				  "type": 0
+				  "type": 4
 				}
 			  },
 			  {
@@ -347,7 +345,7 @@ const psp22_contract = {
 					"psp22_external",
 					"AllowanceInput2"
 				  ],
-				  "type": 0
+				  "type": 4
 				}
 			  }
 			],
@@ -371,62 +369,49 @@ const psp22_contract = {
 		  {
 			"args": [
 			  {
-				"label": "to",
+				"label": "owner",
 				"type": {
 				  "displayName": [
 					"psp22_external",
-					"TransferInput1"
-				  ],
-				  "type": 0
-				}
-			  },
-			  {
-				"label": "value",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"TransferInput2"
+					"BalanceOfInput1"
 				  ],
 				  "type": 4
-				}
-			  },
-			  {
-				"label": "data",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"TransferInput3"
-				  ],
-				  "type": 5
 				}
 			  }
 			],
 			"docs": [
-			  " Transfers `value` amount of tokens from the caller's account to account `to`",
-			  " with additional `data` in unspecified format.",
+			  " Returns the account Balance for the specified `owner`.",
 			  "",
-			  " On success a `Transfer` event is emitted.",
-			  "",
-			  " # Errors",
-			  "",
-			  " Returns `InsufficientBalance` error if there are not enough tokens on",
-			  " the caller's account Balance.",
-			  "",
-			  " Returns `ZeroSenderAddress` error if sender's address is zero.",
-			  "",
-			  " Returns `ZeroRecipientAddress` error if recipient's address is zero."
+			  " Returns `0` if the account is non-existent."
 			],
-			"label": "PSP22::transfer",
-			"mutates": true,
+			"label": "PSP22::balance_of",
+			"mutates": false,
 			"payable": false,
 			"returnType": {
 			  "displayName": [
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 8
+			  "type": 11
 			},
-			"selector": "0xdb20f9f5"
+			"selector": "0x6568382f"
+		  },
+		  {
+			"args": [],
+			"docs": [
+			  " Returns the total token supply."
+			],
+			"label": "PSP22::total_supply",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 11
+			},
+			"selector": "0x162df8c2"
 		  },
 		  {
 			"args": [
@@ -437,7 +422,7 @@ const psp22_contract = {
 					"psp22_external",
 					"ApproveInput1"
 				  ],
-				  "type": 0
+				  "type": 4
 				}
 			  },
 			  {
@@ -447,7 +432,7 @@ const psp22_contract = {
 					"psp22_external",
 					"ApproveInput2"
 				  ],
-				  "type": 4
+				  "type": 0
 				}
 			  }
 			],
@@ -529,48 +514,49 @@ const psp22_contract = {
 			"selector": "0x34205be5"
 		  },
 		  {
-			"args": [
-			  {
-				"label": "account",
-				"type": {
-				  "displayName": [
-					"psp22burnable_external",
-					"BurnInput1"
-				  ],
-				  "type": 0
-				}
-			  },
-			  {
-				"label": "amount",
-				"type": {
-				  "displayName": [
-					"psp22burnable_external",
-					"BurnInput2"
-				  ],
-				  "type": 4
-				}
-			  }
+			"args": [],
+			"docs": [
+			  " Returns the token's cap"
 			],
-			"docs": [],
-			"label": "PSP22Burnable::burn",
-			"mutates": true,
+			"label": "PSP22Capped::cap",
+			"mutates": false,
 			"payable": false,
 			"returnType": {
 			  "displayName": [
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 8
+			  "type": 11
 			},
-			"selector": "0x7a9da510"
+			"selector": "0xf40366b4"
 		  },
 		  {
-			"args": [],
-			"docs": [
-			  " Returns the address of the current owner."
+			"args": [
+			  {
+				"label": "new_owner",
+				"type": {
+				  "displayName": [
+					"ownable_external",
+					"TransferOwnershipInput1"
+				  ],
+				  "type": 4
+				}
+			  }
 			],
-			"label": "Ownable::owner",
-			"mutates": false,
+			"docs": [
+			  " Transfers ownership of the contract to a `new_owner`.",
+			  " Can only be called by the current owner.",
+			  "",
+			  " On success a `OwnershipTransferred` event is emitted.",
+			  "",
+			  " # Errors",
+			  "",
+			  " Panics with `CallerIsNotOwner` error if caller is not owner.",
+			  "",
+			  " Panics with `NewOwnerIsZero` error if new owner's address is zero."
+			],
+			"label": "Ownable::transfer_ownership",
+			"mutates": true,
 			"payable": false,
 			"returnType": {
 			  "displayName": [
@@ -579,7 +565,7 @@ const psp22_contract = {
 			  ],
 			  "type": 15
 			},
-			"selector": "0x4fa43c8c"
+			"selector": "0x11f43efd"
 		  },
 		  {
 			"args": [],
@@ -604,94 +590,26 @@ const psp22_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 16
+			  "type": 15
 			},
 			"selector": "0x5e228753"
 		  },
 		  {
-			"args": [
-			  {
-				"label": "new_owner",
-				"type": {
-				  "displayName": [
-					"ownable_external",
-					"TransferOwnershipInput1"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
+			"args": [],
 			"docs": [
-			  " Transfers ownership of the contract to a `new_owner`.",
-			  " Can only be called by the current owner.",
-			  "",
-			  " On success a `OwnershipTransferred` event is emitted.",
-			  "",
-			  " # Errors",
-			  "",
-			  " Panics with `CallerIsNotOwner` error if caller is not owner.",
-			  "",
-			  " Panics with `NewOwnerIsZero` error if new owner's address is zero."
+			  " Returns the address of the current owner."
 			],
-			"label": "Ownable::transfer_ownership",
-			"mutates": true,
+			"label": "Ownable::owner",
+			"mutates": false,
 			"payable": false,
 			"returnType": {
 			  "displayName": [
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 16
+			  "type": 18
 			},
-			"selector": "0x11f43efd"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "psp22_contract_address",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"TranferPsp22Input1"
-				  ],
-				  "type": 0
-				}
-			  },
-			  {
-				"label": "amount",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"TranferPsp22Input2"
-				  ],
-				  "type": 4
-				}
-			  },
-			  {
-				"label": "receiver",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"TranferPsp22Input3"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [
-			  " This function allow contract owner withdraw PSP22 to an account in case there is any token sent to contract by mistake"
-			],
-			"label": "AdminTrait::tranfer_psp22",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 19
-			},
-			"selector": "0xd9aad284"
+			"selector": "0x4fa43c8c"
 		  },
 		  {
 			"args": [
@@ -702,7 +620,7 @@ const psp22_contract = {
 					"admintrait_external",
 					"WithdrawFeeInput1"
 				  ],
-				  "type": 4
+				  "type": 0
 				}
 			  },
 			  {
@@ -712,7 +630,7 @@ const psp22_contract = {
 					"admintrait_external",
 					"WithdrawFeeInput2"
 				  ],
-				  "type": 0
+				  "type": 4
 				}
 			  }
 			],
@@ -734,23 +652,23 @@ const psp22_contract = {
 		  {
 			"args": [
 			  {
-				"label": "nft_contract_address",
+				"label": "psp22_contract_address",
 				"type": {
 				  "displayName": [
 					"admintrait_external",
-					"TranferNftInput1"
+					"TranferPsp22Input1"
 				  ],
-				  "type": 0
+				  "type": 4
 				}
 			  },
 			  {
-				"label": "token_id",
+				"label": "amount",
 				"type": {
 				  "displayName": [
 					"admintrait_external",
-					"TranferNftInput2"
+					"TranferPsp22Input2"
 				  ],
-				  "type": 23
+				  "type": 0
 				}
 			  },
 			  {
@@ -758,16 +676,52 @@ const psp22_contract = {
 				"type": {
 				  "displayName": [
 					"admintrait_external",
-					"TranferNftInput3"
+					"TranferPsp22Input3"
+				  ],
+				  "type": 4
+				}
+			  }
+			],
+			"docs": [
+			  " This function allow contract owner withdraw PSP22 to an account in case there is any token sent to contract by mistake"
+			],
+			"label": "AdminTrait::tranfer_psp22",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 19
+			},
+			"selector": "0xd9aad284"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "account",
+				"type": {
+				  "displayName": [
+					"psp22burnable_external",
+					"BurnInput1"
+				  ],
+				  "type": 4
+				}
+			  },
+			  {
+				"label": "amount",
+				"type": {
+				  "displayName": [
+					"psp22burnable_external",
+					"BurnInput2"
 				  ],
 				  "type": 0
 				}
 			  }
 			],
-			"docs": [
-			  " This function allow contract owner withdraw NFT to an account in case there is any NFT sent to contract by mistake"
-			],
-			"label": "AdminTrait::tranfer_nft",
+			"docs": [],
+			"label": "PSP22Burnable::burn",
 			"mutates": true,
 			"payable": false,
 			"returnType": {
@@ -775,27 +729,35 @@ const psp22_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 19
+			  "type": 8
 			},
-			"selector": "0xed1e1dfa"
+			"selector": "0x7a9da510"
 		  },
 		  {
 			"args": [
 			  {
-				"label": "code_hash",
+				"label": "account",
 				"type": {
 				  "displayName": [
-					"upgradeabletrait_external",
-					"SetCodeInput1"
+					"psp22mintable_external",
+					"MintInput1"
 				  ],
-				  "type": 1
+				  "type": 4
+				}
+			  },
+			  {
+				"label": "amount",
+				"type": {
+				  "displayName": [
+					"psp22mintable_external",
+					"MintInput2"
+				  ],
+				  "type": 0
 				}
 			  }
 			],
-			"docs": [
-			  " This function allow contract owner modifies the code which is used to execute calls to this contract address (`AccountId`)."
-			],
-			"label": "UpgradeableTrait::set_code",
+			"docs": [],
+			"label": "PSP22Mintable::mint",
 			"mutates": true,
 			"payable": false,
 			"returnType": {
@@ -803,9 +765,9 @@ const psp22_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 19
+			  "type": 8
 			},
-			"selector": "0x9e32fab2"
+			"selector": "0xfc3c75d4"
 		  }
 		]
 	  },
@@ -825,54 +787,6 @@ const psp22_contract = {
 							  "ty": 0
 							}
 						  },
-						  "name": "owner"
-						},
-						{
-						  "layout": {
-							"enum": {
-							  "dispatchKey": "0x00000000",
-							  "name": "Option",
-							  "variants": {
-								"0": {
-								  "fields": [],
-								  "name": "None"
-								},
-								"1": {
-								  "fields": [
-									{
-									  "layout": {
-										"leaf": {
-										  "key": "0x00000000",
-										  "ty": 3
-										}
-									  },
-									  "name": "0"
-									}
-								  ],
-								  "name": "Some"
-								}
-							  }
-							}
-						  },
-						  "name": "_reserved"
-						}
-					  ],
-					  "name": "Data"
-					}
-				  },
-				  "name": "ownable"
-				},
-				{
-				  "layout": {
-					"struct": {
-					  "fields": [
-						{
-						  "layout": {
-							"leaf": {
-							  "key": "0x00000000",
-							  "ty": 4
-							}
-						  },
 						  "name": "supply"
 						},
 						{
@@ -881,7 +795,7 @@ const psp22_contract = {
 							  "layout": {
 								"leaf": {
 								  "key": "0x1d458d3b",
-								  "ty": 4
+								  "ty": 0
 								}
 							  },
 							  "root_key": "0x1d458d3b"
@@ -895,7 +809,7 @@ const psp22_contract = {
 							  "layout": {
 								"leaf": {
 								  "key": "0x0abd72fb",
-								  "ty": 4
+								  "ty": 0
 								}
 							  },
 							  "root_key": "0x0abd72fb"
@@ -919,7 +833,7 @@ const psp22_contract = {
 									  "layout": {
 										"leaf": {
 										  "key": "0x00000000",
-										  "ty": 3
+										  "ty": 1
 										}
 									  },
 									  "name": "0"
@@ -958,7 +872,7 @@ const psp22_contract = {
 									  "layout": {
 										"leaf": {
 										  "key": "0x00000000",
-										  "ty": 5
+										  "ty": 2
 										}
 									  },
 									  "name": "0"
@@ -987,7 +901,7 @@ const psp22_contract = {
 									  "layout": {
 										"leaf": {
 										  "key": "0x00000000",
-										  "ty": 5
+										  "ty": 2
 										}
 									  },
 									  "name": "0"
@@ -1004,7 +918,7 @@ const psp22_contract = {
 						  "layout": {
 							"leaf": {
 							  "key": "0x00000000",
-							  "ty": 2
+							  "ty": 3
 							}
 						  },
 						  "name": "decimals"
@@ -1025,7 +939,7 @@ const psp22_contract = {
 									  "layout": {
 										"leaf": {
 										  "key": "0x00000000",
-										  "ty": 3
+										  "ty": 1
 										}
 									  },
 									  "name": "0"
@@ -1050,6 +964,15 @@ const psp22_contract = {
 					  "fields": [
 						{
 						  "layout": {
+							"leaf": {
+							  "key": "0x00000000",
+							  "ty": 4
+							}
+						  },
+						  "name": "owner"
+						},
+						{
+						  "layout": {
 							"enum": {
 							  "dispatchKey": "0x00000000",
 							  "name": "Option",
@@ -1064,7 +987,7 @@ const psp22_contract = {
 									  "layout": {
 										"leaf": {
 										  "key": "0x00000000",
-										  "ty": 3
+										  "ty": 1
 										}
 									  },
 									  "name": "0"
@@ -1081,7 +1004,55 @@ const psp22_contract = {
 					  "name": "Data"
 					}
 				  },
-				  "name": "admin_data"
+				  "name": "ownable"
+				},
+				{
+				  "layout": {
+					"struct": {
+					  "fields": [
+						{
+						  "layout": {
+							"leaf": {
+							  "key": "0x00000000",
+							  "ty": 0
+							}
+						  },
+						  "name": "cap"
+						},
+						{
+						  "layout": {
+							"enum": {
+							  "dispatchKey": "0x00000000",
+							  "name": "Option",
+							  "variants": {
+								"0": {
+								  "fields": [],
+								  "name": "None"
+								},
+								"1": {
+								  "fields": [
+									{
+									  "layout": {
+										"leaf": {
+										  "key": "0x00000000",
+										  "ty": 1
+										}
+									  },
+									  "name": "0"
+									}
+								  ],
+								  "name": "Some"
+								}
+							  }
+							}
+						  },
+						  "name": "_reserved"
+						}
+					  ],
+					  "name": "Data"
+					}
+				  },
+				  "name": "cap"
 				},
 				{
 				  "layout": {
@@ -1103,7 +1074,7 @@ const psp22_contract = {
 									  "layout": {
 										"leaf": {
 										  "key": "0x00000000",
-										  "ty": 3
+										  "ty": 1
 										}
 									  },
 									  "name": "0"
@@ -1120,10 +1091,10 @@ const psp22_contract = {
 					  "name": "Data"
 					}
 				  },
-				  "name": "upgradeable_data"
+				  "name": "admin_data"
 				}
 			  ],
-			  "name": "MyPsp22"
+			  "name": "TokenStandard"
 			}
 		  },
 		  "root_key": "0x00000000"
@@ -1134,10 +1105,44 @@ const psp22_contract = {
 		  "id": 0,
 		  "type": {
 			"def": {
+			  "primitive": "u128"
+			}
+		  }
+		},
+		{
+		  "id": 1,
+		  "type": {
+			"def": {
+			  "tuple": []
+			}
+		  }
+		},
+		{
+		  "id": 2,
+		  "type": {
+			"def": {
+			  "sequence": {
+				"type": 3
+			  }
+			}
+		  }
+		},
+		{
+		  "id": 3,
+		  "type": {
+			"def": {
+			  "primitive": "u8"
+			}
+		  }
+		},
+		{
+		  "id": 4,
+		  "type": {
+			"def": {
 			  "composite": {
 				"fields": [
 				  {
-					"type": 1,
+					"type": 5,
 					"typeName": "[u8; 32]"
 				  }
 				]
@@ -1151,46 +1156,12 @@ const psp22_contract = {
 		  }
 		},
 		{
-		  "id": 1,
+		  "id": 5,
 		  "type": {
 			"def": {
 			  "array": {
 				"len": 32,
-				"type": 2
-			  }
-			}
-		  }
-		},
-		{
-		  "id": 2,
-		  "type": {
-			"def": {
-			  "primitive": "u8"
-			}
-		  }
-		},
-		{
-		  "id": 3,
-		  "type": {
-			"def": {
-			  "tuple": []
-			}
-		  }
-		},
-		{
-		  "id": 4,
-		  "type": {
-			"def": {
-			  "primitive": "u128"
-			}
-		  }
-		},
-		{
-		  "id": 5,
-		  "type": {
-			"def": {
-			  "sequence": {
-				"type": 2
+				"type": 3
 			  }
 			}
 		  }
@@ -1204,7 +1175,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 3
+						"type": 1
 					  }
 					],
 					"index": 0,
@@ -1225,7 +1196,7 @@ const psp22_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 3
+				"type": 1
 			  },
 			  {
 				"name": "E",
@@ -1307,7 +1278,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 3
+						"type": 1
 					  }
 					],
 					"index": 0,
@@ -1328,7 +1299,7 @@ const psp22_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 3
+				"type": 1
 			  },
 			  {
 				"name": "E",
@@ -1349,7 +1320,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 5,
+						"type": 2,
 						"typeName": "String"
 					  }
 					],
@@ -1375,7 +1346,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 5,
+						"type": 2,
 						"typeName": "String"
 					  }
 					],
@@ -1403,7 +1374,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 4
+						"type": 0
 					  }
 					],
 					"index": 0,
@@ -1424,7 +1395,7 @@ const psp22_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 4
+				"type": 0
 			  },
 			  {
 				"name": "E",
@@ -1445,7 +1416,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 2
+						"type": 3
 					  }
 					],
 					"index": 0,
@@ -1466,7 +1437,7 @@ const psp22_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 2
+				"type": 3
 			  },
 			  {
 				"name": "E",
@@ -1533,7 +1504,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 5
+						"type": 2
 					  }
 					],
 					"index": 1,
@@ -1545,7 +1516,7 @@ const psp22_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 5
+				"type": 2
 			  }
 			],
 			"path": [
@@ -1562,7 +1533,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 0
+						"type": 16
 					  }
 					],
 					"index": 0,
@@ -1583,7 +1554,7 @@ const psp22_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 0
+				"type": 16
 			  },
 			  {
 				"name": "E",
@@ -1604,7 +1575,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 17
+						"type": 1
 					  }
 					],
 					"index": 0,
@@ -1613,7 +1584,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 7
+						"type": 17
 					  }
 					],
 					"index": 1,
@@ -1625,11 +1596,11 @@ const psp22_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 17
+				"type": 1
 			  },
 			  {
 				"name": "E",
-				"type": 7
+				"type": 17
 			  }
 			],
 			"path": [
@@ -1639,48 +1610,6 @@ const psp22_contract = {
 		},
 		{
 		  "id": 17,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 3
-					  }
-					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 18
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 3
-			  },
-			  {
-				"name": "E",
-				"type": 18
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
-		  "id": 18,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1702,6 +1631,48 @@ const psp22_contract = {
 			  "errors",
 			  "ownable",
 			  "OwnableError"
+			]
+		  }
+		},
+		{
+		  "id": 18,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"fields": [
+					  {
+						"type": 4
+					  }
+					],
+					"index": 0,
+					"name": "Ok"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 7
+					  }
+					],
+					"index": 1,
+					"name": "Err"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 4
+			  },
+			  {
+				"name": "E",
+				"type": 7
+			  }
+			],
+			"path": [
+			  "Result"
 			]
 		  }
 		},
@@ -1756,7 +1727,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 3
+						"type": 1
 					  }
 					],
 					"index": 0,
@@ -1777,7 +1748,7 @@ const psp22_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 3
+				"type": 1
 			  },
 			  {
 				"name": "E",
@@ -1798,7 +1769,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 5,
+						"type": 22,
 						"typeName": "String"
 					  }
 					],
@@ -1808,52 +1779,118 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
+						"type": 17,
+						"typeName": "OwnableError"
+					  }
+					],
+					"index": 1,
+					"name": "OwnableError"
+				  },
+				  {
+					"fields": [
+					  {
 						"type": 10,
 						"typeName": "PSP22Error"
 					  }
 					],
-					"index": 1,
+					"index": 2,
 					"name": "PSP22Error"
 				  },
 				  {
-					"fields": [
-					  {
-						"type": 22,
-						"typeName": "PSP34Error"
-					  }
-					],
-					"index": 2,
-					"name": "PSP34Error"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 18,
-						"typeName": "OwnableError"
-					  }
-					],
 					"index": 3,
-					"name": "OwnableError"
-				  },
-				  {
-					"index": 4,
-					"name": "CannotTransfer"
-				  },
-				  {
-					"index": 5,
 					"name": "NotEnoughBalance"
 				  },
 				  {
-					"index": 6,
+					"index": 4,
 					"name": "WithdrawFeeError"
 				  },
 				  {
+					"index": 5,
+					"name": "NotCallable"
+				  },
+				  {
+					"index": 6,
+					"name": "CannotTransfer"
+				  },
+				  {
 					"index": 7,
-					"name": "WithdrawNFTError"
+					"name": "CannotBurn"
 				  },
 				  {
 					"index": 8,
-					"name": "WithdrawPSP22Error"
+					"name": "CheckedOperations"
+				  },
+				  {
+					"index": 9,
+					"name": "InvalidBalanceAndAllowance"
+				  },
+				  {
+					"index": 10,
+					"name": "AlreadyInit"
+				  },
+				  {
+					"index": 11,
+					"name": "InvalidBuyAmount"
+				  },
+				  {
+					"index": 12,
+					"name": "InvalidTransferAmount"
+				  },
+				  {
+					"index": 13,
+					"name": "CannotCreatePool"
+				  },
+				  {
+					"index": 14,
+					"name": "NotTimeToStake"
+				  },
+				  {
+					"index": 15,
+					"name": "NoStakerFound"
+				  },
+				  {
+					"index": 16,
+					"name": "InvalidUnstakedAmount"
+				  },
+				  {
+					"index": 17,
+					"name": "NotEnoughReward"
+				  },
+				  {
+					"index": 18,
+					"name": "NotTokenOwner"
+				  },
+				  {
+					"index": 19,
+					"name": "AllowanceNotSet"
+				  },
+				  {
+					"index": 20,
+					"name": "TokenNotFound"
+				  },
+				  {
+					"index": 21,
+					"name": "UserNotStake"
+				  },
+				  {
+					"index": 22,
+					"name": "NoTokenOwner"
+				  },
+				  {
+					"index": 23,
+					"name": "ExceedTotalStakingAmount"
+				  },
+				  {
+					"index": 24,
+					"name": "NoClaimAmount"
+				  },
+				  {
+					"index": 25,
+					"name": "NotTimeToWithdraw"
+				  },
+				  {
+					"index": 26,
+					"name": "NotEnoughRewardToWithdraw"
 				  }
 				]
 			  }
@@ -1870,154 +1907,7 @@ const psp22_contract = {
 		  "id": 22,
 		  "type": {
 			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 5,
-						"typeName": "String"
-					  }
-					],
-					"index": 0,
-					"name": "Custom"
-				  },
-				  {
-					"index": 1,
-					"name": "SelfApprove"
-				  },
-				  {
-					"index": 2,
-					"name": "NotApproved"
-				  },
-				  {
-					"index": 3,
-					"name": "TokenExists"
-				  },
-				  {
-					"index": 4,
-					"name": "TokenNotExists"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 5,
-						"typeName": "String"
-					  }
-					],
-					"index": 5,
-					"name": "SafeTransferCheckFailed"
-				  }
-				]
-			  }
-			},
-			"path": [
-			  "openbrush_contracts",
-			  "traits",
-			  "errors",
-			  "psp34",
-			  "PSP34Error"
-			]
-		  }
-		},
-		{
-		  "id": 23,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 2,
-						"typeName": "u8"
-					  }
-					],
-					"index": 0,
-					"name": "U8"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 24,
-						"typeName": "u16"
-					  }
-					],
-					"index": 1,
-					"name": "U16"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 25,
-						"typeName": "u32"
-					  }
-					],
-					"index": 2,
-					"name": "U32"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 26,
-						"typeName": "u64"
-					  }
-					],
-					"index": 3,
-					"name": "U64"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 4,
-						"typeName": "u128"
-					  }
-					],
-					"index": 4,
-					"name": "U128"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 5,
-						"typeName": "Vec<u8>"
-					  }
-					],
-					"index": 5,
-					"name": "Bytes"
-				  }
-				]
-			  }
-			},
-			"path": [
-			  "openbrush_contracts",
-			  "traits",
-			  "types",
-			  "Id"
-			]
-		  }
-		},
-		{
-		  "id": 24,
-		  "type": {
-			"def": {
-			  "primitive": "u16"
-			}
-		  }
-		},
-		{
-		  "id": 25,
-		  "type": {
-			"def": {
-			  "primitive": "u32"
-			}
-		  }
-		},
-		{
-		  "id": 26,
-		  "type": {
-			"def": {
-			  "primitive": "u64"
+			  "primitive": "str"
 			}
 		  }
 		}
