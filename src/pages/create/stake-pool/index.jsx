@@ -30,10 +30,13 @@ import DateTimePicker from "react-datetime-picker";
 import pool_generator_contract from "utils/contracts/pool_generator";
 import { toastMessages } from "constants";
 import { fetchMyStakingPools } from "redux/slices/myPoolsSlice";
+import { formatNumDynDecimal } from "utils";
+import { MAX_INT } from "constants";
+import { BN } from "bn.js";
 
 export default function CreateStakePoolPage({ api }) {
   const dispatch = useDispatch();
-  
+
   const { currentAccount } = useSelector((s) => s.wallet);
   const { myStakingPoolsList, loading } = useSelector((s) => s.myPools);
 
@@ -43,6 +46,7 @@ export default function CreateStakePoolPage({ api }) {
   const [selectedContractAddr, setSelectedContractAddr] = useState("");
   const [duration, setDuration] = useState("");
   const [apy, setApy] = useState("");
+  const [maxStake, setMaxStake] = useState("");
   const [startTime, setStartTime] = useState(new Date());
 
   const [tokenBalance, setTokenBalance] = useState(0);
@@ -82,6 +86,14 @@ export default function CreateStakePoolPage({ api }) {
     return foundItem?.symbol;
   }, [faucetTokensList, selectedContractAddr]);
 
+  const tokenSelected = useMemo(() => {
+    const foundItem = faucetTokensList.find(
+      (item) => item.contractAddress === selectedContractAddr
+    );
+
+    return foundItem;
+  }, [faucetTokensList, selectedContractAddr]);
+
   useEffect(() => {
     fetchTokenBalance();
   }, [fetchTokenBalance]);
@@ -115,7 +127,6 @@ export default function CreateStakePoolPage({ api }) {
       );
 
       const fee = formatQueryResultToNumber(result);
-
       setCreateTokenFee(fee);
     };
 
@@ -147,25 +158,79 @@ export default function CreateStakePoolPage({ api }) {
       return;
     }
 
-    //Approve
-    toast.success("Step 1: Approving...");
+    if (parseInt(tokenBalance?.replaceAll(",", "")) < minReward) {
+      toast.error(`You don't have enough ${tokenSymbol} to topup the reward`);
+      return;
+    }
 
-    let approve = await execContractTx(
-      currentAccount,
+    const allowanceINWQr = await execContractQuery(
+      currentAccount?.address,
       "api",
-      psp22_contract.CONTRACT_ABI,
+      azt_contract.CONTRACT_ABI,
       azt_contract.CONTRACT_ADDRESS,
       0, //-> value
-      "psp22::approve",
-      pool_generator_contract.CONTRACT_ADDRESS,
-      formatNumToBN(createTokenFee)
+      "psp22::allowance",
+      currentAccount?.address,
+      pool_generator_contract.CONTRACT_ADDRESS
     );
-
-    if (!approve) return;
+    const allowanceINW = formatQueryResultToNumber(allowanceINWQr).replaceAll(
+      ",",
+      ""
+    );
+    const allowanceTokenQr = await execContractQuery(
+      currentAccount?.address,
+      "api",
+      psp22_contract.CONTRACT_ABI,
+      selectedContractAddr,
+      0, //-> value
+      "psp22::allowance",
+      currentAccount?.address,
+      pool_generator_contract.CONTRACT_ADDRESS
+    );
+    const allowanceToken = formatQueryResultToNumber(
+      allowanceTokenQr
+    ).replaceAll(",", "");
+    let step = 1;
+    console.log(
+      formatQueryResultToNumber(allowanceINWQr),
+      allowanceToken,
+      "allowanceallowance"
+    );
+    //Approve
+    if (allowanceINW < createTokenFee.replaceAll(",", "")) {
+      toast.success(`Step ${step}: Approving INW token...`);
+      step++;
+      let approve = await execContractTx(
+        currentAccount,
+        "api",
+        psp22_contract.CONTRACT_ABI,
+        azt_contract.CONTRACT_ADDRESS,
+        0, //-> value
+        "psp22::approve",
+        pool_generator_contract.CONTRACT_ADDRESS,
+        formatNumToBN(Number.MAX_SAFE_INTEGER)
+      );
+      if (!approve) return;
+    }
+    if (allowanceToken < minReward.replaceAll(",", "")) {
+      toast.success(`Step ${step}: Approving ${tokenSymbol} token...`);
+      step++;
+      let approve = await execContractTx(
+        currentAccount,
+        "api",
+        psp22_contract.CONTRACT_ABI,
+        selectedContractAddr,
+        0, //-> value
+        "psp22::approve",
+        pool_generator_contract.CONTRACT_ADDRESS,
+        formatNumToBN(Number.MAX_SAFE_INTEGER)
+      );
+      if (!approve) return;
+    }
 
     await delay(3000);
 
-    toast.success("Step 2: Process...");
+    toast.success(`Step ${step}: Process...`);
 
     await execContractTx(
       currentAccount,
@@ -176,6 +241,7 @@ export default function CreateStakePoolPage({ api }) {
       "newPool",
       currentAccount?.address,
       selectedContractAddr,
+      formatNumToBN(maxStake, tokenSelected.decimal),
       parseInt(apy * 100),
       duration * 24 * 60 * 60 * 1000,
       startTime.getTime()
@@ -205,6 +271,11 @@ export default function CreateStakePoolPage({ api }) {
       }
     );
   }
+
+  const minReward = useMemo(
+    () => formatNumDynDecimal((maxStake * duration * apy) / 100 / 365),
+    [maxStake, duration, apy]
+  );
 
   const tableData = {
     tableHeader: [
@@ -239,6 +310,12 @@ export default function CreateStakePoolPage({ api }) {
         hasTooltip: true,
         tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
+      },
+      {
+        name: "maxStakingAmount",
+        hasTooltip: true,
+        tooltipContent: `Max Staking Amount`,
+        label: "Max Staking Amount",
       },
       {
         name: "totalStaked",
@@ -371,6 +448,24 @@ export default function CreateStakePoolPage({ api }) {
                 isDisabled={true}
                 value={`${tokenBalance || 0} ${tokenSymbol || ""}`}
                 label={`Your ${tokenSymbol || "Token"} Balance`}
+              />
+            </Box>
+            <Box w="full">
+              <IWInput
+                value={maxStake}
+                onChange={({ target }) => setMaxStake(target.value)}
+                type="number"
+                label={`Max Staking Amount ${
+                  tokenSymbol ? `(${tokenSymbol})` : ""
+                }`}
+                placeholder="0"
+              />
+            </Box>
+            <Box w="full">
+              <IWInput
+                isDisabled={true}
+                value={`${minReward || 0} ${tokenSymbol || ""}`}
+                label={`Reward Amount required to topup `}
               />
             </Box>
           </SimpleGrid>

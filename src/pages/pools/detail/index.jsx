@@ -45,6 +45,7 @@ import { isPoolEnded } from "utils";
 import { fetchAllStakingPools } from "redux/slices/allPoolsSlice";
 import { useMemo } from "react";
 import { fetchUserBalance } from "redux/slices/walletSlice";
+import AddressCopier from "components/address-copier/AddressCopier";
 
 export default function PoolDetailPage({ api }) {
   const params = useParams();
@@ -642,6 +643,7 @@ const PoolInfo = (props) => {
     tokenName,
     tokenTotalSupply,
     tokenSymbol,
+    maxStakingAmount
   } = props;
 
   return (
@@ -656,7 +658,7 @@ const PoolInfo = (props) => {
         data={[
           {
             title: "Pool Contract Address",
-            content: addressShortener(poolContract),
+            content: <AddressCopier address={poolContract}/>,
           },
           { title: "APR", content: `${apy / 100}%` },
           {
@@ -667,6 +669,10 @@ const PoolInfo = (props) => {
           {
             title: "Reward Pool",
             content: `${formatNumDynDecimal(rewardPool)} ${tokenSymbol}`,
+          },
+          {
+            title: "Max Staking Amount",
+            content: `${formatNumDynDecimal(maxStakingAmount)} ${tokenSymbol}`,
           },
           {
             title: "Total Value Locked",

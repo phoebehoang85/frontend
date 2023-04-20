@@ -1,14 +1,23 @@
-import { Button, Heading, Link, Select, Stack, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Heading,
+  Link,
+  Select,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import IWCard from "components/card/Card";
 import IWCardOneColumn from "components/card/CardOneColumn";
 import SectionContainer from "components/container/SectionContainer";
 import { AzeroLogo } from "components/icons/Icons";
 import IWInput from "components/input/Input";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import azt_contract from "utils/contracts/azt_contract";
+import token_sale from "utils/contracts/token_sale";
 
 import { formatQueryResultToNumber } from "utils";
 import { execContractQuery } from "utils/contracts";
@@ -40,6 +49,7 @@ export default function FaucetPage({ api }) {
   const [availableMint, setAvailableMint] = useState(0);
   const [inwBuyAmount, setInwBuyAmount] = useState("");
   const [inwInCur, setInwInCur] = useState(0);
+  const [inwPrice, setInwPrice] = useState(0);
 
   const [accountInfo, setAccountInfo] = useState(null);
   // eslint-disable-next-line no-unused-vars
@@ -91,7 +101,6 @@ export default function FaucetPage({ api }) {
         console.log("error", error);
       }
     };
-
     fetch();
   }, [
     api,
@@ -101,6 +110,18 @@ export default function FaucetPage({ api }) {
     selectedContractAddress,
     inwBalance,
   ]);
+
+  const getPriceInw = async () => {
+    let price = await execContractQuery(
+      currentAccount?.address,
+      api,
+      token_sale.CONTRACT_ABI,
+      token_sale.CONTRACT_ADDRESS,
+      0,
+      "tokenSaleTrait::getInwPrice"
+    );
+    setInwPrice(formatQueryResultToNumber(price));
+  };
 
   useEffect(() => {
     prepareAccountInfoData();
@@ -151,17 +172,6 @@ export default function FaucetPage({ api }) {
       return;
     }
 
-    let result = await execContractQuery(
-      process.env.REACT_APP_PUBLIC_ADDRESS,
-      api,
-      azt_contract.CONTRACT_ABI,
-      azt_contract.CONTRACT_ADDRESS,
-      0,
-      "tokenMintCapTrait::mintingCap"
-    );
-
-    const inwMintingCap = formatQueryResultToNumber(result);
-
     let result1 = await execContractQuery(
       process.env.REACT_APP_PUBLIC_ADDRESS,
       api,
@@ -172,7 +182,7 @@ export default function FaucetPage({ api }) {
     );
     const inwTotalSupply = formatQueryResultToNumber(result1);
 
-    setInwTotalSupply(inwTotalSupply.replace('.0000', ''));
+    setInwTotalSupply(inwTotalSupply.replace(".0000", ""));
 
     let result2 = await execContractQuery(
       process.env.REACT_APP_PUBLIC_ADDRESS,
@@ -184,36 +194,19 @@ export default function FaucetPage({ api }) {
     );
     const inwInCUr = formatQueryResultToNumber(result2);
 
-    setInwInCur(inwInCUr.replace('.0000', '.00'));
+    setInwInCur(inwInCUr.replace(".0000", ".00"));
 
-    const availableMint =
-      formatChainStringToNumber(inwMintingCap) -
-      formatChainStringToNumber(inwTotalSupply);
-
-    setAvailableMint(availableMint);
   }, [api]);
 
-  const [inwMintingFee, setInwMintingFee] = useState(0);
-
+  const disableBuyBtn = useMemo(() => {
+    return (
+      inwBuyAmount * parseFloat(inwPrice) >
+      formatChainStringToNumber(azeroBalance)
+    );
+  }, [azeroBalance, inwBuyAmount, inwPrice]);
   useEffect(() => {
     getInwMintingCapAndTotalSupply();
-
-    const getInwMintingFee = async () => {
-      if (!api) return setInwMintingFee(1);
-
-      let result = await execContractQuery(
-        process.env.REACT_APP_PUBLIC_ADDRESS,
-        api,
-        azt_contract.CONTRACT_ABI,
-        azt_contract.CONTRACT_ADDRESS,
-        0,
-        "tokenMintCapTrait::mintingFee"
-      );
-      const mintingFee = formatQueryResultToNumber(result);
-
-      setInwMintingFee(mintingFee);
-    };
-    getInwMintingFee();
+    getPriceInw();
   }, [api, currentAccount, getInwMintingCapAndTotalSupply]);
 
   const inwPublicMintHandler = async () => {
@@ -230,10 +223,10 @@ export default function FaucetPage({ api }) {
     await execContractTx(
       currentAccount,
       api,
-      azt_contract.CONTRACT_ABI,
-      azt_contract.CONTRACT_ADDRESS,
-      formatNumToBN(parseFloat(inwMintingFee) * inwBuyAmount), //-> value
-      "tokenMintCapTrait::publicMint",
+      token_sale.CONTRACT_ABI,
+      token_sale.CONTRACT_ADDRESS,
+      formatNumToBN(parseFloat(inwPrice) * inwBuyAmount), //-> value
+      "buyInkwhale",
       formatNumToBN(inwBuyAmount) // -> token_amount, <...args>
     );
 
@@ -330,13 +323,17 @@ export default function FaucetPage({ api }) {
             available at {inwMintingFee}
             <AzeroLogo w="14px" h="14px" ml="2px" mb="3px" /> per INW. You can
             trade INW on PanoramaSwap in due time. */}
-            INW will be airdropped to ArtZero's Early Contributors; Public Sale Participants; and Validator Stakers after 18th April 2023 <Link
-          isExternal
-          fontWeight="400"
-          color={"text.1"}
-          _hover={{ color: "text.2" }}
-          href={"https://twitter.com/inkwhale_net"}
-        >Check out Twitter for more information</Link>
+            INW will be airdropped to ArtZero's Early Contributors; Public Sale
+            Participants; and Validator Stakers after 18th April 2023{" "}
+            <Link
+              isExternal
+              fontWeight="400"
+              color={"text.1"}
+              _hover={{ color: "text.2" }}
+              href={"https://twitter.com/inkwhale_net"}
+            >
+              Check out Twitter for more information
+            </Link>
           </>
         }
       >
@@ -356,7 +353,7 @@ export default function FaucetPage({ api }) {
               },
               { title: "Max Supply", content: `${inwTotalSupply} INW` },
               // { title: "In Circulation: ", content: `${inwInCur} INW` },
-              {title: "Your Balance: ", content: `${inwBalance} INW`}
+              { title: "Your Balance: ", content: `${inwBalance} INW` },
             ]}
           />
 
@@ -381,19 +378,34 @@ export default function FaucetPage({ api }) {
                 />
 
                 <IWInput
-                  value={inwBuyAmount * parseFloat(inwMintingFee)}
+                  value={inwBuyAmount * parseFloat(inwPrice)}
                   isDisabled={true}
                   type="number"
                   placeholder="0.000000000"
                   inputRightElementIcon={<AzeroLogo />}
                 />
-
-                <Text textAlign="left" w="full" fontSize="md" lineHeight="28px">
-                  (INW Public Sale Coming Soon){" "}
-                </Text>
-
-                <Button w="full" disabled>
-                  Get INW
+                <Flex
+                  mt={{ base: "15px", lg: "0px" }}
+                  w="full"
+                  justifyContent="space-between"
+                >
+                  <Text
+                    textAlign="left"
+                    fontSize="md"
+                    lineHeight="28px"
+                  >
+                    Price: {inwPrice} INW / Azero
+                  </Text>
+                  <Text
+                    textAlign="left"
+                    fontSize="md"
+                    lineHeight="28px"
+                  >
+                    Balance: {azeroBalance} Azero
+                  </Text>
+                </Flex>
+                <Button w="full" onClick={inwPublicMintHandler} disabled={disableBuyBtn}>
+                  Buy INW
                 </Button>
               </Stack>
             </IWCard>

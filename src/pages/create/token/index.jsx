@@ -26,7 +26,7 @@ export default function CreateTokenPage({ api }) {
   const { allTokensList } = useSelector((s) => s.allPools);
 
   const [tokenName, setTokenName] = useState("");
-  const [mintAddress, setMintAddress] = useState("");
+  const [mintAddress, setMintAddress] = useState(currentAccount?.address);
   const [tokenSymbol, setTokenSymbol] = useState("");
   const [totalSupply, setTotalSupply] = useState("");
 
@@ -75,26 +75,39 @@ export default function CreateTokenPage({ api }) {
       );
       return;
     }
-
-    //Approve
-    toast.success("Step 1: Approving...");
-
-    let approve = await execContractTx(
-      currentAccount,
+    const allowanceINWQr = await execContractQuery(
+      currentAccount?.address,
       "api",
-      psp22_contract.CONTRACT_ABI,
+      azt_contract.CONTRACT_ABI,
       azt_contract.CONTRACT_ADDRESS,
       0, //-> value
-      "psp22::approve",
-      core_contract.CONTRACT_ADDRESS,
-      formatNumToBN(createTokenFee)
+      "psp22::allowance",
+      currentAccount?.address,
+      core_contract.CONTRACT_ADDRESS
     );
-
-    if (!approve) return;
+    const allowanceINW = formatQueryResultToNumber(allowanceINWQr).replaceAll(
+      ",",
+      ""
+    );
+    //Approve
+    if (allowanceINW < createTokenFee.replaceAll(",", "")) {
+      toast.success("Step 1: Approving...");
+      let approve = await execContractTx(
+        currentAccount,
+        "api",
+        psp22_contract.CONTRACT_ABI,
+        azt_contract.CONTRACT_ADDRESS,
+        0, //-> value
+        "psp22::approve",
+        core_contract.CONTRACT_ADDRESS,
+        formatNumToBN(createTokenFee)
+      );
+      if (!approve) return;
+    }
 
     await delay(3000);
 
-    toast.success("Step 2: Process...");
+    toast.success("Processing...");
 
     await execContractTx(
       currentAccount,
@@ -113,7 +126,6 @@ export default function CreateTokenPage({ api }) {
     await APICall.askBEupdate({ type: "token", poolContract: "new" });
 
     setTokenName("");
-    setMintAddress("");
     setTokenSymbol("");
     setTotalSupply("");
 
@@ -172,12 +184,6 @@ export default function CreateTokenPage({ api }) {
         tooltipContent: "",
         label: "Initial Mint",
       },
-      {
-        name: "mintTo",
-        hasTooltip: false,
-        tooltipContent: "",
-        label: "Mint To",
-      },
     ],
 
     tableBody: allTokensList,
@@ -221,8 +227,8 @@ export default function CreateTokenPage({ api }) {
                 type="text"
                 value={mintAddress}
                 label="Mint to"
+                disabled
                 placeholder="Address"
-                onChange={({ target }) => setMintAddress(target.value)}
               />
             </Box>
             <Box w={{ base: "full" }}>

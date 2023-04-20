@@ -26,7 +26,7 @@ import { toastMessages } from "constants";
 import { execContractTx } from "utils/contracts";
 import { fetchUserBalance } from "redux/slices/walletSlice";
 import { delay } from "utils";
-import { formatNumToBN } from "utils";
+import { formatNumToBN, formatNumDynDecimal } from "utils";
 import azt_contract from "utils/contracts/azt_contract";
 import nft_pool_generator_contract from "utils/contracts/nft_pool_generator_contract";
 import { fetchMyNFTPools } from "redux/slices/myPoolsSlice";
@@ -46,6 +46,7 @@ export default function CreateNFTLPPage({ api }) {
   const [duration, setDuration] = useState("");
   const [multiplier, setMultiplier] = useState("");
   const [startTime, setStartTime] = useState(new Date());
+  const [maxStake, setMaxStake] = useState("");
 
   const [tokenBalance, setTokenBalance] = useState(0);
 
@@ -91,6 +92,14 @@ export default function CreateNFTLPPage({ api }) {
 
     return foundItem?.symbol;
   }, [faucetTokensList, selectedContractAddr]);
+
+  const collectionSelected = useMemo(() => {
+    const foundItem = collectionList.find(
+      (item) => item.nftContractAddress === selectedCollectionAddr
+    );
+
+    return foundItem;
+  }, [collectionList, selectedCollectionAddr]);
 
   useEffect(() => {
     let isUnmounted = false;
@@ -187,21 +196,75 @@ export default function CreateNFTLPPage({ api }) {
       return;
     }
 
-    //Approve
-    toast.success("Step 1: Approving...");
+    if (parseInt(tokenBalance?.replaceAll(",", "")) < minReward) {
+      toast.error(`You don't have enough ${tokenSymbol} to topup the reward`);
+      return;
+    }
 
-    let approve = await execContractTx(
-      currentAccount,
+    const allowanceINWQr = await execContractQuery(
+      currentAccount?.address,
       "api",
-      psp22_contract.CONTRACT_ABI,
+      azt_contract.CONTRACT_ABI,
       azt_contract.CONTRACT_ADDRESS,
       0, //-> value
-      "psp22::approve",
-      nft_pool_generator_contract.CONTRACT_ADDRESS,
-      formatNumToBN(createTokenFee)
+      "psp22::allowance",
+      currentAccount?.address,
+      nft_pool_generator_contract.CONTRACT_ADDRESS
     );
-
-    if (!approve) return;
+    const allowanceINW = formatQueryResultToNumber(allowanceINWQr).replaceAll(
+      ",",
+      ""
+    );
+    const allowanceTokenQr = await execContractQuery(
+      currentAccount?.address,
+      "api",
+      psp22_contract.CONTRACT_ABI,
+      selectedContractAddr,
+      0, //-> value
+      "psp22::allowance",
+      currentAccount?.address,
+      nft_pool_generator_contract.CONTRACT_ADDRESS
+    );
+    const allowanceToken = formatQueryResultToNumber(
+      allowanceTokenQr
+    ).replaceAll(",", "");
+    let step = 1;
+    console.log(
+      formatQueryResultToNumber(allowanceINWQr),
+      allowanceToken,
+      "allowanceallowance"
+    );
+    //Approve
+    if (allowanceINW < createTokenFee.replaceAll(",", "")) {
+      toast.success(`Step ${step}: Approving INW token...`);
+      step++;
+      let approve = await execContractTx(
+        currentAccount,
+        "api",
+        psp22_contract.CONTRACT_ABI,
+        azt_contract.CONTRACT_ADDRESS,
+        0, //-> value
+        "psp22::approve",
+        nft_pool_generator_contract.CONTRACT_ADDRESS,
+        formatNumToBN(Number.MAX_SAFE_INTEGER)
+      );
+      if (!approve) return;
+    }
+    if (allowanceToken < minReward.replaceAll(",", "")) {
+      toast.success(`Step ${step}: Approving ${tokenSymbol} token...`);
+      step++;
+      let approve = await execContractTx(
+        currentAccount,
+        "api",
+        psp22_contract.CONTRACT_ABI,
+        selectedContractAddr,
+        0, //-> value
+        "psp22::approve",
+        nft_pool_generator_contract.CONTRACT_ADDRESS,
+        formatNumToBN(Number.MAX_SAFE_INTEGER)
+      );
+      if (!approve) return;
+    }
 
     await delay(3000);
 
@@ -217,6 +280,7 @@ export default function CreateNFTLPPage({ api }) {
       currentAccount?.address,
       selectedCollectionAddr,
       selectedContractAddr,
+      formatNumToBN(maxStake, selectedTokenDecimal),
       formatNumToBN(multiplier, selectedTokenDecimal),
       duration * 24 * 60 * 60 * 1000,
       startTime.getTime()
@@ -250,6 +314,8 @@ export default function CreateNFTLPPage({ api }) {
   }
   const { myNFTPoolsList, loading } = useSelector((s) => s.myPools);
 
+  const minReward = useMemo(() => formatNumDynDecimal(maxStake*duration*multiplier), [maxStake, duration, multiplier])
+
   const tableData = {
     tableHeader: [
       {
@@ -272,9 +338,15 @@ export default function CreateNFTLPPage({ api }) {
       },
       {
         name: "rewardPool",
-        hasTooltip: true,
+        hasTooltip: false,
         tooltipContent: `Available tokens to pay for stakers`,
         label: "Reward Pool",
+      },
+      {
+        name: "maxStakingAmount",
+        hasTooltip: true,
+        tooltipContent: `Max Staking Amount`,
+        label: "Max Staking Amount",
       },
       {
         name: "multiplier",
@@ -439,6 +511,24 @@ export default function CreateNFTLPPage({ api }) {
                 isDisabled={true}
                 value={`${tokenBalance || 0} ${tokenSymbol || ""}`}
                 label={`Your ${tokenSymbol || "Token"} Balance`}
+              />
+            </Box>
+            <Box w="full">
+              <IWInput
+                value={maxStake}
+                onChange={({ target }) => setMaxStake(target.value)}
+                type="number"
+                label={`Max Staking Amount ${
+                  collectionSelected?.name ? `(${collectionSelected.name})` : ""
+                }`}
+                placeholder="0"
+              />
+            </Box>
+            <Box w="full">
+              <IWInput
+                isDisabled={true}
+                value={`${minReward || 0} ${tokenSymbol || ""}`}
+                label={`Reward Amount required to topup `}
               />
             </Box>
           </SimpleGrid>

@@ -53,6 +53,8 @@ export const SCROLLBAR = {
   },
 };
 
+export const MAX_INT = 115792089237316195423570985008687907853269984665640564039457584007913129639935
+
 // export const IPFS_BASE_URL = 'https://artzeronft.infura-ipfs.io/ipfs';
 
 // export const SUPPORTED_WALLET_LIST = [

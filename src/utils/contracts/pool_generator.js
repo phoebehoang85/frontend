@@ -1,8 +1,8 @@
 const pool_generator_contract = {
-  CONTRACT_ADDRESS: "5GJvej8aSJynoBnNXdhmvig2Ti1ZbVJrQUJQ9Ti786yENqWj",
+  CONTRACT_ADDRESS: "5CkJgQdT6GktxvkzZ1B6riby1wP8LLdb825978NdJGNkiY6q",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0xe0d8d3996082e6ac75e3e71efeef36b91a4bc7d1b5b15f772266a4a15aefcb75",
+		"hash": "0xc8d578cd405fef87fb50a53a9b8b37ebd8587dc7e1231be295596f7aefdc59bb",
 		"language": "ink! 4.1.0",
 		"compiler": "rustc 1.70.0-nightly",
 		"build_info": {
@@ -218,50 +218,6 @@ const pool_generator_contract = {
 			"selector": "0x2393fe3a"
 		  },
 		  {
-			"args": [],
-			"docs": [
-			  " Returns the address of the current owner."
-			],
-			"label": "Ownable::owner",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 17
-			},
-			"selector": "0x4fa43c8c"
-		  },
-		  {
-			"args": [],
-			"docs": [
-			  " Leaves the contract without owner. It will not be possible to call",
-			  " owner's functions anymore. Can only be called by the current owner.",
-			  "",
-			  " NOTE: Renouncing ownership will leave the contract without an owner,",
-			  " thereby removing any functionality that is only available to the owner.",
-			  "",
-			  " On success a `OwnershipTransferred` event is emitted.",
-			  "",
-			  " # Errors",
-			  "",
-			  " Panics with `CallerIsNotOwner` error if caller is not owner"
-			],
-			"label": "Ownable::renounce_ownership",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 18
-			},
-			"selector": "0x5e228753"
-		  },
-		  {
 			"args": [
 			  {
 				"label": "new_owner",
@@ -294,25 +250,84 @@ const pool_generator_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 18
+			  "type": 17
 			},
 			"selector": "0x11f43efd"
 		  },
 		  {
+			"args": [],
+			"docs": [
+			  " Leaves the contract without owner. It will not be possible to call",
+			  " owner's functions anymore. Can only be called by the current owner.",
+			  "",
+			  " NOTE: Renouncing ownership will leave the contract without an owner,",
+			  " thereby removing any functionality that is only available to the owner.",
+			  "",
+			  " On success a `OwnershipTransferred` event is emitted.",
+			  "",
+			  " # Errors",
+			  "",
+			  " Panics with `CallerIsNotOwner` error if caller is not owner"
+			],
+			"label": "Ownable::renounce_ownership",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 17
+			},
+			"selector": "0x5e228753"
+		  },
+		  {
+			"args": [],
+			"docs": [
+			  " Returns the address of the current owner."
+			],
+			"label": "Ownable::owner",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 19
+			},
+			"selector": "0x4fa43c8c"
+		  },
+		  {
 			"args": [
 			  {
-				"label": "index",
+				"label": "creation_fee",
 				"type": {
 				  "displayName": [
 					"genericpoolgeneratortrait_external",
-					"GetPoolInput1"
+					"SetCreationFeeInput1"
 				  ],
-				  "type": 5
+				  "type": 6
 				}
 			  }
 			],
 			"docs": [],
-			"label": "GenericPoolGeneratorTrait::get_pool",
+			"label": "GenericPoolGeneratorTrait::set_creation_fee",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 9
+			},
+			"selector": "0x3cd3873c"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolGeneratorTrait::get_creation_fee",
 			"mutates": false,
 			"payable": false,
 			"returnType": {
@@ -322,7 +337,7 @@ const pool_generator_contract = {
 			  ],
 			  "type": 20
 			},
-			"selector": "0xd8207f36"
+			"selector": "0xea416566"
 		  },
 		  {
 			"args": [
@@ -346,9 +361,65 @@ const pool_generator_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 22
+			  "type": 21
 			},
 			"selector": "0xa4cef8cd"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolGeneratorTrait::get_unstake_fee",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 20
+			},
+			"selector": "0xa4395f88"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "index",
+				"type": {
+				  "displayName": [
+					"genericpoolgeneratortrait_external",
+					"GetPoolInput1"
+				  ],
+				  "type": 5
+				}
+			  }
+			],
+			"docs": [],
+			"label": "GenericPoolGeneratorTrait::get_pool",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 22
+			},
+			"selector": "0xd8207f36"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolGeneratorTrait::get_pool_hash",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 24
+			},
+			"selector": "0x79f903bb"
 		  },
 		  {
 			"args": [
@@ -379,18 +450,18 @@ const pool_generator_contract = {
 		  {
 			"args": [
 			  {
-				"label": "creation_fee",
+				"label": "unstake_fee",
 				"type": {
 				  "displayName": [
 					"genericpoolgeneratortrait_external",
-					"SetCreationFeeInput1"
+					"SetUnstakeFeeInput1"
 				  ],
 				  "type": 6
 				}
 			  }
 			],
 			"docs": [],
-			"label": "GenericPoolGeneratorTrait::set_creation_fee",
+			"label": "GenericPoolGeneratorTrait::set_unstake_fee",
 			"mutates": true,
 			"payable": false,
 			"returnType": {
@@ -400,7 +471,33 @@ const pool_generator_contract = {
 			  ],
 			  "type": 9
 			},
-			"selector": "0x3cd3873c"
+			"selector": "0xfd8d8fda"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "inw_contract",
+				"type": {
+				  "displayName": [
+					"genericpoolgeneratortrait_external",
+					"SetInwContractInput1"
+				  ],
+				  "type": 0
+				}
+			  }
+			],
+			"docs": [],
+			"label": "GenericPoolGeneratorTrait::set_inw_contract",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 9
+			},
+			"selector": "0xf71a1217"
 		  },
 		  {
 			"args": [
@@ -434,24 +531,9 @@ const pool_generator_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 23
-			},
-			"selector": "0x476bc739"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolGeneratorTrait::get_creation_fee",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
 			  "type": 25
 			},
-			"selector": "0xea416566"
+			"selector": "0x476bc739"
 		  },
 		  {
 			"args": [],
@@ -464,7 +546,7 @@ const pool_generator_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 17
+			  "type": 19
 			},
 			"selector": "0xd6b47e7a"
 		  },
@@ -479,91 +561,9 @@ const pool_generator_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 22
+			  "type": 21
 			},
 			"selector": "0x38b09ecb"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "inw_contract",
-				"type": {
-				  "displayName": [
-					"genericpoolgeneratortrait_external",
-					"SetInwContractInput1"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [],
-			"label": "GenericPoolGeneratorTrait::set_inw_contract",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 9
-			},
-			"selector": "0xf71a1217"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "unstake_fee",
-				"type": {
-				  "displayName": [
-					"genericpoolgeneratortrait_external",
-					"SetUnstakeFeeInput1"
-				  ],
-				  "type": 6
-				}
-			  }
-			],
-			"docs": [],
-			"label": "GenericPoolGeneratorTrait::set_unstake_fee",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 9
-			},
-			"selector": "0xfd8d8fda"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolGeneratorTrait::get_unstake_fee",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 25
-			},
-			"selector": "0xa4395f88"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolGeneratorTrait::get_pool_hash",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 26
-			},
-			"selector": "0x79f903bb"
 		  },
 		  {
 			"args": [
@@ -1313,6 +1313,18 @@ const pool_generator_contract = {
 				  {
 					"index": 28,
 					"name": "NoAmount"
+				  },
+				  {
+					"index": 29,
+					"name": "InvalidTokenBalanceAndAllowance"
+				  },
+				  {
+					"index": 30,
+					"name": "CannotApprove"
+				  },
+				  {
+					"index": 31,
+					"name": "CannotTopupRewardPool"
 				  }
 				]
 			  }
@@ -1440,7 +1452,7 @@ const pool_generator_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 0
+						"type": 18
 					  }
 					],
 					"index": 0,
@@ -1461,7 +1473,7 @@ const pool_generator_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 0
+				"type": 18
 			  },
 			  {
 				"name": "E",
@@ -1475,48 +1487,6 @@ const pool_generator_contract = {
 		},
 		{
 		  "id": 18,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 19
-					  }
-					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 8
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 19
-			  },
-			  {
-				"name": "E",
-				"type": 8
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
-		  "id": 19,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1558,7 +1528,7 @@ const pool_generator_contract = {
 		  }
 		},
 		{
-		  "id": 20,
+		  "id": 19,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1566,7 +1536,7 @@ const pool_generator_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 21
+						"type": 0
 					  }
 					],
 					"index": 0,
@@ -1580,43 +1550,6 @@ const pool_generator_contract = {
 					],
 					"index": 1,
 					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 21
-			  },
-			  {
-				"name": "E",
-				"type": 8
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
-		  "id": 21,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"index": 0,
-					"name": "None"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 0
-					  }
-					],
-					"index": 1,
-					"name": "Some"
 				  }
 				]
 			  }
@@ -1625,44 +1558,6 @@ const pool_generator_contract = {
 			  {
 				"name": "T",
 				"type": 0
-			  }
-			],
-			"path": [
-			  "Option"
-			]
-		  }
-		},
-		{
-		  "id": 22,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 5
-					  }
-					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 8
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 5
 			  },
 			  {
 				"name": "E",
@@ -1675,82 +1570,7 @@ const pool_generator_contract = {
 		  }
 		},
 		{
-		  "id": 23,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 24
-					  }
-					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 8
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 24
-			  },
-			  {
-				"name": "E",
-				"type": 8
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
-		  "id": 24,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"index": 0,
-					"name": "None"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 5
-					  }
-					],
-					"index": 1,
-					"name": "Some"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 5
-			  }
-			],
-			"path": [
-			  "Option"
-			]
-		  }
-		},
-		{
-		  "id": 25,
+		  "id": 20,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1792,7 +1612,124 @@ const pool_generator_contract = {
 		  }
 		},
 		{
-		  "id": 26,
+		  "id": 21,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"fields": [
+					  {
+						"type": 5
+					  }
+					],
+					"index": 0,
+					"name": "Ok"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 8
+					  }
+					],
+					"index": 1,
+					"name": "Err"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 5
+			  },
+			  {
+				"name": "E",
+				"type": 8
+			  }
+			],
+			"path": [
+			  "Result"
+			]
+		  }
+		},
+		{
+		  "id": 22,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"fields": [
+					  {
+						"type": 23
+					  }
+					],
+					"index": 0,
+					"name": "Ok"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 8
+					  }
+					],
+					"index": 1,
+					"name": "Err"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 23
+			  },
+			  {
+				"name": "E",
+				"type": 8
+			  }
+			],
+			"path": [
+			  "Result"
+			]
+		  }
+		},
+		{
+		  "id": 23,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"index": 0,
+					"name": "None"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 0
+					  }
+					],
+					"index": 1,
+					"name": "Some"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 0
+			  }
+			],
+			"path": [
+			  "Option"
+			]
+		  }
+		},
+		{
+		  "id": 24,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1830,6 +1767,81 @@ const pool_generator_contract = {
 			],
 			"path": [
 			  "Result"
+			]
+		  }
+		},
+		{
+		  "id": 25,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"fields": [
+					  {
+						"type": 26
+					  }
+					],
+					"index": 0,
+					"name": "Ok"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 8
+					  }
+					],
+					"index": 1,
+					"name": "Err"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 26
+			  },
+			  {
+				"name": "E",
+				"type": 8
+			  }
+			],
+			"path": [
+			  "Result"
+			]
+		  }
+		},
+		{
+		  "id": 26,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"index": 0,
+					"name": "None"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 5
+					  }
+					],
+					"index": 1,
+					"name": "Some"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 5
+			  }
+			],
+			"path": [
+			  "Option"
 			]
 		  }
 		}

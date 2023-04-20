@@ -157,8 +157,8 @@ NavbarLinks.propTypes = {
 
 export const menuListData = [
   {
-    title: "Faucet",
-    href: "/faucet",
+    title: "Buy INW",
+    href: "/buy-inw",
   },
   {
     title: "Pools",
@@ -209,7 +209,7 @@ export const CreateMenuDropdown = ({
             { label: "Token", href: "/create/token" },
             { label: "Staking Pool Token", href: "/create/stake-pool" },
             { label: "NFT Yield Farm", href: "/create/nft-lp" },
-            { label: "Token Yield Farm", href: "/create/token-lp" },
+            // { label: "Token Yield Farm", href: "/create/token-lp" },
           ].map((item, idx) => (
             <IWCard
               key={idx}

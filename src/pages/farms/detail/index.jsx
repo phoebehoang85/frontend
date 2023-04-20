@@ -51,6 +51,7 @@ import { fetchAllNFTPools } from "redux/slices/allPoolsSlice";
 import { fetchAllTokenPools } from "redux/slices/allPoolsSlice";
 import { isPoolEnded } from "utils";
 import useInterval from "hook/useInterval";
+import AddressCopier from "components/address-copier/AddressCopier";
 
 export default function FarmDetailPage() {
   const params = useParams();
@@ -1197,6 +1198,7 @@ const PoolInfo = ({
   duration,
   rewardPool,
   totalStaked,
+  maxStakingAmount,
   tokenSymbol,
   tokenName,
   tokenContract,
@@ -1269,7 +1271,7 @@ const PoolInfo = ({
           data={[
             {
               title: "Pool Contract Address",
-              content: addressShortener(poolContract),
+              content: <AddressCopier address={poolContract}/>,
             },
             {
               title: "Multiplier",
@@ -1289,6 +1291,10 @@ const PoolInfo = ({
             {
               title: "Reward Pool",
               content: `${formatNumDynDecimal(rewardPool)} ${tokenSymbol}`,
+            },
+            {
+              title: "Max Staking Amount",
+              content: `${formatNumDynDecimal(maxStakingAmount)} ${tokenSymbol}`,
             },
             {
               title: "Total Value Locked",

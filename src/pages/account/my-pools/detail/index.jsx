@@ -51,6 +51,7 @@ import { fetchAllTokenPools } from "redux/slices/allPoolsSlice";
 import { fetchAllStakingPools } from "redux/slices/allPoolsSlice";
 import { fetchMyNFTPools } from "redux/slices/myPoolsSlice";
 import { fetchAllNFTPools } from "redux/slices/allPoolsSlice";
+import AddressCopier from "components/address-copier/AddressCopier";
 
 export default function MyPoolDetailPage({ api }) {
   const { currentAccount } = useSelector((s) => s.wallet);
@@ -342,6 +343,7 @@ const MyPoolInfo = ({
   duration,
   totalStaked,
   rewardPool,
+  maxStakingAmount,
   tokenName,
   tokenTotalSupply,
   mode,
@@ -791,7 +793,7 @@ const MyPoolInfo = ({
             data={[
               {
                 title: "Pool Contract Address",
-                content: addressShortener(poolContract),
+                content: <AddressCopier address={poolContract}/>,
               },
               {
                 title: mode === "STAKING_POOL" ? "APR" : "Multiplier",
@@ -817,6 +819,10 @@ const MyPoolInfo = ({
                 content: `${formatNumDynDecimal(rewardPool)} ${tokenSymbol}`,
               },
               {
+                title: "Max Staking Amount",
+                content: `${formatNumDynDecimal(maxStakingAmount)} ${tokenSymbol}`,
+              },
+              {
                 title: "Total Value Locked",
                 content: `${formatNumDynDecimal(totalStaked)} ${
                   mode === "NFT_FARM"
@@ -839,7 +845,7 @@ const MyPoolInfo = ({
                   value={amount}
                   onChange={({ target }) => setAmount(target.value)}
                   type="number"
-                  placeholder="Enter amount to add or remove"
+                  placeholder="Enter amount to remove"
                   inputRightElementIcon={
                     <Heading as="h5" size="h5">
                       {tokenSymbol}
@@ -855,13 +861,13 @@ const MyPoolInfo = ({
                   spacing="10px"
                   justifyContent="space-between"
                 >
-                  <ConfirmModal
+                  {/* <ConfirmModal
                     action="stake"
                     buttonVariant="primary"
                     buttonLabel="Add Rewards"
                     onClick={handleAddRewards}
                     message={`Add to reward pool ${amount} ${tokenSymbol}. Continue?`}
-                  />
+                  /> */}
 
                   <ConfirmModal
                     action="unstake"

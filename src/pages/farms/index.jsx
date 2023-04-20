@@ -179,11 +179,11 @@ export default function FarmsPage() {
       component: <IWTable {...tableDataNFT} mode="NFT_FARM" />,
       isDisabled: false,
     },
-    {
-      label: <>Token Yield Farms</>,
-      component: <IWTable {...tableDataToken} mode="TOKEN_FARM" />,
-      isDisabled: false,
-    },
+    // {
+    //   label: <>Token Yield Farms</>,
+    //   component: <IWTable {...tableDataToken} mode="TOKEN_FARM" />,
+    //   isDisabled: false,
+    // },
   ];
 
   return (

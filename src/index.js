@@ -150,8 +150,8 @@ const App = () => {
     <HashRouter>
       <DefaultLayout>
         <Switch>
-          <Redirect exact from="/" to="/faucet" />
-          <Route exact path={`/faucet`}>
+          <Redirect exact from="/" to="/buy-inw" />
+          <Route exact path={`/buy-inw`}>
             <FaucetPage api={api} />
           </Route>
           <Route exact path={`/pools/:contractAddress`}>
