@@ -195,7 +195,6 @@ export default function FaucetPage({ api }) {
     const inwInCUr = formatQueryResultToNumber(result2);
 
     setInwInCur(inwInCUr.replace(".0000", ".00"));
-
   }, [api]);
 
   const disableBuyBtn = useMemo(() => {
@@ -204,9 +203,25 @@ export default function FaucetPage({ api }) {
       formatChainStringToNumber(azeroBalance)
     );
   }, [azeroBalance, inwBuyAmount, inwPrice]);
+
+  const getBalanceContract = async () => {
+    let balance = await execContractQuery(
+      currentAccount?.address,
+      api,
+      azt_contract.CONTRACT_ABI,
+      azt_contract.CONTRACT_ADDRESS,
+      0,
+      "psp22::balanceOf",
+      token_sale.CONTRACT_ADDRESS
+    );
+    console.log(balance);
+    setAvailableMint(formatQueryResultToNumber(balance))
+  };
+
   useEffect(() => {
     getInwMintingCapAndTotalSupply();
     getPriceInw();
+    getBalanceContract();
   }, [api, currentAccount, getInwMintingCapAndTotalSupply]);
 
   const inwPublicMintHandler = async () => {
@@ -389,22 +404,18 @@ export default function FaucetPage({ api }) {
                   w="full"
                   justifyContent="space-between"
                 >
-                  <Text
-                    textAlign="left"
-                    fontSize="md"
-                    lineHeight="28px"
-                  >
+                  <Text textAlign="left" fontSize="md" lineHeight="28px">
                     Price: {inwPrice} INW / Azero
                   </Text>
-                  <Text
-                    textAlign="left"
-                    fontSize="md"
-                    lineHeight="28px"
-                  >
-                    Balance: {azeroBalance} Azero
+                  <Text textAlign="left" fontSize="md" lineHeight="28px">
+                     INW Available to acquire: {availableMint}
                   </Text>
                 </Flex>
-                <Button w="full" onClick={inwPublicMintHandler} disabled={disableBuyBtn}>
+                <Button
+                  w="full"
+                  onClick={inwPublicMintHandler}
+                  disabled={disableBuyBtn}
+                >
                   Buy INW
                 </Button>
               </Stack>
