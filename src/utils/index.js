@@ -12,7 +12,7 @@ export const formatChainStringToNumber = (str) => {
   return parseFloat(str.replace(/,/g, "").replace(/"/g, ""));
 };
 export const formatQueryResultToNumber = (result, chainDecimals = 12) => {
-  const ret = result?.toHuman()?.Ok.replaceAll(",", "");
+  const ret = result?.toHuman()?.Ok?.replaceAll(",", "");
 
   const formattedStrBal = formatBalance(ret, {
     withSi: false,
