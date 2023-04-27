@@ -256,7 +256,7 @@ export default function CreateStakePoolPage({ api }) {
     await delay(3000);
 
     toast.promise(
-      delay(10000).then(() => {
+      delay(20000).then(() => {
         if (currentAccount) {
           dispatch(fetchUserBalance({ currentAccount, api }));
           dispatch(fetchMyStakingPools({ currentAccount }));
@@ -265,7 +265,7 @@ export default function CreateStakePoolPage({ api }) {
         fetchTokenBalance();
       }),
       {
-        loading: "Please wait up to 10s for the data to be updated! ",
+        loading: "Please wait up to 20s for the data to be updated! ",
         success: "Done !",
         error: "Could not fetch data!!!",
       }

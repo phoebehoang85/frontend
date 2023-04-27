@@ -246,7 +246,7 @@ export default function CreateTokenLPPage({ api }) {
     await delay(3000);
 
     toast.promise(
-      delay(10000).then(() => {
+      delay(15000).then(() => {
         if (currentAccount) {
           dispatch(fetchMyTokenPools({ currentAccount }));
           dispatch(fetchUserBalance({ currentAccount, api }));
@@ -256,7 +256,7 @@ export default function CreateTokenLPPage({ api }) {
         fetchLPTokenBalance();
       }),
       {
-        loading: "Please wait up to 10s for the data to be updated! ",
+        loading: "Please wait up to 15s for the data to be updated! ",
         success: "Done !",
         error: "Could not fetch data!!!",
       }

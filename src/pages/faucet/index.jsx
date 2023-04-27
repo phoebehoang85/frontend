@@ -40,6 +40,7 @@ import SaleTab from "components/tabs/SaleTab";
 import IWCountDown from "components/countdown/CountDown";
 import { formatBalance } from "@polkadot/util";
 import CardThreeColumn from "components/card/CardThreeColumn";
+import BN from "bn.js";
 
 const inwContractAddress = azt_contract.CONTRACT_ADDRESS;
 
@@ -351,10 +352,10 @@ export default function FaucetPage({ api }) {
 
   const disableBuyBtn = useMemo(() => {
     return (
-      inwBuyAmount * parseFloat(inwPrice) >
-        formatChainStringToNumber(azeroBalance) || isSaleEnded
+      inwBuyAmount * parseFloat(inwPrice) >=
+        formatChainStringToNumber(azeroBalance) || isSaleEnded || +availableMint.replaceAll(',', '') < +inwBuyAmount
     );
-  }, [azeroBalance, inwBuyAmount, inwPrice, isSaleEnded]);
+  }, [azeroBalance, inwBuyAmount, inwPrice, isSaleEnded, availableMint]);
 
   const getBalanceContract = async (token) => {
     let balance = await execContractQuery(
@@ -402,6 +403,10 @@ export default function FaucetPage({ api }) {
     getInfo()
   }, [tabIndex]);
 
+  function roundUp(v, n = 12) {
+    return Math.ceil(v * Math.pow(10, n)) / Math.pow(10, n);
+}
+
   useEffect(() => {
     if (!(api && currentAccount?.address)) return;
     getInfo()
@@ -427,7 +432,7 @@ export default function FaucetPage({ api }) {
       api,
       public_sale.CONTRACT_ABI,
       public_sale.CONTRACT_ADDRESS,
-      formatNumToBN(parseFloat(inwPrice) * inwBuyAmount), //-> value
+      roundUp(inwPrice*inwBuyAmount) * 10 ** 12, //-> value
       "genericTokenSaleTrait::purchase",
       formatNumToBN(inwBuyAmount) // -> token_amount, <...args>
     );
@@ -462,13 +467,13 @@ export default function FaucetPage({ api }) {
       toast.error(toastMessages.NO_WALLET);
       return;
     }
-
+    console.log(roundUp(inwPrice*inwBuyAmount));
     await execContractTx(
       currentAccount,
       api,
       private_sale.CONTRACT_ABI,
       private_sale.CONTRACT_ADDRESS,
-      formatNumToBN(parseFloat(inwPrice) * inwBuyAmount), //-> value
+      roundUp(inwPrice*inwBuyAmount) * 10 ** 12, //-> value
       "genericTokenSaleTrait::purchase",
       formatNumToBN(inwBuyAmount) // -> token_amount, <...args>
     );
@@ -580,7 +585,7 @@ export default function FaucetPage({ api }) {
               />
 
               <IWInput
-                value={formatNumDynDecimal(inwBuyAmount * parseFloat(inwPrice))}
+                value={formatNumDynDecimal(roundUp(inwPrice*inwBuyAmount), 4)}
                 isDisabled={true}
                 placeholder="0.000000000"
                 inputRightElementIcon={<AzeroLogo />}
@@ -604,7 +609,7 @@ export default function FaucetPage({ api }) {
                   justifyContent="space-between"
                 >
                   <Text textAlign="left" fontSize="md" lineHeight="28px">
-                    You will receive 5% ({(inwBuyAmount * 5) / 100} INW) at TGE
+                    You will receive 5% ({roundUp((inwBuyAmount * 5) / 100)} INW) at TGE
                     {/* , then linear vesting over the next 24 months */}
                   </Text>
                 </Flex>

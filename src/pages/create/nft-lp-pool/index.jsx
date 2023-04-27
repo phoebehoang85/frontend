@@ -152,7 +152,7 @@ export default function CreateNFTLPPage({ api }) {
 
       setCreateTokenFee(fee);
     };
-
+    if (!currentAccount?.address) return;
     fetchCreateTokenFee();
   }, [currentAccount]);
 
@@ -195,8 +195,7 @@ export default function CreateNFTLPPage({ api }) {
       );
       return;
     }
-
-    if (parseInt(tokenBalance?.replaceAll(",", "")) < minReward) {
+    if (parseInt(tokenBalance?.replaceAll(",", "")) < minReward.replaceAll(",", "")) {
       toast.error(`You don't have enough ${tokenSymbol} to topup the reward`);
       return;
     }
@@ -229,11 +228,6 @@ export default function CreateNFTLPPage({ api }) {
       allowanceTokenQr
     ).replaceAll(",", "");
     let step = 1;
-    console.log(
-      formatQueryResultToNumber(allowanceINWQr),
-      allowanceToken,
-      "allowanceallowance"
-    );
     //Approve
     if (allowanceINW < createTokenFee.replaceAll(",", "")) {
       toast.success(`Step ${step}: Approving INW token...`);
@@ -268,7 +262,7 @@ export default function CreateNFTLPPage({ api }) {
 
     await delay(3000);
 
-    toast.success("Step 2: Process ...");
+    toast.success(`Step ${step}: Process ...`);
 
     await execContractTx(
       currentAccount,
@@ -280,7 +274,7 @@ export default function CreateNFTLPPage({ api }) {
       currentAccount?.address,
       selectedCollectionAddr,
       selectedContractAddr,
-      formatNumToBN(maxStake, selectedTokenDecimal),
+      maxStake,
       formatNumToBN(multiplier, selectedTokenDecimal),
       duration * 24 * 60 * 60 * 1000,
       startTime.getTime()
@@ -297,7 +291,7 @@ export default function CreateNFTLPPage({ api }) {
     await delay(3000);
 
     toast.promise(
-      delay(10000).then(() => {
+      delay(15000).then(() => {
         if (currentAccount) {
           dispatch(fetchMyNFTPools({ currentAccount }));
           dispatch(fetchUserBalance({ currentAccount, api }));
@@ -306,7 +300,7 @@ export default function CreateNFTLPPage({ api }) {
         fetchTokenBalance();
       }),
       {
-        loading: "Please wait up to 10s for the data to be updated! ",
+        loading: "Please wait up to 15s for the data to be updated! ",
         success: "Done !",
         error: "Could not fetch data!!!",
       }
