@@ -55,7 +55,7 @@ export default function FaucetPage({ api }) {
   const [selectedContractAddress, setSelectedContractAddress] = useState(null);
 
   const [inwTotalSupply, setInwTotalSupply] = useState(0);
-  const [availableMint, setAvailableMint] = useState(0);
+  const [availableMint, setAvailableMint] = useState('0');
   const [inwBuyAmount, setInwBuyAmount] = useState("");
   const [inwInCur, setInwInCur] = useState(0);
   const [inwPrice, setInwPrice] = useState(0);
@@ -353,7 +353,7 @@ export default function FaucetPage({ api }) {
   const disableBuyBtn = useMemo(() => {
     return (
       inwBuyAmount * parseFloat(inwPrice) >=
-        formatChainStringToNumber(azeroBalance) || isSaleEnded || +availableMint?.replaceAll(',', '') < +inwBuyAmount
+        formatChainStringToNumber(azeroBalance) || isSaleEnded || availableMint?.replaceAll(',', '') < +inwBuyAmount
     );
   }, [azeroBalance, inwBuyAmount, inwPrice, isSaleEnded, availableMint]);
 
