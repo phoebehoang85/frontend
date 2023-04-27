@@ -353,7 +353,7 @@ export default function FaucetPage({ api }) {
   const disableBuyBtn = useMemo(() => {
     return (
       inwBuyAmount * parseFloat(inwPrice) >=
-        formatChainStringToNumber(azeroBalance) || isSaleEnded || +availableMint.replaceAll(',', '') < +inwBuyAmount
+        formatChainStringToNumber(azeroBalance) || isSaleEnded || +availableMint?.replaceAll(',', '') < +inwBuyAmount
     );
   }, [azeroBalance, inwBuyAmount, inwPrice, isSaleEnded, availableMint]);
 
