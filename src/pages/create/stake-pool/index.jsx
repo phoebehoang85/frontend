@@ -6,6 +6,7 @@ import {
   Select,
   SimpleGrid,
   Text,
+  Tooltip,
   VStack,
 } from "@chakra-ui/react";
 import SectionContainer from "components/container/SectionContainer";
@@ -31,8 +32,7 @@ import pool_generator_contract from "utils/contracts/pool_generator";
 import { toastMessages } from "constants";
 import { fetchMyStakingPools } from "redux/slices/myPoolsSlice";
 import { formatNumDynDecimal } from "utils";
-import { MAX_INT } from "constants";
-import { BN } from "bn.js";
+import { QuestionOutlineIcon } from "@chakra-ui/icons";
 
 export default function CreateStakePoolPage({ api }) {
   const dispatch = useDispatch();
@@ -314,8 +314,8 @@ export default function CreateStakePoolPage({ api }) {
       {
         name: "maxStakingAmount",
         hasTooltip: true,
-        tooltipContent: `Max Staking Amount`,
-        label: "Max Staking Amount",
+        tooltipContent: `How many tokens that users can stake into the pool`,
+        label: " Total Staking Cap ",
       },
       {
         name: "totalStaked",
@@ -338,7 +338,7 @@ export default function CreateStakePoolPage({ api }) {
     <>
       <SectionContainer
         mt={{ base: "0px", xl: "20px" }}
-        title="Create  Staking Pools"
+        title="Create Staking Pool"
         description={
           <span>
             Staker earns tokens at fixed APR. The creation costs
@@ -384,7 +384,8 @@ export default function CreateStakePoolPage({ api }) {
                 onChange={({ target }) => setSelectedContractAddr(target.value)}
                 value={selectedContractAddr}
                 placeholder="Contract Address"
-                label="or enter token contract address"
+                isDisabled
+                label="enter token contract address"
               />
             </Box>
 
@@ -416,8 +417,6 @@ export default function CreateStakePoolPage({ api }) {
                 borderRadius="5px"
               >
                 <DateTimePicker
-                  disableClock
-                  disableCalendar
                   locale="en-EN"
                   value={startTime}
                   onChange={setStartTime}
@@ -455,9 +454,19 @@ export default function CreateStakePoolPage({ api }) {
                 value={maxStake}
                 onChange={({ target }) => setMaxStake(target.value)}
                 type="number"
-                label={`Max Staking Amount ${
-                  tokenSymbol ? `(${tokenSymbol})` : ""
-                }`}
+                label={
+                  <>
+                    Total Staking Cap {tokenSymbol ? `(${tokenSymbol})` : ""}{" "}
+                    <Tooltip
+                      fontSize="smaller"
+                      label={
+                        "How many tokens that users can stake into the pool "
+                      }
+                    >
+                      <QuestionOutlineIcon ml="6px" pb={"2px"} color="text.2" />
+                    </Tooltip>
+                  </>
+                }
                 placeholder="0"
               />
             </Box>
@@ -465,7 +474,17 @@ export default function CreateStakePoolPage({ api }) {
               <IWInput
                 isDisabled={true}
                 value={`${minReward || 0} ${tokenSymbol || ""}`}
-                label={`Reward Amount required to topup `}
+                label={ <>
+                  Total Rewards
+                  <Tooltip
+                    fontSize="smaller"
+                    label={
+                      " Pool creator has to add this amount upfront into the pool to pay for stakers' interest."
+                    }
+                  >
+                    <QuestionOutlineIcon ml="6px" pb={"2px"} color="text.2" />
+                  </Tooltip>
+                </>}
               />
             </Box>
           </SimpleGrid>
@@ -475,7 +494,7 @@ export default function CreateStakePoolPage({ api }) {
             maxW={{ lg: "220px" }}
             onClick={createStakingPoolHandler}
           >
-            Create Staking Pool{" "}
+            Create{" "}
           </Button>
         </VStack>
       </SectionContainer>
