@@ -1,8 +1,8 @@
 const nft_pool_contract = {
-  CONTRACT_ADDRESS: "5DaDGJbjmwnusnNS1hHqQLnkykEjsRMNa66eCzyK2T1XiSN5",
+  CONTRACT_ADDRESS: "5CtvumpQ3E3CKZnJ6qbjcf6fb8kWdLY8X128N1rtwD7mDQu6",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0xe735899869fd191d1f51fced733406b41888c59bd8b828b50491e3fb3c5c9369",
+		"hash": "0xb11c611299a98175b4c71a6abdbed80f1cdd7654522b6635a37569c2b0c688c2",
 		"language": "ink! 4.1.0",
 		"compiler": "rustc 1.70.0-nightly",
 		"build_info": {
@@ -451,6 +451,23 @@ const nft_pool_contract = {
 			"selector": "0x82c1595f"
 		  },
 		  {
+			"args": [],
+			"docs": [
+			  " Returns the address of the current owner."
+			],
+			"label": "Ownable::owner",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 18
+			},
+			"selector": "0x4fa43c8c"
+		  },
+		  {
 			"args": [
 			  {
 				"label": "new_owner",
@@ -490,23 +507,6 @@ const nft_pool_contract = {
 		  {
 			"args": [],
 			"docs": [
-			  " Returns the address of the current owner."
-			],
-			"label": "Ownable::owner",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 18
-			},
-			"selector": "0x4fa43c8c"
-		  },
-		  {
-			"args": [],
-			"docs": [
 			  " Leaves the contract without owner. It will not be possible to call",
 			  " owner's functions anymore. Can only be called by the current owner.",
 			  "",
@@ -532,21 +532,6 @@ const nft_pool_contract = {
 			"selector": "0x5e228753"
 		  },
 		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolContractTrait::multiplier",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 21
-			},
-			"selector": "0xfb1ecf6a"
-		  },
-		  {
 			"args": [
 			  {
 				"label": "staker",
@@ -568,39 +553,9 @@ const nft_pool_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 22
-			},
-			"selector": "0x7d91f5c8"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolContractTrait::total_staked",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
 			  "type": 21
 			},
-			"selector": "0x6d230adf"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolContractTrait::duration",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 25
-			},
-			"selector": "0xec96d641"
+			"selector": "0x7d91f5c8"
 		  },
 		  {
 			"args": [],
@@ -613,7 +568,7 @@ const nft_pool_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 21
+			  "type": 24
 			},
 			"selector": "0x11fd5b2b"
 		  },
@@ -628,40 +583,14 @@ const nft_pool_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 21
+			  "type": 24
 			},
 			"selector": "0xfc6c3a08"
 		  },
 		  {
-			"args": [
-			  {
-				"label": "amount",
-				"type": {
-				  "displayName": [
-					"genericpoolcontracttrait_external",
-					"WithdrawRewardPoolInput1"
-				  ],
-				  "type": 4
-				}
-			  }
-			],
-			"docs": [],
-			"label": "GenericPoolContractTrait::withdraw_reward_pool",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 10
-			},
-			"selector": "0x7be928b9"
-		  },
-		  {
 			"args": [],
 			"docs": [],
-			"label": "GenericPoolContractTrait::min_reward_amount",
+			"label": "GenericPoolContractTrait::is_topup_enough_reward",
 			"mutates": false,
 			"payable": false,
 			"returnType": {
@@ -669,95 +598,9 @@ const nft_pool_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 21
+			  "type": 25
 			},
-			"selector": "0x57057db9"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolContractTrait::inw_contract",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 18
-			},
-			"selector": "0xf96ce121"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "amount",
-				"type": {
-				  "displayName": [
-					"genericpoolcontracttrait_external",
-					"TopupRewardPoolInput1"
-				  ],
-				  "type": 4
-				}
-			  }
-			],
-			"docs": [],
-			"label": "GenericPoolContractTrait::topup_reward_pool",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 10
-			},
-			"selector": "0xaaa53e1a"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolContractTrait::total_unclaimed_reward",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 21
-			},
-			"selector": "0x16231caf"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolContractTrait::psp22_contract_address",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 18
-			},
-			"selector": "0x0da3be06"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolContractTrait::unstake_fee",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 21
-			},
-			"selector": "0xc74b547f"
+			"selector": "0x7663de4d"
 		  },
 		  {
 			"args": [
@@ -788,7 +631,7 @@ const nft_pool_contract = {
 		  {
 			"args": [],
 			"docs": [],
-			"label": "GenericPoolContractTrait::is_topup_enough_reward",
+			"label": "GenericPoolContractTrait::multiplier",
 			"mutates": false,
 			"payable": false,
 			"returnType": {
@@ -796,9 +639,35 @@ const nft_pool_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 26
+			  "type": 24
 			},
-			"selector": "0x7663de4d"
+			"selector": "0xfb1ecf6a"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "amount",
+				"type": {
+				  "displayName": [
+					"genericpoolcontracttrait_external",
+					"WithdrawRewardPoolInput1"
+				  ],
+				  "type": 4
+				}
+			  }
+			],
+			"docs": [],
+			"label": "GenericPoolContractTrait::withdraw_reward_pool",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 10
+			},
+			"selector": "0x7be928b9"
 		  },
 		  {
 			"args": [],
@@ -811,9 +680,114 @@ const nft_pool_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 25
+			  "type": 26
 			},
 			"selector": "0xc48cf63e"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolContractTrait::total_staked",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 24
+			},
+			"selector": "0x6d230adf"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolContractTrait::duration",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 26
+			},
+			"selector": "0xec96d641"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolContractTrait::inw_contract",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 18
+			},
+			"selector": "0xf96ce121"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolContractTrait::psp22_contract_address",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 18
+			},
+			"selector": "0x0da3be06"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolContractTrait::min_reward_amount",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 24
+			},
+			"selector": "0x57057db9"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolContractTrait::unstake_fee",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 24
+			},
+			"selector": "0xc74b547f"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolContractTrait::total_unclaimed_reward",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 24
+			},
+			"selector": "0x16231caf"
 		  },
 		  {
 			"args": [],
@@ -829,6 +803,32 @@ const nft_pool_contract = {
 			  "type": 18
 			},
 			"selector": "0xb22a7a83"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "amount",
+				"type": {
+				  "displayName": [
+					"genericpoolcontracttrait_external",
+					"TopupRewardPoolInput1"
+				  ],
+				  "type": 4
+				}
+			  }
+			],
+			"docs": [],
+			"label": "GenericPoolContractTrait::topup_reward_pool",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 10
+			},
+			"selector": "0xaaa53e1a"
 		  },
 		  {
 			"args": [
@@ -852,7 +852,7 @@ const nft_pool_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 25
+			  "type": 26
 			},
 			"selector": "0x2a30e9be"
 		  },
@@ -2067,7 +2067,7 @@ const nft_pool_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 4
+						"type": 22
 					  }
 					],
 					"index": 0,
@@ -2088,7 +2088,7 @@ const nft_pool_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 4
+				"type": 22
 			  },
 			  {
 				"name": "E",
@@ -2107,55 +2107,13 @@ const nft_pool_contract = {
 			  "variant": {
 				"variants": [
 				  {
-					"fields": [
-					  {
-						"type": 23
-					  }
-					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 16
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 23
-			  },
-			  {
-				"name": "E",
-				"type": 16
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
-		  "id": 23,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
 					"index": 0,
 					"name": "None"
 				  },
 				  {
 					"fields": [
 					  {
-						"type": 24
+						"type": 23
 					  }
 					],
 					"index": 1,
@@ -2167,7 +2125,7 @@ const nft_pool_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 24
+				"type": 23
 			  }
 			],
 			"path": [
@@ -2176,7 +2134,7 @@ const nft_pool_contract = {
 		  }
 		},
 		{
-		  "id": 24,
+		  "id": 23,
 		  "type": {
 			"def": {
 			  "composite": {
@@ -2214,7 +2172,7 @@ const nft_pool_contract = {
 		  }
 		},
 		{
-		  "id": 25,
+		  "id": 24,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -2222,7 +2180,7 @@ const nft_pool_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 5
+						"type": 4
 					  }
 					],
 					"index": 0,
@@ -2243,7 +2201,7 @@ const nft_pool_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 5
+				"type": 4
 			  },
 			  {
 				"name": "E",
@@ -2256,7 +2214,7 @@ const nft_pool_contract = {
 		  }
 		},
 		{
-		  "id": 26,
+		  "id": 25,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -2286,6 +2244,48 @@ const nft_pool_contract = {
 			  {
 				"name": "T",
 				"type": 6
+			  },
+			  {
+				"name": "E",
+				"type": 16
+			  }
+			],
+			"path": [
+			  "Result"
+			]
+		  }
+		},
+		{
+		  "id": 26,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"fields": [
+					  {
+						"type": 5
+					  }
+					],
+					"index": 0,
+					"name": "Ok"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 16
+					  }
+					],
+					"index": 1,
+					"name": "Err"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 5
 			  },
 			  {
 				"name": "E",

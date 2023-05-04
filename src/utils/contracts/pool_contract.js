@@ -1,8 +1,8 @@
 const pool_contract = {
-  CONTRACT_ADDRESS: "5CTH1LxYPrKsBnWw8mGKgz7JLo7tr3RCQ59kW71uSj2Hx3mE",
+  CONTRACT_ADDRESS: "5Hm3Gmksv4aGuWtckgHxZFjJXoDRwUTo2H1quMiJn3A46yWM",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0xdc6c028da6f9a0c28a0fc9fd85c05ead3820b5859cf308b9ea0f74298c8f7fa9",
+		"hash": "0x8a9fcb2aa39ca45c5457eadf688ea0ae81ac3174230b05e198792632c67ad9da",
 		"language": "ink! 4.1.0",
 		"compiler": "rustc 1.70.0-nightly",
 		"build_info": {
@@ -520,14 +520,14 @@ const pool_contract = {
 				"type": {
 				  "displayName": [
 					"genericpoolcontracttrait_external",
-					"TopupRewardPoolInput1"
+					"WithdrawRewardPoolInput1"
 				  ],
 				  "type": 4
 				}
 			  }
 			],
 			"docs": [],
-			"label": "GenericPoolContractTrait::topup_reward_pool",
+			"label": "GenericPoolContractTrait::withdraw_reward_pool",
 			"mutates": true,
 			"payable": false,
 			"returnType": {
@@ -537,12 +537,12 @@ const pool_contract = {
 			  ],
 			  "type": 8
 			},
-			"selector": "0xaaa53e1a"
+			"selector": "0x7be928b9"
 		  },
 		  {
 			"args": [],
 			"docs": [],
-			"label": "GenericPoolContractTrait::start_time",
+			"label": "GenericPoolContractTrait::max_staking_amount",
 			"mutates": false,
 			"payable": false,
 			"returnType": {
@@ -552,12 +552,12 @@ const pool_contract = {
 			  ],
 			  "type": 20
 			},
-			"selector": "0xc48cf63e"
+			"selector": "0x11fd5b2b"
 		  },
 		  {
 			"args": [],
 			"docs": [],
-			"label": "GenericPoolContractTrait::reward_pool",
+			"label": "GenericPoolContractTrait::duration",
 			"mutates": false,
 			"payable": false,
 			"returnType": {
@@ -567,7 +567,48 @@ const pool_contract = {
 			  ],
 			  "type": 21
 			},
-			"selector": "0xfc6c3a08"
+			"selector": "0xec96d641"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "staker",
+				"type": {
+				  "displayName": [
+					"genericpoolcontracttrait_external",
+					"GetStakeInfoInput1"
+				  ],
+				  "type": 0
+				}
+			  }
+			],
+			"docs": [],
+			"label": "GenericPoolContractTrait::get_stake_info",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 22
+			},
+			"selector": "0x7d91f5c8"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolContractTrait::is_topup_enough_reward",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 25
+			},
+			"selector": "0x7663de4d"
 		  },
 		  {
 			"args": [],
@@ -580,14 +621,14 @@ const pool_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 21
+			  "type": 20
 			},
 			"selector": "0x16231caf"
 		  },
 		  {
 			"args": [],
 			"docs": [],
-			"label": "GenericPoolContractTrait::total_staked",
+			"label": "GenericPoolContractTrait::unstake_fee",
 			"mutates": false,
 			"payable": false,
 			"returnType": {
@@ -595,9 +636,9 @@ const pool_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 21
+			  "type": 20
 			},
-			"selector": "0x6d230adf"
+			"selector": "0xc74b547f"
 		  },
 		  {
 			"args": [
@@ -628,74 +669,7 @@ const pool_contract = {
 		  {
 			"args": [],
 			"docs": [],
-			"label": "GenericPoolContractTrait::min_reward_amount",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 21
-			},
-			"selector": "0x57057db9"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "staker",
-				"type": {
-				  "displayName": [
-					"genericpoolcontracttrait_external",
-					"GetStakeInfoInput1"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [],
-			"label": "GenericPoolContractTrait::get_stake_info",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 22
-			},
-			"selector": "0x7d91f5c8"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "amount",
-				"type": {
-				  "displayName": [
-					"genericpoolcontracttrait_external",
-					"WithdrawRewardPoolInput1"
-				  ],
-				  "type": 4
-				}
-			  }
-			],
-			"docs": [],
-			"label": "GenericPoolContractTrait::withdraw_reward_pool",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 8
-			},
-			"selector": "0x7be928b9"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolContractTrait::duration",
+			"label": "GenericPoolContractTrait::multiplier",
 			"mutates": false,
 			"payable": false,
 			"returnType": {
@@ -705,52 +679,7 @@ const pool_contract = {
 			  ],
 			  "type": 20
 			},
-			"selector": "0xec96d641"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolContractTrait::multiplier",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 21
-			},
 			"selector": "0xfb1ecf6a"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolContractTrait::unstake_fee",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 21
-			},
-			"selector": "0xc74b547f"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolContractTrait::max_staking_amount",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 21
-			},
-			"selector": "0x11fd5b2b"
 		  },
 		  {
 			"args": [],
@@ -770,7 +699,7 @@ const pool_contract = {
 		  {
 			"args": [],
 			"docs": [],
-			"label": "GenericPoolContractTrait::psp22_contract_address",
+			"label": "GenericPoolContractTrait::reward_pool",
 			"mutates": false,
 			"payable": false,
 			"returnType": {
@@ -778,24 +707,9 @@ const pool_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 17
+			  "type": 20
 			},
-			"selector": "0x0da3be06"
-		  },
-		  {
-			"args": [],
-			"docs": [],
-			"label": "GenericPoolContractTrait::is_topup_enough_reward",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 25
-			},
-			"selector": "0x7663de4d"
+			"selector": "0xfc6c3a08"
 		  },
 		  {
 			"args": [],
@@ -811,6 +725,92 @@ const pool_contract = {
 			  "type": 17
 			},
 			"selector": "0xf96ce121"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolContractTrait::psp22_contract_address",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 17
+			},
+			"selector": "0x0da3be06"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "amount",
+				"type": {
+				  "displayName": [
+					"genericpoolcontracttrait_external",
+					"TopupRewardPoolInput1"
+				  ],
+				  "type": 4
+				}
+			  }
+			],
+			"docs": [],
+			"label": "GenericPoolContractTrait::topup_reward_pool",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 8
+			},
+			"selector": "0xaaa53e1a"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolContractTrait::start_time",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 21
+			},
+			"selector": "0xc48cf63e"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolContractTrait::min_reward_amount",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 20
+			},
+			"selector": "0x57057db9"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "GenericPoolContractTrait::total_staked",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 20
+			},
+			"selector": "0x6d230adf"
 		  },
 		  {
 			"args": [
@@ -1805,48 +1805,6 @@ const pool_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 5
-					  }
-					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 15
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 5
-			  },
-			  {
-				"name": "E",
-				"type": 15
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
-		  "id": 21,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
 						"type": 4
 					  }
 					],
@@ -1869,6 +1827,48 @@ const pool_contract = {
 			  {
 				"name": "T",
 				"type": 4
+			  },
+			  {
+				"name": "E",
+				"type": 15
+			  }
+			],
+			"path": [
+			  "Result"
+			]
+		  }
+		},
+		{
+		  "id": 21,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"fields": [
+					  {
+						"type": 5
+					  }
+					],
+					"index": 0,
+					"name": "Ok"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 15
+					  }
+					],
+					"index": 1,
+					"name": "Err"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 5
 			  },
 			  {
 				"name": "E",
