@@ -1,5 +1,5 @@
 const pool_generator_contract = {
-  CONTRACT_ADDRESS: "5CkJgQdT6GktxvkzZ1B6riby1wP8LLdb825978NdJGNkiY6q",
+  CONTRACT_ADDRESS: "5EnC5sK9r9b5ABVkw7jgsit1o2A9TgohyqKfPrnSrefz6EdX",
   CONTRACT_ABI: {
 	  "source": {
 		"hash": "0xc8d578cd405fef87fb50a53a9b8b37ebd8587dc7e1231be295596f7aefdc59bb",
