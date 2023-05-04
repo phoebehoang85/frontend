@@ -240,7 +240,7 @@ export default function FarmsPage() {
               </FormLabel>
             </FormControl>
 
-            <FormControl maxW="200px" display="flex" alignItems="center">
+            {/* <FormControl maxW="200px" display="flex" alignItems="center">
               <Switch
                 id="zero-reward-pools"
                 isChecked={hideZeroRewardPools}
@@ -254,7 +254,7 @@ export default function FarmsPage() {
               >
                 Zero Reward Pools
               </FormLabel>
-            </FormControl>
+            </FormControl> */}
           </Flex>
 
           <Box minW="155px" maxW="160px">

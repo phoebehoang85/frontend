@@ -157,8 +157,8 @@ NavbarLinks.propTypes = {
 
 export const menuListData = [
   {
-    title: "Buy INW",
-    href: "/buy-inw",
+    title: "Acquire INW",
+    href: "/acquire-inw",
   },
   {
     title: "Pools",

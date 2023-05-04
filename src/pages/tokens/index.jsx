@@ -17,6 +17,7 @@ import { isAddressValid } from "utils";
 import { addressShortener } from "utils";
 import { execContractTx } from "utils/contracts";
 import { execContractQuery } from "utils/contracts";
+import azt_contract from "utils/contracts/azt_contract";
 import psp22_contract from "utils/contracts/psp22_contract";
 
 export default function TokensPage() {
@@ -42,6 +43,15 @@ export default function TokensPage() {
     return () => (isUnmounted = true);
   }, []);
 
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      // Send Axios request here
+      loadTokenInfo();
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [selectedContractAddr]);
+
   async function loadTokenInfo() {
     if (!currentAccount) {
       toast.error("Please connect wallet!");
@@ -50,6 +60,10 @@ export default function TokensPage() {
 
     if (!isAddressValid(selectedContractAddr)) {
       toast.error("Invalid address!");
+      return;
+    }
+
+    if (selectedContractAddr === azt_contract.CONTRACT_ADDRESS) {
       return;
     }
 

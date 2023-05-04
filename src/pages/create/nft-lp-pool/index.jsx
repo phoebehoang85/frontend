@@ -6,6 +6,7 @@ import {
   Select,
   SimpleGrid,
   Text,
+  Tooltip,
   VStack,
 } from "@chakra-ui/react";
 import SectionContainer from "components/container/SectionContainer";
@@ -30,6 +31,7 @@ import { formatNumToBN, formatNumDynDecimal } from "utils";
 import azt_contract from "utils/contracts/azt_contract";
 import nft_pool_generator_contract from "utils/contracts/nft_pool_generator_contract";
 import { fetchMyNFTPools } from "redux/slices/myPoolsSlice";
+import { QuestionOutlineIcon } from "@chakra-ui/icons";
 
 export default function CreateNFTLPPage({ api }) {
   const dispatch = useDispatch();
@@ -195,7 +197,10 @@ export default function CreateNFTLPPage({ api }) {
       );
       return;
     }
-    if (parseInt(tokenBalance?.replaceAll(",", "")) < minReward.replaceAll(",", "")) {
+    if (
+      parseInt(tokenBalance?.replaceAll(",", "")) <
+      minReward.replaceAll(",", "")
+    ) {
       toast.error(`You don't have enough ${tokenSymbol} to topup the reward`);
       return;
     }
@@ -308,7 +313,10 @@ export default function CreateNFTLPPage({ api }) {
   }
   const { myNFTPoolsList, loading } = useSelector((s) => s.myPools);
 
-  const minReward = useMemo(() => formatNumDynDecimal(maxStake*duration*multiplier), [maxStake, duration, multiplier])
+  const minReward = useMemo(
+    () => formatNumDynDecimal(maxStake * duration * multiplier),
+    [maxStake, duration, multiplier]
+  );
 
   const tableData = {
     tableHeader: [
@@ -339,8 +347,8 @@ export default function CreateNFTLPPage({ api }) {
       {
         name: "maxStakingAmount",
         hasTooltip: true,
-        tooltipContent: `Max Staking Amount`,
-        label: "Max Staking Amount",
+        tooltipContent: `How many tokens that users can stake into the pool`,
+        label: "Total Staking Cap",
       },
       {
         name: "multiplier",
@@ -410,8 +418,9 @@ export default function CreateNFTLPPage({ api }) {
                   setSelectedCollectionAddr(target.value)
                 }
                 value={selectedCollectionAddr}
+                isDisabled
                 placeholder="Contract Address"
-                label="or enter collection contract address"
+                label="Collection contract address"
               />
             </Box>
 
@@ -441,7 +450,8 @@ export default function CreateNFTLPPage({ api }) {
                 onChange={({ target }) => setSelectedContractAddr(target.value)}
                 value={selectedContractAddr}
                 placeholder="Contract Address"
-                label="or enter token contract address"
+                isDisabled
+                label="Token contract address"
               />
             </Box>
 
@@ -512,9 +522,22 @@ export default function CreateNFTLPPage({ api }) {
                 value={maxStake}
                 onChange={({ target }) => setMaxStake(target.value)}
                 type="number"
-                label={`Max Staking Amount ${
-                  collectionSelected?.name ? `(${collectionSelected.name})` : ""
-                }`}
+                label={
+                  <>
+                    Total Staking Cap{" "}
+                    {collectionSelected?.name
+                      ? `(${collectionSelected.name})`
+                      : ""}
+                    <Tooltip
+                      fontSize="smaller"
+                      label={
+                        "How many NFTs that users can stake into the pool "
+                      }
+                    >
+                      <QuestionOutlineIcon ml="6px" pb={"2px"} color="text.2" />
+                    </Tooltip>
+                  </>
+                }
                 placeholder="0"
               />
             </Box>
@@ -522,7 +545,19 @@ export default function CreateNFTLPPage({ api }) {
               <IWInput
                 isDisabled={true}
                 value={`${minReward || 0} ${tokenSymbol || ""}`}
-                label={`Reward Amount required to topup `}
+                label={
+                  <>
+                    Total Rewards
+                    <Tooltip
+                      fontSize="smaller"
+                      label={
+                        " Pool creator has to add this amount upfront into the pool to pay for stakers' interest."
+                      }
+                    >
+                      <QuestionOutlineIcon ml="6px" pb={"2px"} color="text.2" />
+                    </Tooltip>
+                  </>
+                }
               />
             </Box>
           </SimpleGrid>

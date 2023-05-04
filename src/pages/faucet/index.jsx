@@ -41,6 +41,7 @@ import IWCountDown from "components/countdown/CountDown";
 import { formatBalance } from "@polkadot/util";
 import CardThreeColumn from "components/card/CardThreeColumn";
 import BN from "bn.js";
+import { ADDRESSES_INW } from "constants";
 
 const inwContractAddress = azt_contract.CONTRACT_ADDRESS;
 
@@ -55,7 +56,7 @@ export default function FaucetPage({ api }) {
   const [selectedContractAddress, setSelectedContractAddress] = useState(null);
 
   const [inwTotalSupply, setInwTotalSupply] = useState(0);
-  const [availableMint, setAvailableMint] = useState('0');
+  const [availableMint, setAvailableMint] = useState("0");
   const [inwBuyAmount, setInwBuyAmount] = useState("");
   const [inwInCur, setInwInCur] = useState(0);
   const [inwPrice, setInwPrice] = useState(0);
@@ -249,7 +250,7 @@ export default function FaucetPage({ api }) {
         2
       ),
     };
-  
+
     setAvailableMint(formatNumDynDecimal(leftAmount / 10 ** 12));
     setSaleInfo({
       buyerInfo: buyInfo,
@@ -275,43 +276,40 @@ export default function FaucetPage({ api }) {
     prepareAccountInfoData();
   }, [prepareAccountInfoData]);
 
-  const faucetHandler = async (selectedContractAddress) => {
-    if (!api) {
-      toast.error(toastMessages.ERR_API_CONN);
-      return;
-    }
+  const getBalanceINWOfAddress = (address) => {
+    return execContractQuery(
+      currentAccount?.address,
+      api,
+      azt_contract.CONTRACT_ABI,
+      azt_contract.CONTRACT_ADDRESS,
+      0,
+      "psp22::balanceOf",
+      address
+    );
+  };
 
-    if (!currentAccount) {
-      toast.error(toastMessages.NO_WALLET);
-      return;
-    }
-
-    if (!selectedContractAddress) {
-      toast.error(toastMessages.NO_TOKEN_SELECTED);
-      return;
-    }
-
-    if (!isAddressValid(selectedContractAddress)) {
-      toast.error(toastMessages.INVALID_ADDRESS);
-      return;
-    }
-
-    try {
-      await execContractTx(
-        currentAccount,
-        api,
-        azt_contract.CONTRACT_ABI,
-        selectedContractAddress,
-        0, //-> value
-        "faucet"
-      );
-    } catch (error) {
-      console.log(error);
-    }
-
-    await delay(2000).then(() => {
-      prepareAccountInfoData();
-    });
+  const getINWIncur = async (totalSupply) => {
+    let balanceQrs = await Promise.all([
+      getBalanceINWOfAddress(ADDRESSES_INW.INW_TREASURY),
+      getBalanceINWOfAddress(ADDRESSES_INW.INT_GROWTH),
+      getBalanceINWOfAddress(ADDRESSES_INW.INW_REWARD_POOL),
+      getBalanceINWOfAddress(ADDRESSES_INW.INW_TEAM),
+      getBalanceINWOfAddress(public_sale.CONTRACT_ADDRESS),
+      getBalanceINWOfAddress(private_sale.CONTRACT_ADDRESS),
+    ]);
+    const sumBalance = balanceQrs.reduce(
+      (accumulator, currentValue) =>
+        accumulator + +(currentValue?.toHuman()?.Ok?.replaceAll(",", "") || 0),
+      0
+    );
+    setInwInCur(
+      formatNumDynDecimal(
+        roundUp(
+          (totalSupply?.replaceAll(",", "") || 0) - sumBalance / 10 ** 12
+        ),
+        2
+      )
+    );
   };
 
   const getInwMintingCapAndTotalSupply = useCallback(async () => {
@@ -340,9 +338,7 @@ export default function FaucetPage({ api }) {
       0,
       "psp22::totalSupply"
     );
-    const inwInCUr = formatQueryResultToNumber(result2);
-
-    setInwInCur(inwInCUr.replace(".0000", ".00"));
+    getINWIncur(formatQueryResultToNumber(result2));
   }, [api]);
 
   const isSaleEnded = useMemo(
@@ -353,7 +349,9 @@ export default function FaucetPage({ api }) {
   const disableBuyBtn = useMemo(() => {
     return (
       inwBuyAmount * parseFloat(inwPrice) >=
-        formatChainStringToNumber(azeroBalance) || isSaleEnded || availableMint?.replaceAll(',', '') < +inwBuyAmount
+        formatChainStringToNumber(azeroBalance) ||
+      isSaleEnded ||
+      availableMint?.replaceAll(",", "") < +inwBuyAmount
     );
   }, [azeroBalance, inwBuyAmount, inwPrice, isSaleEnded, availableMint]);
 
@@ -397,21 +395,22 @@ export default function FaucetPage({ api }) {
       getPriceInw(public_sale);
       getBalanceContract(public_sale);
     }
-  }
+  };
 
   useEffect(() => {
-    getInfo()
+    if (!(api && currentAccount?.address)) return;
+    getInfo();
   }, [tabIndex]);
 
   function roundUp(v, n = 12) {
     return Math.ceil(v * Math.pow(10, n)) / Math.pow(10, n);
-}
+  }
 
   useEffect(() => {
     if (!(api && currentAccount?.address)) return;
-    getInfo()
+    getInfo();
     const interval = setInterval(() => {
-      getInfo()
+      getInfo();
     }, 60000);
     return () => clearInterval(interval);
   }, [api, currentAccount]);
@@ -432,7 +431,7 @@ export default function FaucetPage({ api }) {
       api,
       public_sale.CONTRACT_ABI,
       public_sale.CONTRACT_ADDRESS,
-      roundUp(inwPrice*inwBuyAmount) * 10 ** 12, //-> value
+      roundUp(inwPrice * inwBuyAmount) * 10 ** 12, //-> value
       "genericTokenSaleTrait::purchase",
       formatNumToBN(inwBuyAmount) // -> token_amount, <...args>
     );
@@ -446,7 +445,7 @@ export default function FaucetPage({ api }) {
         }
 
         getInwMintingCapAndTotalSupply();
-        getInfo()
+        getInfo();
         setInwBuyAmount("");
       }),
       {
@@ -467,13 +466,13 @@ export default function FaucetPage({ api }) {
       toast.error(toastMessages.NO_WALLET);
       return;
     }
-    console.log(roundUp(inwPrice*inwBuyAmount));
+    console.log(roundUp(inwPrice * inwBuyAmount));
     await execContractTx(
       currentAccount,
       api,
       private_sale.CONTRACT_ABI,
       private_sale.CONTRACT_ADDRESS,
-      roundUp(inwPrice*inwBuyAmount) * 10 ** 12, //-> value
+      roundUp(inwPrice * inwBuyAmount) * 10 ** 12, //-> value
       "genericTokenSaleTrait::purchase",
       formatNumToBN(inwBuyAmount) // -> token_amount, <...args>
     );
@@ -487,7 +486,7 @@ export default function FaucetPage({ api }) {
         }
 
         getInwMintingCapAndTotalSupply();
-        getInfo()
+        getInfo();
         setInwBuyAmount("");
       }),
       {
@@ -527,7 +526,7 @@ export default function FaucetPage({ api }) {
         }
 
         getInwMintingCapAndTotalSupply();
-        getInfo()
+        getInfo();
         setInwBuyAmount("");
       }),
       {
@@ -547,9 +546,9 @@ export default function FaucetPage({ api }) {
           variant="outline"
           title={
             <Flex justifyContent={"space-between"}>
-              <Heading as="h4" size="h4" lineHeight="25px">
+              {/* <Heading as="h4" size="h4" lineHeight="25px">
                 Acquire INW Tokens
-              </Heading>
+              </Heading> */}
               <Flex>
                 {saleInfo?.endTimeSale ? (
                   <>
@@ -585,7 +584,7 @@ export default function FaucetPage({ api }) {
               />
 
               <IWInput
-                value={formatNumDynDecimal(roundUp(inwPrice*inwBuyAmount), 4)}
+                value={formatNumDynDecimal(roundUp(inwPrice * inwBuyAmount), 4)}
                 isDisabled={true}
                 placeholder="0.000000000"
                 inputRightElementIcon={<AzeroLogo />}
@@ -609,7 +608,10 @@ export default function FaucetPage({ api }) {
                   justifyContent="space-between"
                 >
                   <Text textAlign="left" fontSize="md" lineHeight="28px">
-                    You will receive 5% ({roundUp((inwBuyAmount * 5) / 100)} INW) at TGE
+                    You will receive {roundUp((inwBuyAmount * 5) / 100)} INW (5%
+                    of total purchase) and the rest will be claimable every
+                    block during 18-month vesting period. Vesting period starts
+                    after private sale ends.
                     {/* , then linear vesting over the next 24 months */}
                   </Text>
                 </Flex>
@@ -633,7 +635,10 @@ export default function FaucetPage({ api }) {
             data={[
               {
                 title: "Claimable Amount",
-                content: `${formatNumDynDecimal(saleInfo?.unclaimAmount/10**12, 2)} INW`,
+                content: `${formatNumDynDecimal(
+                  saleInfo?.unclaimAmount / 10 ** 12,
+                  2
+                )} INW`,
               },
               {
                 title: "Total Claimed Amount",
@@ -661,52 +666,6 @@ export default function FaucetPage({ api }) {
               },
             ]}
           />
-          {/* <IWCardOneColumn
-              title="Overall Stats"
-              data={[
-                { title: "Allocation", content: `${saleInfo?.totalSale} INW` },
-                {
-                  title: "Burned Amount",
-                  content: `${formatNumDynDecimal(
-                    saleInfo?.burnedAmount / 10 ** 12
-                  )} INW`,
-                },
-                {
-                  title: "Claimed Amount",
-                  content: `${saleInfo?.totalClaimed} INW`,
-                },
-                // { title: "In Circulation: ", content: `${inwInCur} INW` },
-                {
-                  title: "Vesting Duration",
-                  content: `${saleInfo?.vestingDuration / 60 / 1000} minutes`,
-                },
-              ]}
-            />
-            <IWCardOneColumn
-              title="Your Stats"
-              data={[
-                {
-                  title: "Allocation",
-                  content: `${saleInfo?.buyerInfo?.purchasedAmount} INW`,
-                },
-                {
-                  title: "Unlocked Amount",
-                  content: `${formatNumDynDecimal(
-                    saleInfo?.buyerInfo?.purchasedAmount.replaceAll(",", "") -
-                      saleInfo?.unclaimAmount?.replaceAll(",", "")
-                  )} INW`,
-                },
-                {
-                  title: "Claimed Amount",
-                  content: `${saleInfo?.buyerInfo?.claimedAmount} INW`,
-                },
-                // { title: "In Circulation: ", content: `${inwInCur} INW` },
-                {
-                  title: "Claimable Amount",
-                  content: `${saleInfo?.unclaimAmount} INW`,
-                },
-              ]}
-            /> */}
           <Button
             w="full"
             mt="20px"
@@ -727,9 +686,9 @@ export default function FaucetPage({ api }) {
           variant="outline"
           title={
             <Flex justifyContent={"space-between"}>
-              <Heading as="h4" size="h4" lineHeight="25px">
+              {/* <Heading as="h4" size="h4" lineHeight="25px">
                 Acquire INW Tokens
-              </Heading>
+              </Heading> */}
               <Flex>
                 {saleInfo?.endTimeSale ? (
                   !isSaleEnded ? (
@@ -787,6 +746,20 @@ export default function FaucetPage({ api }) {
                 </Text>
               </Flex>
 
+              {inwBuyAmount ? (
+                <Flex
+                  mt={{ base: "15px", lg: "0px" }}
+                  w="full"
+                  justifyContent="space-between"
+                >
+                  <Text textAlign="left" fontSize="md" lineHeight="28px">
+                    You will receive full amount of INW right after the
+                    purchase.
+                  </Text>
+                </Flex>
+              ) : (
+                ""
+              )}
               <Button
                 w="full"
                 onClick={inwPublicMintHandler}
@@ -804,68 +777,6 @@ export default function FaucetPage({ api }) {
 
   return (
     <>
-      {/* <SectionContainer
-        mt={{ base: "0px", xl: "20px" }}
-        title="Faucet"
-        description={
-          <span>
-            Get some test tokens into your account. To get some TZERO, please
-            visit{" "}
-            <Link
-              isExternal
-              color="text.1"
-              href="https://faucet.test.azero.dev"
-            >
-              https://faucet.test.azero.dev
-            </Link>
-          </span>
-        }
-      >
-        <Stack
-          w="full"
-          spacing="30px"
-          alignItems="start"
-          direction={{ base: "column", lg: "row" }}
-        >
-          <IWCardOneColumn title="My Account" data={accountInfo} />
-
-          <IWCard w="full" variant="outline" title="Get Test Tokens">
-            <IWCard mt="16px" w="full" variant="solid">
-              <Stack
-                w="100%"
-                spacing="20px"
-                direction={{ base: "column", xl: "row" }}
-                align={{ base: "column", xl: "center" }}
-              >
-                <Select
-                  // isDisabled={accountInfoLoading}
-                  id="token"
-                  placeholder="Select token"
-                  onChange={({ target }) =>
-                    setSelectedContractAddress(target.value)
-                  }
-                >
-                  {allTokensList?.map((token, idx) => (
-                    <option key={idx} value={token.contractAddress}>
-                      {token?.symbol} ({token?.name}) -{" "}
-                      {addressShortener(token?.contractAddress)}
-                    </option>
-                  ))}
-                </Select>
-
-                <Button
-                  // isDisabled={accountInfoLoading}
-                  minW="130px"
-                  onClick={() => faucetHandler(selectedContractAddress)}
-                >
-                  Send me
-                </Button>
-              </Stack>
-            </IWCard>
-          </IWCard>
-        </Stack>{" "}
-      </SectionContainer> */}
-
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
         title="INW Tokens"
@@ -904,7 +815,7 @@ export default function FaucetPage({ api }) {
                 content: <AddressCopier address={inwContractAddress} />,
               },
               { title: "Max Supply", content: `${inwTotalSupply} INW` },
-              // { title: "In Circulation: ", content: `${inwInCur} INW` },
+              { title: "In Circulation: ", content: `${inwInCur} INW` },
               { title: "Your Balance: ", content: `${inwBalance} INW` },
             ]}
           />

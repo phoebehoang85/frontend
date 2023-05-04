@@ -19,6 +19,8 @@ import { execContractTx } from "utils/contracts";
 import azt_contract from "utils/contracts/azt_contract";
 import core_contract from "utils/contracts/core_contract";
 import psp22_contract from "utils/contracts/psp22_contract";
+import { InfiniteTable } from "components/table/InfiniteTable";
+import { useMemo } from "react";
 
 export default function CreateTokenPage({ api }) {
   const dispatch = useDispatch();
@@ -31,6 +33,7 @@ export default function CreateTokenPage({ api }) {
   const [totalSupply, setTotalSupply] = useState("");
 
   const [createTokenFee, setCreateToken] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchCreateTokenFee = async () => {
@@ -146,6 +149,8 @@ export default function CreateTokenPage({ api }) {
     );
   }
 
+  const hasMorePage = useMemo(() => (currentPage+1)*5 < allTokensList?.length, [currentPage, allTokensList])
+
   const tableData = {
     tableHeader: [
       {
@@ -186,7 +191,6 @@ export default function CreateTokenPage({ api }) {
       },
     ],
 
-    tableBody: allTokensList,
   };
 
   return (
@@ -276,7 +280,7 @@ export default function CreateTokenPage({ api }) {
         title="Recent Tokens"
         description={``}
       >
-        <IWTable {...tableData} isDisableRowClick={true} />
+        <InfiniteTable {...tableData} tableBody={allTokensList?.slice(0, currentPage*5) || []} getNext={() => hasMorePage ? setCurrentPage(currentPage+1): ""} hasMore={hasMorePage} isDisableRowClick={true} />
       </SectionContainer>
     </>
   );
