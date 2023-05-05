@@ -33,6 +33,7 @@ import { toastMessages } from "constants";
 import { fetchMyStakingPools } from "redux/slices/myPoolsSlice";
 import { formatNumDynDecimal } from "utils";
 import { QuestionOutlineIcon } from "@chakra-ui/icons";
+import { roundUp } from "utils";
 
 export default function CreateStakePoolPage({ api }) {
   const dispatch = useDispatch();
@@ -158,7 +159,7 @@ export default function CreateStakePoolPage({ api }) {
       return;
     }
 
-    if (parseInt(tokenBalance?.replaceAll(",", "")) < minReward) {
+    if (parseInt(tokenBalance?.replaceAll(",", "")) < minReward?.replaceAll(',', '')) {
       toast.error(`You don't have enough ${tokenSymbol} to topup the reward`);
       return;
     }
@@ -231,7 +232,6 @@ export default function CreateStakePoolPage({ api }) {
     await delay(3000);
 
     toast.success(`Step ${step}: Process...`);
-
     await execContractTx(
       currentAccount,
       "api",
@@ -243,7 +243,7 @@ export default function CreateStakePoolPage({ api }) {
       selectedContractAddr,
       formatNumToBN(maxStake, tokenSelected.decimal),
       parseInt(apy * 100),
-      duration * 24 * 60 * 60 * 1000,
+      roundUp(duration * 24 * 60 * 60 * 1000, 0),
       startTime.getTime()
     );
 

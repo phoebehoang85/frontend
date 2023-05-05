@@ -661,10 +661,15 @@ const MyStakeRewardInfoNFT = ({
   const [unclaimedRewardNFT, setUnclaimedRewardNFT] = useState(0);
 
   const updateStakingInfo = () => {
+    if (isPoolEnded(startTime, duration)) {
+      return;
+    }
     const ret = calcUnclaimedRewardNftLP({
       ...stakeInfo,
       multiplier,
       tokenDecimal,
+      startTime,
+      duration
     });
     setUnclaimedRewardNFT(ret);
   };
@@ -724,7 +729,7 @@ const MyStakeRewardInfoNFT = ({
               }`,
             },
             {
-              title: "My Unclaimed Rewards (FOD)",
+              title: "My Unclaimed Rewards ",
               content: `${unclaimedRewardNFT}`,
             },
           ]}
@@ -734,6 +739,7 @@ const MyStakeRewardInfoNFT = ({
             buttonVariant="outline"
             buttonLabel="Claim Rewards"
             onClick={handleClaimNFTLP}
+            disableBtn={!+unclaimedRewardNFT>0}
             message="Claim All Rewards. Continue?"
           />
         </CardThreeColumn>
@@ -1124,7 +1130,7 @@ const MyStakeRewardInfoToken = ({
               }`,
             },
             {
-              title: "My Unclaimed Rewards (FOD)",
+              title: "My Unclaimed Rewards ",
               content: `${unclaimedRewardToken}`,
             },
           ]}
@@ -1133,6 +1139,7 @@ const MyStakeRewardInfoToken = ({
             action="claim"
             buttonVariant="outline"
             buttonLabel="Claim Rewards"
+            disableBtn={!+unclaimedRewardToken>0}
             onClick={handleClaimTokenLP}
             message="Claim All Rewards. Continue?"
           />

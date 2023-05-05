@@ -93,8 +93,14 @@ export const calcUnclaimedReward = ({
   unclaimedReward = 0,
   apy = 0,
   tokenDecimal = 12,
+  startTime,
+  duration,
 }) => {
-  const accumSecondTillNow = (new Date().getTime() - lastRewardUpdate) / 1000;
+  const getTime =
+    startTime + duration * 1000 > Date.now()
+      ? new Date().getTime()
+      : startTime + duration * 1000;
+  const accumSecondTillNow = (getTime - lastRewardUpdate) / 1000;
 
   const apyPerSecond = apy / 10000 / 365 / 24 / 60 / 60;
 
@@ -103,7 +109,6 @@ export const calcUnclaimedReward = ({
   const result =
     unclaimedReward / 10 ** tokenDecimal +
     accumRewardTillNow / 10 ** tokenDecimal;
-
   return result?.toFixed(tokenDecimal);
 };
 
@@ -113,8 +118,14 @@ export const calcUnclaimedRewardNftLP = ({
   unclaimedReward = 0,
   multiplier = 1,
   tokenDecimal = 12,
+  startTime,
+  duration,
 }) => {
-  const accumSecondTillNow = (new Date().getTime() - lastRewardUpdate) / 1000;
+  const getTime =
+    startTime + duration * 1000 > Date.now()
+      ? new Date().getTime()
+      : startTime + duration * 1000;
+  const accumSecondTillNow = (getTime - lastRewardUpdate) / 1000;
 
   const multiplierPerSecond = multiplier / 24 / 60 / 60;
 
@@ -134,8 +145,14 @@ export const calcUnclaimedRewardTokenLP = ({
   unclaimedReward = 0,
   multiplier = 1,
   tokenDecimal = 12,
+  startTime,
+  duration,
 }) => {
-  const accumSecondTillNow = (new Date().getTime() - lastRewardUpdate) / 1000;
+  const getTime =
+    startTime + duration * 1000 > Date.now()
+      ? new Date().getTime()
+      : startTime + duration * 1000;
+  const accumSecondTillNow = (getTime - lastRewardUpdate) / 1000;
   // WHY? / 1000000
   const multiplierPerSecond = multiplier / 24 / 60 / 60 / 1000000;
 
@@ -157,4 +174,8 @@ export function isPoolEnded(startTime = 0, duration = 0) {
   }
 
   return false;
+}
+
+export function roundUp(v, n = 12) {
+  return Math.ceil(v * Math.pow(10, n)) / Math.pow(10, n);
 }

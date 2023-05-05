@@ -32,6 +32,7 @@ import azt_contract from "utils/contracts/azt_contract";
 import nft_pool_generator_contract from "utils/contracts/nft_pool_generator_contract";
 import { fetchMyNFTPools } from "redux/slices/myPoolsSlice";
 import { QuestionOutlineIcon } from "@chakra-ui/icons";
+import { roundUp } from "utils";
 
 export default function CreateNFTLPPage({ api }) {
   const dispatch = useDispatch();
@@ -281,7 +282,7 @@ export default function CreateNFTLPPage({ api }) {
       selectedContractAddr,
       maxStake,
       formatNumToBN(multiplier, selectedTokenDecimal),
-      duration * 24 * 60 * 60 * 1000,
+      roundUp(duration * 24 * 60 * 60 * 1000, 0),
       startTime.getTime()
     );
 
@@ -296,7 +297,7 @@ export default function CreateNFTLPPage({ api }) {
     await delay(3000);
 
     toast.promise(
-      delay(15000).then(() => {
+      delay(20000).then(() => {
         if (currentAccount) {
           dispatch(fetchMyNFTPools({ currentAccount }));
           dispatch(fetchUserBalance({ currentAccount, api }));
@@ -305,7 +306,7 @@ export default function CreateNFTLPPage({ api }) {
         fetchTokenBalance();
       }),
       {
-        loading: "Please wait up to 15s for the data to be updated! ",
+        loading: "Please wait up to 20s for the data to be updated! ",
         success: "Done !",
         error: "Could not fetch data!!!",
       }
@@ -483,8 +484,6 @@ export default function CreateNFTLPPage({ api }) {
                 borderRadius="5px"
               >
                 <DateTimePicker
-                  disableClock
-                  disableCalendar
                   locale="en-EN"
                   value={startTime}
                   onChange={setStartTime}

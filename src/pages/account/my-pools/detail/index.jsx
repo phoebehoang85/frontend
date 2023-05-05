@@ -20,7 +20,7 @@ import ConfirmModal from "components/modal/ConfirmModal";
 import IWCardOneColumn from "components/card/CardOneColumn";
 import CardThreeColumn from "components/card/CardThreeColumn";
 import CardTwoColumn from "components/card/CardTwoColumn";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { addressShortener } from "utils";
 import { formatNumDynDecimal } from "utils";
 import { useDispatch, useSelector } from "react-redux";
@@ -54,27 +54,43 @@ import { fetchAllNFTPools } from "redux/slices/allPoolsSlice";
 import AddressCopier from "components/address-copier/AddressCopier";
 
 export default function MyPoolDetailPage({ api }) {
+  const [state, setState] = useState({});
   const { currentAccount } = useSelector((s) => s.wallet);
   const { myStakingPoolsList, myNFTPoolsList, myTokenPoolsList } = useSelector(
     (s) => s.myPools
   );
-  const { state } = useLocation();
+  const params = useParams();
 
+  // const { state } = useLocation();
   const currentStakingPool = useMemo(() => {
-    return myStakingPoolsList?.find(
-      (p) => p?.poolContract === state?.poolContract
+    const item = myStakingPoolsList?.find(
+      (p) => p?.poolContract === params?.contractAddress
     );
-  }, [myStakingPoolsList, state?.poolContract]);
+    if (item) {
+      setState({ mode: "STAKING_POOL" });
+    }
+    return item;
+  }, [myStakingPoolsList, params]);
 
   const currentNFTPool = useMemo(() => {
-    return myNFTPoolsList?.find((p) => p?.poolContract === state?.poolContract);
-  }, [myNFTPoolsList, state?.poolContract]);
+    const item = myNFTPoolsList?.find(
+      (p) => p?.poolContract === params?.contractAddress
+    );
+    if (item) {
+      setState({ mode: "NFT_FARM" });
+    }
+    return item;
+  }, [myNFTPoolsList, params]);
 
   const currentTokenPool = useMemo(() => {
-    return myTokenPoolsList?.find(
-      (p) => p?.poolContract === state?.poolContract
+    const item = myTokenPoolsList?.find(
+      (p) => p?.poolContract === params?.contractAddress
     );
-  }, [myTokenPoolsList, state?.poolContract]);
+    if (item) {
+      setState({ mode: "TOKEN_FARM" });
+    }
+    return item;
+  }, [myTokenPoolsList, params]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -793,7 +809,7 @@ const MyPoolInfo = ({
             data={[
               {
                 title: "Pool Contract Address",
-                content: <AddressCopier address={poolContract}/>,
+                content: <AddressCopier address={poolContract} />,
               },
               {
                 title: mode === "STAKING_POOL" ? "APR" : "Multiplier",
@@ -820,7 +836,9 @@ const MyPoolInfo = ({
               },
               {
                 title: "Max Staking Amount",
-                content: `${formatNumDynDecimal(maxStakingAmount)} ${tokenSymbol}`,
+                content: `${formatNumDynDecimal(
+                  maxStakingAmount
+                )} ${tokenSymbol}`,
               },
               {
                 title: "Total Value Locked",

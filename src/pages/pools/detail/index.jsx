@@ -260,7 +260,6 @@ const MyStakeRewardInfo = ({
     );
 
     let info = queryResult?.toHuman().Ok;
-
     if (info) {
       info = {
         ...info,
@@ -269,7 +268,6 @@ const MyStakeRewardInfo = ({
         unclaimedReward: formatChainStringToNumber(info.unclaimedReward),
       };
     }
-
     setStakeInfo(info);
   }, [api, currentAccount?.address, currentAccount?.balance, poolContract]);
 
@@ -511,6 +509,8 @@ const MyStakeRewardInfo = ({
       ...stakeInfo,
       apy,
       tokenDecimal,
+      startTime,
+      duration
     });
     setUnclaimedReward(ret);
   };
@@ -552,7 +552,7 @@ const MyStakeRewardInfo = ({
         title="Staking Information"
         data={[
           {
-            title: "My Stakes (FOD)",
+            title: "My Stakes ",
             content: `${formatNumDynDecimal(
               stakeInfo?.stakedValue / 10 ** 12
             )} ${tokenSymbol}`,
@@ -568,7 +568,7 @@ const MyStakeRewardInfo = ({
             }`,
           },
           {
-            title: "My Unclaimed Rewards (FOD)",
+            title: "My Unclaimed Rewards ",
             content: `${unclaimedReward}`,
           },
         ]}
@@ -577,6 +577,7 @@ const MyStakeRewardInfo = ({
           action="claim"
           buttonVariant="outline"
           buttonLabel="Claim Rewards"
+          disableBtn={!+unclaimedReward>0}
           onClick={handleClaimRewards}
           message="Claim All Rewards. Continue?"
         />
@@ -612,6 +613,7 @@ const MyStakeRewardInfo = ({
                 action="stake"
                 buttonVariant="primary"
                 buttonLabel="Stake"
+                disableBtn={isPoolEnded(startTime, duration)}
                 onClick={handleStake}
                 message={`Stake ${amount} ${tokenSymbol}. Continue?`}
               />

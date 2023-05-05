@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import "assets/css/App.css";
+import "react-datetime-picker/dist/DateTimePicker.css";
+import "react-calendar/dist/Calendar.css";
+import "react-clock/dist/Clock.css";
 import { HashRouter, Redirect, Route, Switch } from "react-router-dom";
 import DefaultLayout from "layouts/default";
 import { ChakraProvider } from "@chakra-ui/react";

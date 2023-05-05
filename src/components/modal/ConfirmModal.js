@@ -21,13 +21,14 @@ export default function ConfirmModal({
   buttonLabel,
   buttonVariant,
   children,
+  disableBtn,
   ...rest
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
-      <Button onClick={onOpen} w="full" variant={buttonVariant}>
+      <Button onClick={onOpen} w="full" disabled={disableBtn} variant={buttonVariant}>
         {buttonLabel}
       </Button>
 

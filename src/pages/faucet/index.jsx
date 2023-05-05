@@ -42,6 +42,7 @@ import { formatBalance } from "@polkadot/util";
 import CardThreeColumn from "components/card/CardThreeColumn";
 import BN from "bn.js";
 import { ADDRESSES_INW } from "constants";
+import { roundUp } from "utils";
 
 const inwContractAddress = azt_contract.CONTRACT_ADDRESS;
 
@@ -401,10 +402,6 @@ export default function FaucetPage({ api }) {
     if (!(api && currentAccount?.address)) return;
     getInfo();
   }, [tabIndex]);
-
-  function roundUp(v, n = 12) {
-    return Math.ceil(v * Math.pow(10, n)) / Math.pow(10, n);
-  }
 
   useEffect(() => {
     if (!(api && currentAccount?.address)) return;
