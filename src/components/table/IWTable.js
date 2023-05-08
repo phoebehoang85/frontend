@@ -22,6 +22,7 @@ import { formatNumDynDecimal } from "utils";
 import ImageCloudFlare from "components/image-cf/ImageCF";
 import { addressShortener } from "utils";
 import FadeIn from "react-fade-in/lib/FadeIn";
+import TokenIcon from "components/TokenIcon";
 
 export function IWTable({
   tableHeader,
@@ -319,6 +320,20 @@ export const formatDataCellTable = (itemObj, header, mode) => {
         <>
           <Text>{addressShortener(itemObj[header])}</Text>
         </>
+      );
+    case "tokenSymbol":
+      return (
+        <Flex alignItems={"center"}>
+          <TokenIcon tokenContract={itemObj["tokenContract"]} />
+          <Text textAlign="left">{itemObj[header]} </Text>
+        </Flex>
+      );
+    case "Earn":
+      return (
+        <Flex alignItems={"center"}>
+          <TokenIcon tokenContract={itemObj["tokenContract"]} />
+          <Text textAlign="left">{itemObj[header]} </Text>
+        </Flex>
       );
     case "owner":
       return (

@@ -260,6 +260,7 @@ const MyStakeRewardInfo = ({
     );
 
     let info = queryResult?.toHuman().Ok;
+      console.log(queryResult?.toHuman(), poolContract, 'queryResult?.toHuman()queryResult?.toHuman()');
     if (info) {
       info = {
         ...info,
@@ -268,6 +269,7 @@ const MyStakeRewardInfo = ({
         unclaimedReward: formatChainStringToNumber(info.unclaimedReward),
       };
     }
+    console.log(info, 'infoinfo');
     setStakeInfo(info);
   }, [api, currentAccount?.address, currentAccount?.balance, poolContract]);
 

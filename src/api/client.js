@@ -1,4 +1,7 @@
 import axios from "axios";
+import { Buffer } from "buffer";
+
+const { create } = require("ipfs-http-client");
 
 const client = async (
   method,
@@ -35,6 +38,10 @@ export const APICall = {
   // Get list of tokens
   getTokensList: async ({ limit = 1000, offset = 0, sort = -1 }) => {
     return await client("POST", "/getTokens", { limit, offset, sort });
+  },
+
+  updateTokenIcon: async ({ contractAddress, tokenIconUrl }) => {
+    return await client("POST", "/updateTokenUrl", { contractAddress, tokenIconUrl });
   },
 
   // Get list of staking pools
@@ -213,3 +220,19 @@ export const APICall = {
     return ret;
   },
 };
+
+const projectId = process.env.REACT_APP_IPFS_PROJECT_ID;
+const projectKey = process.env.REACT_APP_IPFS_PROJECT_KEY;
+
+// IPFS API client call
+const authorization =
+  "Basic " + Buffer.from(projectId + ":" + projectKey).toString("base64");
+
+export const ipfsClient = create({
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https",
+  headers: {
+    authorization,
+  },
+});

@@ -15,9 +15,11 @@ import SectionContainer from "components/container/SectionContainer";
 
 import { IWTable } from "components/table/IWTable";
 import { useEffect } from "react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllStakingPools } from "redux/slices/allPoolsSlice";
+import { isPoolEnded } from "utils";
+import IWInput from "components/input/Input";
 
 export default function PoolsPage({ api }) {
   const dispatch = useDispatch();
@@ -28,7 +30,22 @@ export default function PoolsPage({ api }) {
   const [showMyStakedPools, setShowMyStakedPools] = useState(false);
 
   const [sortPools, setSortPools] = useState(-1);
-  const [hideZeroRewardPools, setHideZeroRewardPools] = useState(true);
+  const [endedPools, setendedPools] = useState(false);
+
+  const [keywords, setKeywords] = useState("");
+  const [resultList, setResultList] = useState(null);
+
+  const getSearchResult = () => {
+    const result =
+      poolsListDataFiltered?.filter((el) =>
+        el.tokenSymbol.toLowerCase().includes(keywords.trim().toLowerCase())
+      ) || [];
+    if (!result?.length && !keywords) {
+      setResultList();
+      return;
+    }
+    setResultList(result);
+  };
 
   useEffect(() => {
     delay(500);
@@ -36,11 +53,10 @@ export default function PoolsPage({ api }) {
     dispatch(
       fetchAllStakingPools({
         sort: sortPools,
-        showZeroPool: hideZeroRewardPools,
         currentAccount,
       })
     );
-  }, [currentAccount, dispatch, hideZeroRewardPools, sortPools]);
+  }, [currentAccount, dispatch, endedPools, sortPools]);
 
   const poolsListDataFiltered = useMemo(() => {
     let ret = allStakingPoolsList;
@@ -49,8 +65,23 @@ export default function PoolsPage({ api }) {
       ret = allStakingPoolsList.filter((p) => p.stakeInfo);
     }
 
+    if (endedPools) {
+      ret = allStakingPoolsList.filter((p) =>
+        isPoolEnded(p?.startTime, p?.duration)
+      );
+    }
+
     return ret;
-  }, [allStakingPoolsList, showMyStakedPools]);
+  }, [allStakingPoolsList, showMyStakedPools, endedPools]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      // Send Axios request here
+      getSearchResult();
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [keywords, poolsListDataFiltered]);
 
   const tableData = {
     tableHeader: [
@@ -92,7 +123,7 @@ export default function PoolsPage({ api }) {
       },
     ],
 
-    tableBody: poolsListDataFiltered,
+    tableBody: resultList || poolsListDataFiltered,
   };
 
   return (
@@ -139,6 +170,12 @@ export default function PoolsPage({ api }) {
             justifyContent={{ base: "end" }}
             spacing={{ base: "0px", lg: "20px" }}
           >
+            <IWInput
+              value={keywords}
+              width="350px"
+              onChange={({ target }) => setKeywords(target.value)}
+              placeholder="Search"
+            />
             <FormControl maxW="135px" display="flex" alignItems="center">
               <Switch
                 id="my-stake"
@@ -150,12 +187,12 @@ export default function PoolsPage({ api }) {
                 My Stake
               </FormLabel>
             </FormControl>
-{/* 
+
             <FormControl maxW="200px" display="flex" alignItems="center">
               <Switch
                 id="zero-reward-pools"
-                isChecked={hideZeroRewardPools}
-                onChange={() => setHideZeroRewardPools(!hideZeroRewardPools)}
+                isChecked={endedPools}
+                onChange={() => setendedPools(!endedPools)}
               />
               <FormLabel
                 mb="0"
@@ -163,11 +200,11 @@ export default function PoolsPage({ api }) {
                 fontWeight="400"
                 htmlFor="zero-reward-pools"
               >
-                Zero Reward Pools
+                Pool Ended
               </FormLabel>
-            </FormControl> */}
+            </FormControl>
           </Flex>
-
+          {/* 
           <Box minW="155px" maxW="160px">
             <Select
               id="token"
@@ -186,7 +223,7 @@ export default function PoolsPage({ api }) {
                 </option>
               ))}
             </Select>
-          </Box>
+          </Box> */}
         </HStack>
 
         <IWTable {...tableData} />

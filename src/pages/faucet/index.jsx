@@ -63,6 +63,7 @@ export default function FaucetPage({ api }) {
   const [inwPrice, setInwPrice] = useState(0);
   const [tabIndex, setTabIndex] = useState(0);
   const [saleInfo, setSaleInfo] = useState({});
+  const [inwBurn, setInwBurn] = useState(0);
 
   const [accountInfo, setAccountInfo] = useState(null);
   // eslint-disable-next-line no-unused-vars
@@ -339,6 +340,10 @@ export default function FaucetPage({ api }) {
       0,
       "psp22::totalSupply"
     );
+    setInwBurn(
+      roundUp(+inwTotalSupply.replaceAll(",", ""), 0) -
+        +roundUp(formatQueryResultToNumber(result2)?.replaceAll(",", ""), 0)
+    );
     getINWIncur(formatQueryResultToNumber(result2));
   }, [api]);
 
@@ -463,7 +468,6 @@ export default function FaucetPage({ api }) {
       toast.error(toastMessages.NO_WALLET);
       return;
     }
-    console.log(roundUp(inwPrice * inwBuyAmount));
     await execContractTx(
       currentAccount,
       api,
@@ -536,7 +540,7 @@ export default function FaucetPage({ api }) {
 
   const tabsData = [
     {
-      label: <>Private Sale</>,
+      label: <>Public Sale with Vesting</>,
       component: !isSaleEnded ? (
         <IWCard
           w="full"
@@ -676,7 +680,7 @@ export default function FaucetPage({ api }) {
       isDisabled: false,
     },
     {
-      label: <>Public Sale</>,
+      label: <>Public Sale No Vesting</>,
       component: (
         <IWCard
           w="full"
@@ -812,7 +816,9 @@ export default function FaucetPage({ api }) {
                 content: <AddressCopier address={inwContractAddress} />,
               },
               { title: "Max Supply", content: `${inwTotalSupply} INW` },
-              { title: "In Circulation: ", content: `${inwInCur} INW` },
+              { title: "In Circulation ", content: `${inwInCur} INW` },
+              { title: "Total Burned ", content: `${formatNumDynDecimal(inwBurn)} INW` },
+              { title: "Your Vesting Amount: ", content: `${saleInfo?.buyerInfo?.purchasedAmount} INW` },
               { title: "Your Balance: ", content: `${inwBalance} INW` },
             ]}
           />

@@ -23,7 +23,7 @@ import psp22_contract from "utils/contracts/psp22_contract";
 export default function TokensPage() {
   const { currentAccount } = useSelector((s) => s.wallet);
 
-  const [selectedContractAddr, setSelectedContractAddr] = useState("");
+  const [selectedContractAddr, setSelectedContractAddr] = useState(null);
   const [faucetTokensList, setFaucetTokensList] = useState([]);
   const [tokenInfo, setTokenInfo] = useState({ title: "", content: "" });
   useEffect(() => {
@@ -46,7 +46,9 @@ export default function TokensPage() {
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       // Send Axios request here
-      loadTokenInfo();
+      if(selectedContractAddr) {
+        loadTokenInfo();
+      }
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);

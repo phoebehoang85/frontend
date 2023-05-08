@@ -331,7 +331,7 @@ const MyStakeRewardInfoNFT = ({
     );
 
     let info = queryResult?.toHuman().Ok;
-
+    console.log(queryResult?.toHuman(), poolContract, 'queryResult?.toHuman()queryResult?.toHuman()');
     if (info) {
       info = {
         ...info,
@@ -661,9 +661,6 @@ const MyStakeRewardInfoNFT = ({
   const [unclaimedRewardNFT, setUnclaimedRewardNFT] = useState(0);
 
   const updateStakingInfo = () => {
-    if (isPoolEnded(startTime, duration)) {
-      return;
-    }
     const ret = calcUnclaimedRewardNftLP({
       ...stakeInfo,
       multiplier,

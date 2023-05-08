@@ -20,6 +20,8 @@ import { useMemo } from "react";
 import { delay } from "utils";
 import { fetchAllNFTPools } from "redux/slices/allPoolsSlice";
 import { fetchAllTokenPools } from "redux/slices/allPoolsSlice";
+import { isPoolEnded } from "utils";
+import IWInput from "components/input/Input";
 
 export default function FarmsPage() {
   const dispatch = useDispatch();
@@ -33,6 +35,28 @@ export default function FarmsPage() {
   const [hideZeroRewardPools, setHideZeroRewardPools] = useState(true);
 
   const [showMyStakedPools, setShowMyStakedPools] = useState(false);
+
+  const [endedPools, setendedPools] = useState(false);
+
+  const [keywords, setKeywords] = useState("");
+  const [resultList, setResultList] = useState(null);
+
+  const searchCondition = (el) => {
+    return (
+      el.tokenSymbol.toLowerCase().includes(keywords.trim().toLowerCase()) ||
+      el.tokenName.toLowerCase().includes(keywords.trim().toLowerCase()) ||
+      el?.nftInfo?.name.toLowerCase().includes(keywords.trim().toLowerCase())
+    );
+  };
+
+  const getSearchResult = () => {
+    const result = nftLPListFiltered?.filter((el) => searchCondition(el)) || [];
+    if (!result?.length && !keywords) {
+      setResultList();
+      return;
+    }
+    setResultList(result);
+  };
 
   useEffect(() => {
     delay(500);
@@ -61,8 +85,24 @@ export default function FarmsPage() {
       ret = allNFTPoolsList.filter((p) => p.stakeInfo);
     }
 
+    if (endedPools) {
+      ret = allNFTPoolsList.filter((p) =>
+        isPoolEnded(p?.startTime, p?.duration)
+      );
+    }
+    console.log(allNFTPoolsList, "allNFTPoolsListallNFTPoolsList");
+
     return ret;
-  }, [allNFTPoolsList, showMyStakedPools]);
+  }, [allNFTPoolsList, showMyStakedPools, endedPools]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      // Send Axios request here
+      getSearchResult();
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [keywords, nftLPListFiltered]);
 
   const tokenLPListFiltered = useMemo(() => {
     let ret = allTokenPoolsList;
@@ -120,7 +160,7 @@ export default function FarmsPage() {
       },
     ],
 
-    tableBody: nftLPListFiltered,
+    tableBody: resultList || nftLPListFiltered,
   };
 
   const tableDataToken = {
@@ -228,36 +268,42 @@ export default function FarmsPage() {
             justifyContent={{ base: "end" }}
             spacing={{ base: "0px", lg: "20px" }}
           >
+            <IWInput
+              value={keywords}
+              width="350px"
+              onChange={({ target }) => setKeywords(target.value)}
+              placeholder="Search"
+            />
             <FormControl maxW="135px" display="flex" alignItems="center">
               <Switch
                 id="my-stake"
                 isDisabled={!currentAccount?.address}
                 isChecked={showMyStakedPools}
                 onChange={() => setShowMyStakedPools(!showMyStakedPools)}
-              />{" "}
+              />
               <FormLabel htmlFor="my-stake" mb="0" ml="10px" fontWeight="400">
                 My Stake
               </FormLabel>
             </FormControl>
 
-            {/* <FormControl maxW="200px" display="flex" alignItems="center">
+            <FormControl maxW="200px" display="flex" alignItems="center">
               <Switch
                 id="zero-reward-pools"
-                isChecked={hideZeroRewardPools}
-                onChange={() => setHideZeroRewardPools(!hideZeroRewardPools)}
-              />{" "}
+                isChecked={endedPools}
+                onChange={() => setendedPools(!endedPools)}
+              />
               <FormLabel
                 mb="0"
                 ml="10px"
                 fontWeight="400"
                 htmlFor="zero-reward-pools"
               >
-                Zero Reward Pools
+                Farm Ended
               </FormLabel>
-            </FormControl> */}
+            </FormControl>
           </Flex>
 
-          <Box minW="155px" maxW="160px">
+          {/* <Box minW="155px" maxW="160px">
             <Select
               id="token"
               fontSize="md"
@@ -275,7 +321,7 @@ export default function FarmsPage() {
                 </option>
               ))}
             </Select>
-          </Box>
+          </Box> */}
         </HStack>
 
         <IWTabs tabsData={tabsData} loading={loading} />

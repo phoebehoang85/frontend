@@ -7,6 +7,8 @@ import {
   InputRightElement,
 } from "@chakra-ui/react";
 
+var reg = /^-?\d*\.?\d*$/
+
 function IWInput(props) {
   const {
     id,
@@ -17,10 +19,21 @@ function IWInput(props) {
     mb,
     variant,
     inputRightElementIcon,
+    onChange,
     ...rest
   } = props;
 
   // const styles = useStyleConfig("Input", { variant });
+
+  const onChangeInput = (valueString) => {
+    if (type === "number") {
+      if (reg.test(valueString.target.value)) {
+        onChange(valueString);
+      }
+    } else {
+      onChange(valueString);
+    }
+  };
 
   return (
     <FormControl>
@@ -40,7 +53,14 @@ function IWInput(props) {
             children={inputRightElementIcon}
           />
         )}
-        <Input {...rest} type={type} id={id} placeholder={placeholder} />{" "}
+        <Input
+          {...rest}
+          onChange={onChangeInput}
+          type={type}
+          id={id}
+          min={0}
+          placeholder={placeholder}
+        />{" "}
       </InputGroup>
     </FormControl>
   );

@@ -51,6 +51,7 @@ export default function CreateStakePoolPage({ api }) {
   const [startTime, setStartTime] = useState(new Date());
 
   const [tokenBalance, setTokenBalance] = useState(0);
+  const [tokenSymbol, setTokenSymbol] = useState('')
 
   const fetchTokenBalance = useCallback(async () => {
     if (!selectedContractAddr) return;
@@ -77,23 +78,24 @@ export default function CreateStakePoolPage({ api }) {
 
     const bal = formatQueryResultToNumber(queryResult);
     setTokenBalance(bal);
-  }, [currentAccount, selectedContractAddr]);
-
-  const tokenSymbol = useMemo(() => {
     const foundItem = faucetTokensList.find(
       (item) => item.contractAddress === selectedContractAddr
     );
-
-    return foundItem?.symbol;
-  }, [faucetTokensList, selectedContractAddr]);
-
-  const tokenSelected = useMemo(() => {
-    const foundItem = faucetTokensList.find(
-      (item) => item.contractAddress === selectedContractAddr
-    );
-
-    return foundItem;
-  }, [faucetTokensList, selectedContractAddr]);
+      if(!foundItem?.symbol) {
+        let queryResult1 = await execContractQuery(
+          currentAccount?.address,
+          "api",
+          psp22_contract.CONTRACT_ABI,
+          selectedContractAddr,
+          0,
+          "psp22Metadata::tokenSymbol"
+        );
+        const tokenSymbol = queryResult1.toHuman().Ok;
+        setTokenSymbol(tokenSymbol)
+      } else {
+        setTokenSymbol(foundItem?.symbol)
+      }
+  }, [currentAccount, selectedContractAddr, faucetTokensList]);
 
   useEffect(() => {
     fetchTokenBalance();
@@ -142,6 +144,21 @@ export default function CreateStakePoolPage({ api }) {
 
     if (!selectedContractAddr || !apy || !duration || !startTime) {
       toast.error(`Please fill in all data!`);
+      return;
+    }
+
+    if(!(duration > 0)) {
+      toast.error(`Pool Length must be greater than 0`);
+      return;
+    }
+
+    if(!(apy > 0)) {
+      toast.error(`Annual Percentage Yield (APR) % must be greater than 0`);
+      return;
+    }
+
+    if(!(maxStake > 0)) {
+      toast.error(`Total Staking Cap must be greater than 0`);
       return;
     }
 
@@ -241,7 +258,7 @@ export default function CreateStakePoolPage({ api }) {
       "newPool",
       currentAccount?.address,
       selectedContractAddr,
-      formatNumToBN(maxStake, tokenSelected.decimal),
+      formatNumToBN(maxStake, 12),
       parseInt(apy * 100),
       roundUp(duration * 24 * 60 * 60 * 1000, 0),
       startTime.getTime()
@@ -384,8 +401,7 @@ export default function CreateStakePoolPage({ api }) {
                 onChange={({ target }) => setSelectedContractAddr(target.value)}
                 value={selectedContractAddr}
                 placeholder="Contract Address"
-                isDisabled
-                label="enter token contract address"
+                label="or enter token contract address"
               />
             </Box>
 

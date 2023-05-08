@@ -33,6 +33,7 @@ import nft_pool_generator_contract from "utils/contracts/nft_pool_generator_cont
 import { fetchMyNFTPools } from "redux/slices/myPoolsSlice";
 import { QuestionOutlineIcon } from "@chakra-ui/icons";
 import { roundUp } from "utils";
+import ImageUploadIcon from "../token/UploadIcon";
 
 export default function CreateNFTLPPage({ api }) {
   const dispatch = useDispatch();
@@ -50,16 +51,10 @@ export default function CreateNFTLPPage({ api }) {
   const [multiplier, setMultiplier] = useState("");
   const [startTime, setStartTime] = useState(new Date());
   const [maxStake, setMaxStake] = useState("");
+  const [tokenSymbol, setTokenSymbol] = useState("");
 
   const [tokenBalance, setTokenBalance] = useState(0);
-
-  const selectedTokenDecimal = useMemo(() => {
-    const ret = faucetTokensList.find(
-      (token) => token?.contractAddress === selectedContractAddr
-    );
-
-    return ret?.decimal ?? 0;
-  }, [faucetTokensList, selectedContractAddr]);
+  const [selectedTokenDecimal, setSelectedTokenDecimal] = useState(0);
 
   const fetchTokenBalance = useCallback(async () => {
     if (!selectedContractAddr) return;
@@ -86,15 +81,39 @@ export default function CreateNFTLPPage({ api }) {
 
     const bal = formatQueryResultToNumber(queryResult);
     setTokenBalance(bal);
-  }, [currentAccount, selectedContractAddr]);
-
-  const tokenSymbol = useMemo(() => {
     const foundItem = faucetTokensList.find(
       (item) => item.contractAddress === selectedContractAddr
     );
+    if (!foundItem?.symbol) {
+      let queryResult1 = await execContractQuery(
+        currentAccount?.address,
+        "api",
+        psp22_contract.CONTRACT_ABI,
+        selectedContractAddr,
+        0,
+        "psp22Metadata::tokenSymbol"
+      );
+      const tokenSymbol = queryResult1.toHuman().Ok;
+      setTokenSymbol(tokenSymbol);
+    } else {
+      setTokenSymbol(foundItem?.symbol);
+    }
 
-    return foundItem?.symbol;
-  }, [faucetTokensList, selectedContractAddr]);
+    if (!foundItem?.decimal) {
+      let queryResult1 = await execContractQuery(
+        currentAccount?.address,
+        "api",
+        psp22_contract.CONTRACT_ABI,
+        selectedContractAddr,
+        0,
+        "psp22Metadata::tokenDecimals"
+      );
+      const tokenDec = queryResult1.toHuman().Ok;
+      setSelectedTokenDecimal(tokenDec);
+    } else {
+      setSelectedTokenDecimal(foundItem?.decimal);
+    }
+  }, [currentAccount, selectedContractAddr, faucetTokensList]);
 
   const collectionSelected = useMemo(() => {
     const foundItem = collectionList.find(
@@ -173,6 +192,21 @@ export default function CreateNFTLPPage({ api }) {
       !startTime
     ) {
       toast.error(`Please fill in all data!`);
+      return;
+    }
+
+    if (!(duration > 0)) {
+      toast.error(`Pool Length must be greater than 0`);
+      return;
+    }
+
+    if (!(multiplier > 0)) {
+      toast.error(`Annual Percentage Yield (APR) % must be greater than 0`);
+      return;
+    }
+
+    if (!(maxStake > 0)) {
+      toast.error(`Total Staking Cap must be greater than 0`);
       return;
     }
 
@@ -451,8 +485,7 @@ export default function CreateNFTLPPage({ api }) {
                 onChange={({ target }) => setSelectedContractAddr(target.value)}
                 value={selectedContractAddr}
                 placeholder="Contract Address"
-                isDisabled
-                label="Token contract address"
+                label="or enter token contract address"
               />
             </Box>
 
@@ -559,6 +592,7 @@ export default function CreateNFTLPPage({ api }) {
                 }
               />
             </Box>
+          
           </SimpleGrid>
 
           <Button w="full" maxW={{ lg: "260px" }} onClick={createNFTLPHandler}>

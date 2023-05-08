@@ -65,101 +65,103 @@ export function InfiniteTable({
       border="1px solid #E3DFF3"
     >
       <InfiniteScroll
-      dataLength={tableBody?.length}
-      next={getNext}
-      hasMore={hasMore}
-      loader={<h4>Loading</h4>}
-    >
-      <Table variant="simple">
-        <Thead>
-          <Tr>
-            {tableHeader?.map(({ name, label, hasTooltip, tooltipContent }) => (
-              <Th
-                key={name}
-                h="60px"
-                bg="bg.5"
-                color="text.2"
-                fontWeight="400"
-                fontSize="16px"
-                lineHeight="28px"
-                textTransform="none"
-              >
-                <Flex alignItems="center">
-                  {label}
-                  {hasTooltip && (
-                    <Tooltip fontSize="md" label={tooltipContent}>
-                      <QuestionOutlineIcon ml="6px" color="text.2" />
-                    </Tooltip>
-                  )}
-                </Flex>
-              </Th>
-            ))}
-          </Tr>
-        </Thead>
-
-        <Tbody>
-          {loading ? (
-            <>
-              <Tr>
-                {tableHeader?.map((_, idx) => (
-                  <Td p="0" key={idx}>
-                    <Skeleton height="60px" />
-                  </Td>
-                ))}
-              </Tr>
-              <Tr>
-                {tableHeader?.map((_, idx) => (
-                  <Td p="0" key={idx}>
-                    <Skeleton height="60px" />
-                  </Td>
-                ))}
-              </Tr>
-              <Tr>
-                {tableHeader?.map((_, idx) => (
-                  <Td p="0" key={idx}>
-                    <Skeleton height="60px" />
-                  </Td>
-                ))}
-              </Tr>
-            </>
-          ) : (
-            <>
-              {tableBody?.length === 0 ? (
-                <Tr>
-                  <Td colSpan={tableHeader?.length} textAlign="center">
-                    <Text textAlign="center" w="full">
-                      No data found!
-                    </Text>
-                  </Td>
-                </Tr>
-              ) : (
-                tableBody?.map((itemObj, idx) => {
-                  return (
-                    <Fragment key={idx}>
-                      <Tr
-                        h="60px"
-                        cursor="pointer"
-                        _hover={{ bg: "bg.1" }}
-                        onClick={() => onClickRowHandler(itemObj)}
-                      >
-                        {tableHeader?.map((i, idx) => {
-                          return (
-                            <Td key={idx}>
-                              <FadeIn>
-                                {formatDataCellTable(itemObj, i?.name, mode)}
-                              </FadeIn>
-                            </Td>
-                          );
-                        })}
-                      </Tr>
-                    </Fragment>
-                  );
-                })
+        dataLength={tableBody?.length}
+        next={getNext}
+        hasMore={hasMore}
+        loader={<h4>Loading</h4>}
+      >
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              {tableHeader?.map(
+                ({ name, label, hasTooltip, tooltipContent }) => (
+                  <Th
+                    key={name}
+                    h="60px"
+                    bg="bg.5"
+                    color="text.2"
+                    fontWeight="400"
+                    fontSize="16px"
+                    lineHeight="28px"
+                    textTransform="none"
+                  >
+                    <Flex alignItems="center">
+                      {label}
+                      {hasTooltip && (
+                        <Tooltip fontSize="md" label={tooltipContent}>
+                          <QuestionOutlineIcon ml="6px" color="text.2" />
+                        </Tooltip>
+                      )}
+                    </Flex>
+                  </Th>
+                )
               )}
-            </>
-          )}
-        </Tbody>
-      </Table>
+            </Tr>
+          </Thead>
+
+          <Tbody>
+            {loading ? (
+              <>
+                <Tr>
+                  {tableHeader?.map((_, idx) => (
+                    <Td p="0" key={idx}>
+                      <Skeleton height="60px" />
+                    </Td>
+                  ))}
+                </Tr>
+                <Tr>
+                  {tableHeader?.map((_, idx) => (
+                    <Td p="0" key={idx}>
+                      <Skeleton height="60px" />
+                    </Td>
+                  ))}
+                </Tr>
+                <Tr>
+                  {tableHeader?.map((_, idx) => (
+                    <Td p="0" key={idx}>
+                      <Skeleton height="60px" />
+                    </Td>
+                  ))}
+                </Tr>
+              </>
+            ) : (
+              <>
+                {tableBody?.length === 0 ? (
+                  <Tr>
+                    <Td colSpan={tableHeader?.length} textAlign="center">
+                      <Text textAlign="center" w="full">
+                        No data found!
+                      </Text>
+                    </Td>
+                  </Tr>
+                ) : (
+                  tableBody?.map((itemObj, idx) => {
+                    return (
+                      <Fragment key={idx}>
+                        <Tr
+                          h="60px"
+                          cursor="pointer"
+                          _hover={{ bg: "bg.1" }}
+                          onClick={() => onClickRowHandler(itemObj)}
+                        >
+                          {tableHeader?.map((i, idx) => {
+                            return (
+                              <Td key={idx}>
+                                <FadeIn>
+                                  {formatDataCellTable(itemObj, i?.name, mode)}
+                                </FadeIn>
+                              </Td>
+                            );
+                          })}
+                        </Tr>
+                      </Fragment>
+                    );
+                  })
+                )}
+              </>
+            )}
+          </Tbody>
+        </Table>
       </InfiniteScroll>
     </TableContainer>
   );
@@ -329,6 +331,17 @@ export const formatDataCellTable = (itemObj, header, mode) => {
         <>
           <Text>{addressShortener(itemObj[header])}</Text>
         </>
+      );
+    case "tokenIconUrl":
+      return itemObj[header] ? (
+        <Image
+          w="38px"
+          borderRadius={"10px"}
+          src={`${process.env.REACT_APP_IPFS_PUBLIC_URL}${itemObj[header]}`}
+          alt="logo"
+        />
+      ) : (
+        ""
       );
     case "owner":
       return (

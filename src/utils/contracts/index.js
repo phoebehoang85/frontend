@@ -184,6 +184,91 @@ export async function execContractTx(
   return unsubscribe;
 }
 
+
+export async function execContractTxAndCallAPI(
+  caller, // -> currentAccount Object
+  api,
+  contractAbi,
+  contractAddress,
+  value = 0,
+  queryName,
+  APIUpdate,
+  ...args
+) {
+  console.log("execContractTx ", queryName);
+
+  const azeroBalance = await getAzeroBalanceOfAddress({
+    wsApi,
+    address: caller?.address,
+  });
+
+  // console.log("azeroBalance = ", azeroBalance);
+
+  if (azeroBalance < 0.005) {
+    toast.error("Account low balance! Please top up!");
+    return;
+  }
+
+  const contract = new ContractPromise(wsApi, contractAbi, contractAddress);
+
+  let unsubscribe;
+
+  const { signer } = await web3FromSource(caller?.meta?.source);
+
+  const gasLimitResult = await getGasLimit(
+    wsApi,
+    caller?.address,
+    queryName,
+    contract,
+    { value },
+    args
+  );
+
+  if (!gasLimitResult.ok) {
+    console.log(gasLimitResult.error);
+    return;
+  }
+
+  const { value: gasLimit } = gasLimitResult;
+
+  const txNotSign = contract.tx[queryName]({ gasLimit, value }, ...args);
+
+  await txNotSign
+    .signAndSend(
+      caller.address,
+      { signer },
+      ({ events = [], status, dispatchError }) => {
+        txResponseErrorHandler({
+          status,
+          dispatchError,
+          txType: queryName,
+          api: wsApi,
+        });
+        if (Object.keys(status.toHuman())[0] === "0") {
+          toast.success(`Processing ...`);
+        }
+        console.log(events, 'eventsevents');
+        events.forEach(({ event: { method, data } }) => {
+          if(method === "Instantiated" && data?.contract) {
+            APIUpdate(data.contract?.toHuman())
+          }
+          if (method === "ExtrinsicSuccess" && status.type === "InBlock") {
+            toast.success("Successful!");
+          } else if (method === "ExtrinsicFailed") {
+            toast.error(`${toastMessages.CUSTOM} ${method}.`);
+          }
+        });
+      }
+    )
+    .then((unsub) => (unsubscribe = unsub))
+    .catch((error) => {
+      console.log("error", error);
+      toast.error(`${toastMessages.CUSTOM} ${error}.`);
+    });
+
+  return unsubscribe;
+}
+
 export async function getAzeroBalanceOfAddress({ api, address }) {
   if (!address || !wsApi) return console.log("acct , wsApi invalid!");
   if (!wsApi) {

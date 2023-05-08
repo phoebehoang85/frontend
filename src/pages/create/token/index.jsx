@@ -1,4 +1,4 @@
-import { Box, Button, SimpleGrid, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Heading, SimpleGrid, Text, VStack } from "@chakra-ui/react";
 import SectionContainer from "components/container/SectionContainer";
 import IWInput from "components/input/Input";
 import { IWTable } from "components/table/IWTable";
@@ -21,6 +21,8 @@ import core_contract from "utils/contracts/core_contract";
 import psp22_contract from "utils/contracts/psp22_contract";
 import { InfiniteTable } from "components/table/InfiniteTable";
 import { useMemo } from "react";
+import ImageUploadIcon from "./UploadIcon";
+import { execContractTxAndCallAPI } from "utils/contracts";
 
 export default function CreateTokenPage({ api }) {
   const dispatch = useDispatch();
@@ -34,6 +36,7 @@ export default function CreateTokenPage({ api }) {
 
   const [createTokenFee, setCreateToken] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [iconIPFSUrl, setIconIPFSUrl] = useState(null);
 
   useEffect(() => {
     const fetchCreateTokenFee = async () => {
@@ -54,6 +57,13 @@ export default function CreateTokenPage({ api }) {
     fetchCreateTokenFee();
   }, [currentAccount]);
 
+  const updateIcon = async (contractAddress) => {
+    console.log({contractAddress, tokenIconUrl: iconIPFSUrl});
+    if(iconIPFSUrl) {
+      APICall.updateTokenIcon({contractAddress, tokenIconUrl: iconIPFSUrl})
+    }
+  }
+
   async function createNewToken() {
     if (!currentAccount) {
       toast.error(toastMessages.NO_WALLET);
@@ -62,6 +72,11 @@ export default function CreateTokenPage({ api }) {
 
     if (!tokenName || !mintAddress || !tokenSymbol || !totalSupply) {
       toast.error(`Please fill in all data!`);
+      return;
+    }
+
+    if (!iconIPFSUrl) {
+      toast.error(`Please upload your icon to IPFS!`);
       return;
     }
 
@@ -112,13 +127,14 @@ export default function CreateTokenPage({ api }) {
 
     toast.success("Processing...");
 
-    await execContractTx(
+    await execContractTxAndCallAPI(
       currentAccount,
       "api",
       core_contract.CONTRACT_ABI,
       core_contract.CONTRACT_ADDRESS,
       0, //-> value
       "newToken",
+      updateIcon,
       mintAddress,
       formatNumToBN(totalSupply),
       tokenName,
@@ -176,6 +192,12 @@ export default function CreateTokenPage({ api }) {
         hasTooltip: false,
         tooltipContent: "",
         label: "Symbol",
+      },
+      {
+        name: "tokenIconUrl",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Icon",
       },
       {
         name: "decimal",
@@ -265,6 +287,15 @@ export default function CreateTokenPage({ api }) {
                 isDisabled={true}
                 value={`${currentAccount?.balance?.inw || 0} INW`}
                 label="Your INW Balance"
+              />
+            </Box>
+            <Box w="full">
+              <Heading as="h4" size="h4" mb="12px">
+                Token Icon
+              </Heading>
+              <ImageUploadIcon
+                iconUrl={iconIPFSUrl}
+                setImageIPFSUrl={setIconIPFSUrl}
               />
             </Box>
           </SimpleGrid>

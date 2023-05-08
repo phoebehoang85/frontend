@@ -25,7 +25,7 @@ import {
               key={idx}
               justifyContent="start"
               _focus={{ borderWidth: "0px" }}
-              minW={{ base: "fit-content", lg: "250px" }}
+              minW={{ base: "fit-content", lg: "330px" }}
             >
               <Heading as="h3" size="h3">
                 {label}

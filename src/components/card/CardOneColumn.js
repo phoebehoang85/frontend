@@ -25,20 +25,28 @@ export default function IWCardOneColumn(props) {
         w="full"
         borderTop={!title ? "" : "1px solid #E3DFF3"}
       >
-        {data?.map(({ title, content }, idx) => {
-          return (
-            <Box key={idx} mt={{ base: "18px", lg: "20px" }}>
-              <Text fontSize="md" lineHeight="28px">
-                {title}{" "}
-              </Text>
+        {data
+          ?.filter(
+            (value, index, self) =>
+              index ===
+              self.findIndex(
+                (t) => t.title === value.title
+              )
+          )
+          ?.map(({ title, content }, idx) => {
+            return (
+              <Box key={idx} mt={{ base: "18px", lg: "20px" }}>
+                <Text fontSize="md" lineHeight="28px">
+                  {title}{" "}
+                </Text>
 
-              <Heading as="h4" size="h4" mt="2px" fontWeight="semibold">
-                {content}
-                {/* <AzeroLogo /> */}
-              </Heading>
-            </Box>
-          );
-        })}
+                <Heading as="h4" size="h4" mt="2px" fontWeight="semibold">
+                  {content}
+                  {/* <AzeroLogo /> */}
+                </Heading>
+              </Box>
+            );
+          })}
       </Box>
     </Box>
   );
