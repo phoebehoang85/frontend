@@ -176,7 +176,7 @@ export default function PoolsPage({ api }) {
               onChange={({ target }) => setKeywords(target.value)}
               placeholder="Search"
             />
-            <FormControl maxW="135px" display="flex" alignItems="center">
+            <FormControl maxW="205px" display="flex" alignItems="center">
               <Switch
                 id="my-stake"
                 isDisabled={!currentAccount?.address}
@@ -184,7 +184,7 @@ export default function PoolsPage({ api }) {
                 onChange={() => setShowMyStakedPools(!showMyStakedPools)}
               />
               <FormLabel htmlFor="my-stake" mb="0" ml="10px" fontWeight="400">
-                My Stake
+                My Stake Only
               </FormLabel>
             </FormControl>
 
@@ -200,7 +200,7 @@ export default function PoolsPage({ api }) {
                 fontWeight="400"
                 htmlFor="zero-reward-pools"
               >
-                Pool Ended
+                Pool Ended Only
               </FormLabel>
             </FormControl>
           </Flex>

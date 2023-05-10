@@ -34,6 +34,7 @@ import { fetchMyNFTPools } from "redux/slices/myPoolsSlice";
 import { QuestionOutlineIcon } from "@chakra-ui/icons";
 import { roundUp } from "utils";
 import ImageUploadIcon from "../token/UploadIcon";
+import { SelectSearch } from "components/SelectSearch";
 
 export default function CreateNFTLPPage({ api }) {
   const dispatch = useDispatch();
@@ -331,7 +332,7 @@ export default function CreateNFTLPPage({ api }) {
     await delay(3000);
 
     toast.promise(
-      delay(20000).then(() => {
+      delay(80000).then(() => {
         if (currentAccount) {
           dispatch(fetchMyNFTPools({ currentAccount }));
           dispatch(fetchUserBalance({ currentAccount, api }));
@@ -340,7 +341,7 @@ export default function CreateNFTLPPage({ api }) {
         fetchTokenBalance();
       }),
       {
-        loading: "Please wait up to 20s for the data to be updated! ",
+        loading: "Please wait a minute for the data to be updated! ",
         success: "Done !",
         error: "Could not fetch data!!!",
       }
@@ -406,7 +407,7 @@ export default function CreateNFTLPPage({ api }) {
     <>
       <SectionContainer
         mt={{ base: "0px", xl: "20px" }}
-        title="Create ArtZero's NFT Yield Farm"
+        title="Create NFT Yield Farm"
         description={
           <span>
             NFT Stakers get rewards in selected token. The creation costs
@@ -414,6 +415,7 @@ export default function CreateNFTLPPage({ api }) {
               {" "}
               {createTokenFee} INW
             </Text>
+            . This currently only works with NFTs on ArtZero platform.
           </span>
         }
       >
@@ -429,7 +431,7 @@ export default function CreateNFTLPPage({ api }) {
               <Heading as="h4" size="h4" mb="12px">
                 Select NFT Collection
               </Heading>
-              <Select
+              {/* <Select
                 value={selectedCollectionAddr}
                 // isDisabled={accountInfoLoading}
                 id="nft-collection"
@@ -444,7 +446,24 @@ export default function CreateNFTLPPage({ api }) {
                     {addressShortener(token?.nftContractAddress)}
                   </option>
                 ))}
-              </Select>
+              </Select> */}
+
+              <SelectSearch
+                name="collection"
+                placeholder="Select Collection..."
+                closeMenuOnSelect={true}
+                isSearchable
+                onChange={(selected) => {
+                  setSelectedCollectionAddr(selected.nftContractAddress);
+                }}
+                options={collectionList?.map((token, idx) => ({
+                  value: token?.name,
+                  nftContractAddress: token?.nftContractAddress,
+                  label: `${token?.name} - ${addressShortener(
+                    token?.nftContractAddress
+                  )}`,
+                }))}
+              ></SelectSearch>
             </Box>
 
             <Box w="full">
@@ -463,7 +482,7 @@ export default function CreateNFTLPPage({ api }) {
               <Heading as="h4" size="h4" mb="12px">
                 Select Token To Reward Stakers
               </Heading>
-              <Select
+              {/* <Select
                 value={selectedContractAddr}
                 id="token-collection"
                 placeholder="Select token"
@@ -477,7 +496,24 @@ export default function CreateNFTLPPage({ api }) {
                     {addressShortener(token?.contractAddress)}
                   </option>
                 ))}
-              </Select>
+              </Select> */}
+
+              <SelectSearch
+                name="token"
+                placeholder="Select Token..."
+                closeMenuOnSelect={true}
+                // filterOption={filterOptions}
+                isSearchable
+                onChange={({ value }) => {
+                  setSelectedContractAddr(value);
+                }}
+                options={faucetTokensList?.map((token, idx) => ({
+                  value: token?.contractAddress,
+                  label: `${token?.symbol} (${
+                    token?.name
+                  }) - ${addressShortener(token?.contractAddress)}`,
+                }))}
+              ></SelectSearch>
             </Box>
 
             <Box w="full">
@@ -536,7 +572,19 @@ export default function CreateNFTLPPage({ api }) {
               <IWInput
                 type="number"
                 placeholder="0"
-                label="Multiplier "
+                label={
+                  <>
+                    Multiplier
+                    <Tooltip
+                      fontSize="smaller"
+                      label={
+                        "Multiplier determines how many reward tokens will the staker receive per 1 NFT in 24 hours"
+                      }
+                    >
+                      <QuestionOutlineIcon ml="6px" pb={"2px"} color="text.2" />
+                    </Tooltip>
+                  </>
+                }
                 value={multiplier}
                 onChange={({ target }) => setMultiplier(target.value)}
               />
@@ -592,7 +640,6 @@ export default function CreateNFTLPPage({ api }) {
                 }
               />
             </Box>
-          
           </SimpleGrid>
 
           <Button w="full" maxW={{ lg: "260px" }} onClick={createNFTLPHandler}>
@@ -603,7 +650,7 @@ export default function CreateNFTLPPage({ api }) {
 
       <SectionContainer
         mt={{ base: "0px", xl: "8px" }}
-        title="My ArtZero's Yield Farm Pools"
+        title="My NFT Yield Farm"
         description=""
       >
         <IWTable

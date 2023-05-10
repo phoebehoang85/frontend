@@ -14,9 +14,11 @@ export default function MyPoolsPage({ api }) {
 
   const { myStakingPoolsList } = useSelector((s) => s.myPools);
 
+  const { allTokensList } = useSelector((s) => s.allPools);
+
   useEffect(() => {
     if (!currentAccount?.address) {
-      history.push("/faucet");
+      history.push("/");
     }
   }, [currentAccount, history]);
 
@@ -57,6 +59,57 @@ export default function MyPoolsPage({ api }) {
     tableBody: myStakingPoolsList,
   };
 
+  const tableDataTokens = {
+    tableHeader: [
+      {
+        name: "contractAddress",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Contract Address",
+      },
+      {
+        name: "creator",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Creator",
+      },
+      {
+        name: "name",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Name",
+      },
+      {
+        name: "symbol",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Symbol",
+      },
+      {
+        name: "tokenIconUrl",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Icon",
+      },
+      {
+        name: "decimal",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Decimal",
+      },
+      {
+        name: "totalSupply",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Initial Mint",
+      },
+    ],
+
+    tableBody: allTokensList?.filter(
+      (el) => el.creator === currentAccount?.address
+      ),
+  };
+
   return (
     <>
       <SectionContainer
@@ -77,6 +130,14 @@ export default function MyPoolsPage({ api }) {
       </SectionContainer>
 
       <MyNFTAndTokenPoolsTab />
+
+      <SectionContainer
+        mt={{ base: "0px", xl: "8px" }}
+        title="My Tokens"
+        description={``}
+      >
+        <IWTable {...tableDataTokens} isDisableRowClick={true} />
+      </SectionContainer>
     </>
   );
 }

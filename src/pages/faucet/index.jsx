@@ -252,7 +252,7 @@ export default function FaucetPage({ api }) {
         2
       ),
     };
-
+    console.log(unclaimAmount, 'unclaimAmountunclaimAmount');
     setAvailableMint(formatNumDynDecimal(leftAmount / 10 ** 12));
     setSaleInfo({
       buyerInfo: buyInfo,
@@ -384,7 +384,7 @@ export default function FaucetPage({ api }) {
       0,
       "genericTokenSaleTrait::endTime"
     );
-    setSaleInfo({ endTimeSale: endTime?.toHuman()?.Ok?.replaceAll(",", "") });
+    setSaleInfo({...saleInfo, endTimeSale: endTime?.toHuman()?.Ok?.replaceAll(",", "") });
   };
 
   useEffect(() => {
@@ -590,7 +590,7 @@ export default function FaucetPage({ api }) {
                 placeholder="0.000000000"
                 inputRightElementIcon={<AzeroLogo />}
               />
-              <Flex
+              {inwPrice > 0 && <Flex
                 mt={{ base: "15px", lg: "0px" }}
                 w="full"
                 justifyContent="space-between"
@@ -601,7 +601,7 @@ export default function FaucetPage({ api }) {
                 <Text textAlign="left" fontSize="md" lineHeight="28px">
                   INW Available to acquire: {availableMint}
                 </Text>
-              </Flex>
+              </Flex>}
               {inwBuyAmount ? (
                 <Flex
                   mt={{ base: "15px", lg: "0px" }}
@@ -612,7 +612,7 @@ export default function FaucetPage({ api }) {
                     You will receive {roundUp((inwBuyAmount * 5) / 100)} INW (5%
                     of total purchase) and the rest will be claimable every
                     block during 18-month vesting period. Vesting period starts
-                    after private sale ends.
+                    after public sale ends.
                     {/* , then linear vesting over the next 24 months */}
                   </Text>
                 </Flex>
@@ -632,7 +632,7 @@ export default function FaucetPage({ api }) {
       ) : (
         <>
           <CardThreeColumn
-            title="Private Sale Vesting"
+            title="Public Sale Vesting"
             data={[
               {
                 title: "Claimable Amount",
@@ -734,7 +734,7 @@ export default function FaucetPage({ api }) {
                 placeholder="0.000000000"
                 inputRightElementIcon={<AzeroLogo />}
               />
-              <Flex
+              {inwPrice > 0 && <Flex
                 mt={{ base: "15px", lg: "0px" }}
                 w="full"
                 justifyContent="space-between"
@@ -745,7 +745,7 @@ export default function FaucetPage({ api }) {
                 <Text textAlign="left" fontSize="md" lineHeight="28px">
                   INW Available to acquire: {availableMint}
                 </Text>
-              </Flex>
+              </Flex>}
 
               {inwBuyAmount ? (
                 <Flex
@@ -818,7 +818,7 @@ export default function FaucetPage({ api }) {
               { title: "Max Supply", content: `${inwTotalSupply} INW` },
               { title: "In Circulation ", content: `${inwInCur} INW` },
               { title: "Total Burned ", content: `${formatNumDynDecimal(inwBurn)} INW` },
-              { title: "Your Vesting Amount: ", content: `${saleInfo?.buyerInfo?.purchasedAmount} INW` },
+              { title: "Your Vesting Amount: ", content: `${+saleInfo?.buyerInfo?.purchasedAmount?.replaceAll(',', '') * 95 /100 || 0} INW` },
               { title: "Your Balance: ", content: `${inwBalance} INW` },
             ]}
           />

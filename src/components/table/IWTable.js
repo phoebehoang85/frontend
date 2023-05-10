@@ -306,7 +306,17 @@ export const formatDataCellTable = (itemObj, header, mode) => {
           <Text>{itemObj[header] / 86400} days</Text>
         </>
       );
-
+    case "tokenIconUrl":
+      return itemObj[header] ? (
+        <Image
+          w="38px"
+          borderRadius={"10px"}
+          src={`${process.env.REACT_APP_IPFS_PUBLIC_URL}${itemObj[header]}`}
+          alt="logo"
+        />
+      ) : (
+        ""
+      );
     case "tokenTotalSupply":
       const tokenTotalSupply = itemObj[header].replaceAll(",", "");
       return (

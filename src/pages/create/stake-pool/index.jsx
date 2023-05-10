@@ -34,6 +34,7 @@ import { fetchMyStakingPools } from "redux/slices/myPoolsSlice";
 import { formatNumDynDecimal } from "utils";
 import { QuestionOutlineIcon } from "@chakra-ui/icons";
 import { roundUp } from "utils";
+import { SelectSearch } from "components/SelectSearch";
 
 export default function CreateStakePoolPage({ api }) {
   const dispatch = useDispatch();
@@ -51,7 +52,7 @@ export default function CreateStakePoolPage({ api }) {
   const [startTime, setStartTime] = useState(new Date());
 
   const [tokenBalance, setTokenBalance] = useState(0);
-  const [tokenSymbol, setTokenSymbol] = useState('')
+  const [tokenSymbol, setTokenSymbol] = useState("");
 
   const fetchTokenBalance = useCallback(async () => {
     if (!selectedContractAddr) return;
@@ -81,20 +82,20 @@ export default function CreateStakePoolPage({ api }) {
     const foundItem = faucetTokensList.find(
       (item) => item.contractAddress === selectedContractAddr
     );
-      if(!foundItem?.symbol) {
-        let queryResult1 = await execContractQuery(
-          currentAccount?.address,
-          "api",
-          psp22_contract.CONTRACT_ABI,
-          selectedContractAddr,
-          0,
-          "psp22Metadata::tokenSymbol"
-        );
-        const tokenSymbol = queryResult1.toHuman().Ok;
-        setTokenSymbol(tokenSymbol)
-      } else {
-        setTokenSymbol(foundItem?.symbol)
-      }
+    if (!foundItem?.symbol) {
+      let queryResult1 = await execContractQuery(
+        currentAccount?.address,
+        "api",
+        psp22_contract.CONTRACT_ABI,
+        selectedContractAddr,
+        0,
+        "psp22Metadata::tokenSymbol"
+      );
+      const tokenSymbol = queryResult1.toHuman().Ok;
+      setTokenSymbol(tokenSymbol);
+    } else {
+      setTokenSymbol(foundItem?.symbol);
+    }
   }, [currentAccount, selectedContractAddr, faucetTokensList]);
 
   useEffect(() => {
@@ -147,17 +148,17 @@ export default function CreateStakePoolPage({ api }) {
       return;
     }
 
-    if(!(duration > 0)) {
+    if (!(duration > 0)) {
       toast.error(`Pool Length must be greater than 0`);
       return;
     }
 
-    if(!(apy > 0)) {
+    if (!(apy > 0)) {
       toast.error(`Annual Percentage Yield (APR) % must be greater than 0`);
       return;
     }
 
-    if(!(maxStake > 0)) {
+    if (!(maxStake > 0)) {
       toast.error(`Total Staking Cap must be greater than 0`);
       return;
     }
@@ -176,7 +177,10 @@ export default function CreateStakePoolPage({ api }) {
       return;
     }
 
-    if (parseInt(tokenBalance?.replaceAll(",", "")) < minReward?.replaceAll(',', '')) {
+    if (
+      parseInt(tokenBalance?.replaceAll(",", "")) <
+      minReward?.replaceAll(",", "")
+    ) {
       toast.error(`You don't have enough ${tokenSymbol} to topup the reward`);
       return;
     }
@@ -209,11 +213,7 @@ export default function CreateStakePoolPage({ api }) {
       allowanceTokenQr
     ).replaceAll(",", "");
     let step = 1;
-    console.log(
-      formatQueryResultToNumber(allowanceINWQr),
-      allowanceToken,
-      "allowanceallowance"
-    );
+
     //Approve
     if (allowanceINW < createTokenFee.replaceAll(",", "")) {
       toast.success(`Step ${step}: Approving INW token...`);
@@ -376,25 +376,24 @@ export default function CreateStakePoolPage({ api }) {
           >
             <Box w="full">
               <Heading as="h4" size="h4" mb="12px">
-                Token Contract Address
+                Select Token
               </Heading>
-              <Select
-                label="Token Contract Address"
-                value={selectedContractAddr}
-                // isDisabled={accountInfoLoading}
-                id="token"
-                placeholder="Select token"
-                onChange={({ target }) => {
-                  setSelectedContractAddr(target.value);
+              <SelectSearch
+                name="token"
+                placeholder="Select Token..."
+                closeMenuOnSelect={true}
+                // filterOption={filterOptions}
+                isSearchable
+                onChange={({ value }) => {
+                  setSelectedContractAddr(value);
                 }}
-              >
-                {faucetTokensList?.map((token, idx) => (
-                  <option key={idx} value={token.contractAddress}>
-                    {token?.symbol} ({token?.name}) -{" "}
-                    {addressShortener(token?.contractAddress)}
-                  </option>
-                ))}
-              </Select>
+                options={faucetTokensList?.map((token, idx) => ({
+                  value: token?.contractAddress,
+                  label: `${token?.symbol} (${
+                    token?.name
+                  }) - ${addressShortener(token?.contractAddress)}`,
+                }))}
+              ></SelectSearch>
             </Box>
             <Box w="full">
               <IWInput
@@ -490,17 +489,19 @@ export default function CreateStakePoolPage({ api }) {
               <IWInput
                 isDisabled={true}
                 value={`${minReward || 0} ${tokenSymbol || ""}`}
-                label={ <>
-                  Total Rewards
-                  <Tooltip
-                    fontSize="smaller"
-                    label={
-                      " Pool creator has to add this amount upfront into the pool to pay for stakers' interest."
-                    }
-                  >
-                    <QuestionOutlineIcon ml="6px" pb={"2px"} color="text.2" />
-                  </Tooltip>
-                </>}
+                label={
+                  <>
+                    Total Rewards
+                    <Tooltip
+                      fontSize="smaller"
+                      label={
+                        " Pool creator has to add this amount upfront into the pool to pay for stakers' interest."
+                      }
+                    >
+                      <QuestionOutlineIcon ml="6px" pb={"2px"} color="text.2" />
+                    </Tooltip>
+                  </>
+                }
               />
             </Box>
           </SimpleGrid>

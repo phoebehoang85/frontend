@@ -211,6 +211,12 @@ export default function CreateTokenPage({ api }) {
         tooltipContent: "",
         label: "Initial Mint",
       },
+      {
+        name: "mintTo",
+        hasTooltip: false,
+        tooltipContent: "",
+        label: "Mint To",
+      },
     ],
 
   };
@@ -253,7 +259,7 @@ export default function CreateTokenPage({ api }) {
                 type="text"
                 value={mintAddress}
                 label="Mint to"
-                disabled
+                onChange={({ target }) => setMintAddress(target.value)}
                 placeholder="Address"
               />
             </Box>

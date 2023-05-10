@@ -37,7 +37,9 @@ const client = async (
 export const APICall = {
   // Get list of tokens
   getTokensList: async ({ limit = 1000, offset = 0, sort = -1 }) => {
-    return await client("POST", "/getTokens", { limit, offset, sort });
+    let { ret, status, message } = await client("POST", "/getTokens", { limit, offset, sort })
+    ret = ret.filter(el => !!el?.contractAddress)
+    return { ret, status, message } ;
   },
 
   updateTokenIcon: async ({ contractAddress, tokenIconUrl }) => {

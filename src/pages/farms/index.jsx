@@ -274,7 +274,7 @@ export default function FarmsPage() {
               onChange={({ target }) => setKeywords(target.value)}
               placeholder="Search"
             />
-            <FormControl maxW="135px" display="flex" alignItems="center">
+            <FormControl maxW="205px" display="flex" alignItems="center">
               <Switch
                 id="my-stake"
                 isDisabled={!currentAccount?.address}
@@ -282,7 +282,7 @@ export default function FarmsPage() {
                 onChange={() => setShowMyStakedPools(!showMyStakedPools)}
               />
               <FormLabel htmlFor="my-stake" mb="0" ml="10px" fontWeight="400">
-                My Stake
+                My Stake Only
               </FormLabel>
             </FormControl>
 
@@ -298,7 +298,7 @@ export default function FarmsPage() {
                 fontWeight="400"
                 htmlFor="zero-reward-pools"
               >
-                Farm Ended
+                Farm Ended Only
               </FormLabel>
             </FormControl>
           </Flex>
