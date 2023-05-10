@@ -395,7 +395,6 @@ export default function FaucetPage({ api }) {
     if (tabIndex === 0) {
       getPriceInw(private_sale);
       getSaleInfo(private_sale);
-      getBalanceContract(private_sale);
     } else {
       getPublicsaleInfo(public_sale);
       getPriceInw(public_sale);

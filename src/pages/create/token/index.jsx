@@ -211,12 +211,6 @@ export default function CreateTokenPage({ api }) {
         tooltipContent: "",
         label: "Initial Mint",
       },
-      {
-        name: "mintTo",
-        hasTooltip: false,
-        tooltipContent: "",
-        label: "Mint To",
-      },
     ],
 
   };

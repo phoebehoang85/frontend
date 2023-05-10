@@ -280,7 +280,7 @@ export const WalletConnect = () => {
             );
           })}
 
-          <IWCard mb="12px" variant="menu" minW={{ base: "full", lg: "350px" }}>
+          {/* <IWCard mb="12px" variant="menu" minW={{ base: "full", lg: "350px" }}>
             <Flex justify={{ base: "space-between" }}>
               <Text>Show more Balance</Text>
 
@@ -301,7 +301,7 @@ export const WalletConnect = () => {
                 </Circle>
               </MenuItem>
             </Flex>
-          </IWCard>
+          </IWCard> */}
 
           <Flex
             w="full"
@@ -434,9 +434,20 @@ const myMenuList = [
     bgColorHover: "#93F0F5",
     iconColor: "#6CE5ED",
     iconColorHover: "#57527E",
+    icon: <MyLPFarmsIcon />,
+    title: "My Tokens",
+    href: "/my-pools",
+  },
+  {
+    borderColor: "#93F0F5",
+    borderColorHover: "#0000",
+    bgColor: "#E8FDFF",
+    bgColorHover: "#93F0F5",
+    iconColor: "#6CE5ED",
+    iconColorHover: "#57527E",
     icon: <MyPoolsIcon />,
     title: "My pools",
-    href: "/my-staking-pools",
+    href: "/my-pools",
   },
   {
     borderColor: "#93F0F5",
@@ -447,17 +458,6 @@ const myMenuList = [
     iconColorHover: "#57527E",
     icon: <MyNFTFarmsIcon />,
     title: "My NFT Farms",
-    href: "/my-nft-pool",
-  },
-  {
-    borderColor: "#93F0F5",
-    borderColorHover: "#0000",
-    bgColor: "#E8FDFF",
-    bgColorHover: "#93F0F5",
-    iconColor: "#6CE5ED",
-    iconColorHover: "#57527E",
-    icon: <MyLPFarmsIcon />,
-    title: "My LP Farms",
-    href: "/my-token-pools",
+    href: "/my-pool",
   },
 ];
