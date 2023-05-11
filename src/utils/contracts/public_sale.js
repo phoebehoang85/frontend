@@ -1,5 +1,5 @@
 const public_sale_contract = {
-  CONTRACT_ADDRESS: "5DYtpkVN3UTFUrHyrwdPZ8hH7q2XQF4xZiq3wYjcXFDCkKRp",
+  CONTRACT_ADDRESS: "5GVBczu8bZPPHJ9Zj9rrHmJLH4fBSpEZ2Kdwd74mcAkoCFtm",
   CONTRACT_ABI: {
 	  "source": {
 		"hash": "0x94a3216c0118c4f7abd4cb298b06c355882b2f1e67f9d49cffd2ecefe1fe2f72",
