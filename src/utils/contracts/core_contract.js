@@ -1,8 +1,8 @@
 const core_contract = {
-  CONTRACT_ADDRESS: "5Fc5WyMw4uvg3f3TPSDRvC5yyoTjrtNMDEM5MkyFeo7baUwh",
+  CONTRACT_ADDRESS: "5ExAxzS6dxTo6E41ZrnfiYjEXerX2oEfRWnjsbK8BQzZkRmv",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0x419eabe4f11473ebecf963755c44ff19287ec2dea8a2e7962f6a6ec0df18c60f",
+		"hash": "0x8104074e93b39a87b42140373643b676eb9e486348ea4e6e623eefcbd47897e0",
 		"language": "ink! 4.1.0",
 		"compiler": "rustc 1.70.0-nightly",
 		"build_info": {
@@ -218,6 +218,23 @@ const core_contract = {
 			"selector": "0x5e228753"
 		  },
 		  {
+			"args": [],
+			"docs": [
+			  " Returns the address of the current owner."
+			],
+			"label": "Ownable::owner",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 18
+			},
+			"selector": "0x4fa43c8c"
+		  },
+		  {
 			"args": [
 			  {
 				"label": "new_owner",
@@ -255,47 +272,56 @@ const core_contract = {
 			"selector": "0x11f43efd"
 		  },
 		  {
-			"args": [],
-			"docs": [
-			  " Returns the address of the current owner."
-			],
-			"label": "Ownable::owner",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 18
-			},
-			"selector": "0x4fa43c8c"
-		  },
-		  {
 			"args": [
 			  {
-				"label": "index",
+				"label": "psp22_hash",
 				"type": {
 				  "displayName": [
 					"tokenmanagertrait_external",
-					"GetTokenContractAddressInput1"
+					"SetContractHashInput1"
 				  ],
-				  "type": 5
+				  "type": 4
 				}
 			  }
 			],
 			"docs": [],
-			"label": "TokenManagerTrait::get_token_contract_address",
-			"mutates": false,
+			"label": "TokenManagerTrait::set_contract_hash",
+			"mutates": true,
 			"payable": false,
 			"returnType": {
 			  "displayName": [
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 19
+			  "type": 9
 			},
-			"selector": "0xf1cfb0f6"
+			"selector": "0xf38784b8"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "inw_contract",
+				"type": {
+				  "displayName": [
+					"tokenmanagertrait_external",
+					"SetInwContractInput1"
+				  ],
+				  "type": 0
+				}
+			  }
+			],
+			"docs": [],
+			"label": "TokenManagerTrait::set_inw_contract",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 9
+			},
+			"selector": "0x55f43bf5"
 		  },
 		  {
 			"args": [
@@ -334,14 +360,25 @@ const core_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 21
+			  "type": 19
 			},
 			"selector": "0x034ef9b9"
 		  },
 		  {
-			"args": [],
+			"args": [
+			  {
+				"label": "index",
+				"type": {
+				  "displayName": [
+					"tokenmanagertrait_external",
+					"GetTokenContractAddressInput1"
+				  ],
+				  "type": 5
+				}
+			  }
+			],
 			"docs": [],
-			"label": "TokenManagerTrait::get_contract_hash",
+			"label": "TokenManagerTrait::get_token_contract_address",
 			"mutates": false,
 			"payable": false,
 			"returnType": {
@@ -349,35 +386,9 @@ const core_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 22
+			  "type": 20
 			},
-			"selector": "0xf39b5876"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "psp22_hash",
-				"type": {
-				  "displayName": [
-					"tokenmanagertrait_external",
-					"SetContractHashInput1"
-				  ],
-				  "type": 4
-				}
-			  }
-			],
-			"docs": [],
-			"label": "TokenManagerTrait::set_contract_hash",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 9
-			},
-			"selector": "0xf38784b8"
+			"selector": "0xf1cfb0f6"
 		  },
 		  {
 			"args": [
@@ -406,32 +417,6 @@ const core_contract = {
 			"selector": "0xa82ecdff"
 		  },
 		  {
-			"args": [
-			  {
-				"label": "inw_contract",
-				"type": {
-				  "displayName": [
-					"tokenmanagertrait_external",
-					"SetInwContractInput1"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [],
-			"label": "TokenManagerTrait::set_inw_contract",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 9
-			},
-			"selector": "0x55f43bf5"
-		  },
-		  {
 			"args": [],
 			"docs": [],
 			"label": "TokenManagerTrait::get_token_count",
@@ -442,7 +427,7 @@ const core_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 23
+			  "type": 22
 			},
 			"selector": "0xebabc233"
 		  },
@@ -460,6 +445,59 @@ const core_contract = {
 			  "type": 18
 			},
 			"selector": "0x7d2a84a9"
+		  },
+		  {
+			"args": [],
+			"docs": [],
+			"label": "TokenManagerTrait::get_contract_hash",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 23
+			},
+			"selector": "0xf39b5876"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "value",
+				"type": {
+				  "displayName": [
+					"admintrait_external",
+					"WithdrawFeeInput1"
+				  ],
+				  "type": 6
+				}
+			  },
+			  {
+				"label": "receiver",
+				"type": {
+				  "displayName": [
+					"admintrait_external",
+					"WithdrawFeeInput2"
+				  ],
+				  "type": 0
+				}
+			  }
+			],
+			"docs": [
+			  " This function allows contract owner to withdraw contract balance to his account."
+			],
+			"label": "AdminTrait::withdraw_fee",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 9
+			},
+			"selector": "0x07573e99"
 		  },
 		  {
 			"args": [
@@ -508,44 +546,6 @@ const core_contract = {
 			  "type": 9
 			},
 			"selector": "0xd9aad284"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "value",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"WithdrawFeeInput1"
-				  ],
-				  "type": 6
-				}
-			  },
-			  {
-				"label": "receiver",
-				"type": {
-				  "displayName": [
-					"admintrait_external",
-					"WithdrawFeeInput2"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [
-			  " This function allows contract owner to withdraw contract balance to his account."
-			],
-			"label": "AdminTrait::withdraw_fee",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 9
-			},
-			"selector": "0x07573e99"
 		  },
 		  {
 			"args": [
@@ -1164,6 +1164,90 @@ const core_contract = {
 				  {
 					"index": 26,
 					"name": "NotEnoughRewardToWithdraw"
+				  },
+				  {
+					"index": 27,
+					"name": "NotTopupEnoughReward"
+				  },
+				  {
+					"index": 28,
+					"name": "NoAmount"
+				  },
+				  {
+					"index": 29,
+					"name": "InvalidTokenBalanceAndAllowance"
+				  },
+				  {
+					"index": 30,
+					"name": "CannotApprove"
+				  },
+				  {
+					"index": 31,
+					"name": "CannotTopupRewardPool"
+				  },
+				  {
+					"index": 32,
+					"name": "NotTimeToPurchase"
+				  },
+				  {
+					"index": 33,
+					"name": "NotTimeToClaim"
+				  },
+				  {
+					"index": 34,
+					"name": "NotTimeToBurn"
+				  },
+				  {
+					"index": 35,
+					"name": "NoTokenPurchased"
+				  },
+				  {
+					"index": 36,
+					"name": "AlreadyBurnt"
+				  },
+				  {
+					"index": 37,
+					"name": "InvalidTime"
+				  },
+				  {
+					"index": 38,
+					"name": "InvalidPercentage"
+				  },
+				  {
+					"index": 39,
+					"name": "InvalidDuration"
+				  },
+				  {
+					"index": 40,
+					"name": "InvalidTopupAmount"
+				  },
+				  {
+					"index": 41,
+					"name": "LaunchpadNotExist"
+				  },
+				  {
+					"index": 42,
+					"name": "InvalidIsActiveInput"
+				  },
+				  {
+					"index": 43,
+					"name": "InvalidCreationFee"
+				  },
+				  {
+					"index": 44,
+					"name": "InvalidPhaseData"
+				  },
+				  {
+					"index": 45,
+					"name": "CannotTopupToken"
+				  },
+				  {
+					"index": 46,
+					"name": "InvalidStartTimeAndEndTime"
+				  },
+				  {
+					"index": 47,
+					"name": "InvalidPhaseCount"
 				  }
 				]
 			  }
@@ -1409,81 +1493,6 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 20
-					  }
-					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 8
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 20
-			  },
-			  {
-				"name": "E",
-				"type": 8
-			  }
-			],
-			"path": [
-			  "Result"
-			]
-		  }
-		},
-		{
-		  "id": 20,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"index": 0,
-					"name": "None"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 0
-					  }
-					],
-					"index": 1,
-					"name": "Some"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 0
-			  }
-			],
-			"path": [
-			  "Option"
-			]
-		  }
-		},
-		{
-		  "id": 21,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
 						"type": 6
 					  }
 					],
@@ -1518,7 +1527,7 @@ const core_contract = {
 		  }
 		},
 		{
-		  "id": 22,
+		  "id": 20,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1526,7 +1535,7 @@ const core_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 4
+						"type": 21
 					  }
 					],
 					"index": 0,
@@ -1547,7 +1556,7 @@ const core_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 4
+				"type": 21
 			  },
 			  {
 				"name": "E",
@@ -1560,7 +1569,40 @@ const core_contract = {
 		  }
 		},
 		{
-		  "id": 23,
+		  "id": 21,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"index": 0,
+					"name": "None"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 0
+					  }
+					],
+					"index": 1,
+					"name": "Some"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 0
+			  }
+			],
+			"path": [
+			  "Option"
+			]
+		  }
+		},
+		{
+		  "id": 22,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1590,6 +1632,48 @@ const core_contract = {
 			  {
 				"name": "T",
 				"type": 5
+			  },
+			  {
+				"name": "E",
+				"type": 8
+			  }
+			],
+			"path": [
+			  "Result"
+			]
+		  }
+		},
+		{
+		  "id": 23,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"fields": [
+					  {
+						"type": 4
+					  }
+					],
+					"index": 0,
+					"name": "Ok"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 8
+					  }
+					],
+					"index": 1,
+					"name": "Err"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 4
 			  },
 			  {
 				"name": "E",

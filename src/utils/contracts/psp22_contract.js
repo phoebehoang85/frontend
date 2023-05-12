@@ -1,8 +1,8 @@
 const psp22_contract = {
-  CONTRACT_ADDRESS: "5G8DoFYjzstKtjJDxFeg7hg3zFdxMrKVZ2N6EbGjKWwVv1GG",
+  CONTRACT_ADDRESS: "5H7tcjoLA1K1MqUhxtCHuKZUS5T8PFT3pKCwxRWfbjGcaucW",
   CONTRACT_ABI: {
 	  "source": {
-		"hash": "0x36d170547cb6003708fa40cd9e7a6de869b08939a2c3bc2b4b4d0c49c511bfde",
+		"hash": "0xeb050f30db24f3b3516e32b6b8c85af1d3b0ef618fb22bf89660c8318270e4e2",
 		"language": "ink! 4.1.0",
 		"compiler": "rustc 1.70.0-nightly",
 		"build_info": {
@@ -19,13 +19,22 @@ const psp22_contract = {
 		"name": "token_standard",
 		"version": "1.0.0",
 		"authors": [
-		  "Support <contact@artzero.io>"
+		  "InkWhale <admin@artzero.io>"
 		]
 	  },
 	  "spec": {
 		"constructors": [
 		  {
 			"args": [
+			  {
+				"label": "contract_owner",
+				"type": {
+				  "displayName": [
+					"AccountId"
+				  ],
+				  "type": 4
+				}
+			  },
 			  {
 				"label": "mint_to",
 				"type": {
@@ -98,42 +107,33 @@ const psp22_contract = {
 		  {
 			"args": [
 			  {
+				"label": "owner",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"AllowanceInput1"
+				  ],
+				  "type": 4
+				}
+			  },
+			  {
 				"label": "spender",
 				"type": {
 				  "displayName": [
 					"psp22_external",
-					"DecreaseAllowanceInput1"
+					"AllowanceInput2"
 				  ],
 				  "type": 4
-				}
-			  },
-			  {
-				"label": "delta_value",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"DecreaseAllowanceInput2"
-				  ],
-				  "type": 0
 				}
 			  }
 			],
 			"docs": [
-			  " Atomically decreases the allowance granted to `spender` by the caller.",
+			  " Returns the amount which `spender` is still allowed to withdraw from `owner`.",
 			  "",
-			  " An `Approval` event is emitted.",
-			  "",
-			  " # Errors",
-			  "",
-			  " Returns `InsufficientAllowance` error if there are not enough tokens allowed",
-			  " by owner for `spender`.",
-			  "",
-			  " Returns `ZeroSenderAddress` error if sender's address is zero.",
-			  "",
-			  " Returns `ZeroRecipientAddress` error if recipient's address is zero."
+			  " Returns `0` if no allowance has been set `0`."
 			],
-			"label": "PSP22::decrease_allowance",
-			"mutates": true,
+			"label": "PSP22::allowance",
+			"mutates": false,
 			"payable": false,
 			"returnType": {
 			  "displayName": [
@@ -142,67 +142,7 @@ const psp22_contract = {
 			  ],
 			  "type": 8
 			},
-			"selector": "0xfecb57d5"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "to",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"TransferInput1"
-				  ],
-				  "type": 4
-				}
-			  },
-			  {
-				"label": "value",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"TransferInput2"
-				  ],
-				  "type": 0
-				}
-			  },
-			  {
-				"label": "data",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"TransferInput3"
-				  ],
-				  "type": 2
-				}
-			  }
-			],
-			"docs": [
-			  " Transfers `value` amount of tokens from the caller's account to account `to`",
-			  " with additional `data` in unspecified format.",
-			  "",
-			  " On success a `Transfer` event is emitted.",
-			  "",
-			  " # Errors",
-			  "",
-			  " Returns `InsufficientBalance` error if there are not enough tokens on",
-			  " the caller's account Balance.",
-			  "",
-			  " Returns `ZeroSenderAddress` error if sender's address is zero.",
-			  "",
-			  " Returns `ZeroRecipientAddress` error if recipient's address is zero."
-			],
-			"label": "PSP22::transfer",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 8
-			},
-			"selector": "0xdb20f9f5"
+			"selector": "0x4d47d921"
 		  },
 		  {
 			"args": [
@@ -276,142 +216,9 @@ const psp22_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 8
+			  "type": 9
 			},
 			"selector": "0x54b3c76e"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "spender",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"IncreaseAllowanceInput1"
-				  ],
-				  "type": 4
-				}
-			  },
-			  {
-				"label": "delta_value",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"IncreaseAllowanceInput2"
-				  ],
-				  "type": 0
-				}
-			  }
-			],
-			"docs": [
-			  " Atomically increases the allowance granted to `spender` by the caller.",
-			  "",
-			  " An `Approval` event is emitted.",
-			  "",
-			  " # Errors",
-			  "",
-			  " Returns `ZeroSenderAddress` error if sender's address is zero.",
-			  "",
-			  " Returns `ZeroRecipientAddress` error if recipient's address is zero."
-			],
-			"label": "PSP22::increase_allowance",
-			"mutates": true,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 8
-			},
-			"selector": "0x96d6b57a"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "owner",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"AllowanceInput1"
-				  ],
-				  "type": 4
-				}
-			  },
-			  {
-				"label": "spender",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"AllowanceInput2"
-				  ],
-				  "type": 4
-				}
-			  }
-			],
-			"docs": [
-			  " Returns the amount which `spender` is still allowed to withdraw from `owner`.",
-			  "",
-			  " Returns `0` if no allowance has been set `0`."
-			],
-			"label": "PSP22::allowance",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 11
-			},
-			"selector": "0x4d47d921"
-		  },
-		  {
-			"args": [
-			  {
-				"label": "owner",
-				"type": {
-				  "displayName": [
-					"psp22_external",
-					"BalanceOfInput1"
-				  ],
-				  "type": 4
-				}
-			  }
-			],
-			"docs": [
-			  " Returns the account Balance for the specified `owner`.",
-			  "",
-			  " Returns `0` if the account is non-existent."
-			],
-			"label": "PSP22::balance_of",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 11
-			},
-			"selector": "0x6568382f"
-		  },
-		  {
-			"args": [],
-			"docs": [
-			  " Returns the total token supply."
-			],
-			"label": "PSP22::total_supply",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 11
-			},
-			"selector": "0x162df8c2"
 		  },
 		  {
 			"args": [
@@ -458,9 +265,211 @@ const psp22_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 8
+			  "type": 9
 			},
 			"selector": "0xb20f1bbd"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "spender",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"IncreaseAllowanceInput1"
+				  ],
+				  "type": 4
+				}
+			  },
+			  {
+				"label": "delta_value",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"IncreaseAllowanceInput2"
+				  ],
+				  "type": 0
+				}
+			  }
+			],
+			"docs": [
+			  " Atomically increases the allowance granted to `spender` by the caller.",
+			  "",
+			  " An `Approval` event is emitted.",
+			  "",
+			  " # Errors",
+			  "",
+			  " Returns `ZeroSenderAddress` error if sender's address is zero.",
+			  "",
+			  " Returns `ZeroRecipientAddress` error if recipient's address is zero."
+			],
+			"label": "PSP22::increase_allowance",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 9
+			},
+			"selector": "0x96d6b57a"
+		  },
+		  {
+			"args": [],
+			"docs": [
+			  " Returns the total token supply."
+			],
+			"label": "PSP22::total_supply",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 8
+			},
+			"selector": "0x162df8c2"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "to",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"TransferInput1"
+				  ],
+				  "type": 4
+				}
+			  },
+			  {
+				"label": "value",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"TransferInput2"
+				  ],
+				  "type": 0
+				}
+			  },
+			  {
+				"label": "data",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"TransferInput3"
+				  ],
+				  "type": 2
+				}
+			  }
+			],
+			"docs": [
+			  " Transfers `value` amount of tokens from the caller's account to account `to`",
+			  " with additional `data` in unspecified format.",
+			  "",
+			  " On success a `Transfer` event is emitted.",
+			  "",
+			  " # Errors",
+			  "",
+			  " Returns `InsufficientBalance` error if there are not enough tokens on",
+			  " the caller's account Balance.",
+			  "",
+			  " Returns `ZeroSenderAddress` error if sender's address is zero.",
+			  "",
+			  " Returns `ZeroRecipientAddress` error if recipient's address is zero."
+			],
+			"label": "PSP22::transfer",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 9
+			},
+			"selector": "0xdb20f9f5"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "spender",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"DecreaseAllowanceInput1"
+				  ],
+				  "type": 4
+				}
+			  },
+			  {
+				"label": "delta_value",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"DecreaseAllowanceInput2"
+				  ],
+				  "type": 0
+				}
+			  }
+			],
+			"docs": [
+			  " Atomically decreases the allowance granted to `spender` by the caller.",
+			  "",
+			  " An `Approval` event is emitted.",
+			  "",
+			  " # Errors",
+			  "",
+			  " Returns `InsufficientAllowance` error if there are not enough tokens allowed",
+			  " by owner for `spender`.",
+			  "",
+			  " Returns `ZeroSenderAddress` error if sender's address is zero.",
+			  "",
+			  " Returns `ZeroRecipientAddress` error if recipient's address is zero."
+			],
+			"label": "PSP22::decrease_allowance",
+			"mutates": true,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 9
+			},
+			"selector": "0xfecb57d5"
+		  },
+		  {
+			"args": [
+			  {
+				"label": "owner",
+				"type": {
+				  "displayName": [
+					"psp22_external",
+					"BalanceOfInput1"
+				  ],
+				  "type": 4
+				}
+			  }
+			],
+			"docs": [
+			  " Returns the account Balance for the specified `owner`.",
+			  "",
+			  " Returns `0` if the account is non-existent."
+			],
+			"label": "PSP22::balance_of",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 8
+			},
+			"selector": "0x6568382f"
 		  },
 		  {
 			"args": [],
@@ -482,23 +491,6 @@ const psp22_contract = {
 		  {
 			"args": [],
 			"docs": [
-			  " Returns the token name."
-			],
-			"label": "PSP22Metadata::token_name",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 13
-			},
-			"selector": "0x3d261bd4"
-		  },
-		  {
-			"args": [],
-			"docs": [
 			  " Returns the token symbol."
 			],
 			"label": "PSP22Metadata::token_symbol",
@@ -516,6 +508,23 @@ const psp22_contract = {
 		  {
 			"args": [],
 			"docs": [
+			  " Returns the token name."
+			],
+			"label": "PSP22Metadata::token_name",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 13
+			},
+			"selector": "0x3d261bd4"
+		  },
+		  {
+			"args": [],
+			"docs": [
 			  " Returns the token's cap"
 			],
 			"label": "PSP22Capped::cap",
@@ -526,7 +535,7 @@ const psp22_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 11
+			  "type": 8
 			},
 			"selector": "0xf40366b4"
 		  },
@@ -570,6 +579,23 @@ const psp22_contract = {
 		  {
 			"args": [],
 			"docs": [
+			  " Returns the address of the current owner."
+			],
+			"label": "Ownable::owner",
+			"mutates": false,
+			"payable": false,
+			"returnType": {
+			  "displayName": [
+				"ink",
+				"MessageResult"
+			  ],
+			  "type": 18
+			},
+			"selector": "0x4fa43c8c"
+		  },
+		  {
+			"args": [],
+			"docs": [
 			  " Leaves the contract without owner. It will not be possible to call",
 			  " owner's functions anymore. Can only be called by the current owner.",
 			  "",
@@ -593,23 +619,6 @@ const psp22_contract = {
 			  "type": 15
 			},
 			"selector": "0x5e228753"
-		  },
-		  {
-			"args": [],
-			"docs": [
-			  " Returns the address of the current owner."
-			],
-			"label": "Ownable::owner",
-			"mutates": false,
-			"payable": false,
-			"returnType": {
-			  "displayName": [
-				"ink",
-				"MessageResult"
-			  ],
-			  "type": 18
-			},
-			"selector": "0x4fa43c8c"
 		  },
 		  {
 			"args": [
@@ -729,7 +738,7 @@ const psp22_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 8
+			  "type": 9
 			},
 			"selector": "0x7a9da510"
 		  },
@@ -765,7 +774,7 @@ const psp22_contract = {
 				"ink",
 				"MessageResult"
 			  ],
-			  "type": 8
+			  "type": 9
 			},
 			"selector": "0xfc3c75d4"
 		  }
@@ -1236,7 +1245,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 9
+						"type": 0
 					  }
 					],
 					"index": 0,
@@ -1257,7 +1266,7 @@ const psp22_contract = {
 			"params": [
 			  {
 				"name": "T",
-				"type": 9
+				"type": 0
 			  },
 			  {
 				"name": "E",
@@ -1278,6 +1287,48 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
+						"type": 10
+					  }
+					],
+					"index": 0,
+					"name": "Ok"
+				  },
+				  {
+					"fields": [
+					  {
+						"type": 7
+					  }
+					],
+					"index": 1,
+					"name": "Err"
+				  }
+				]
+			  }
+			},
+			"params": [
+			  {
+				"name": "T",
+				"type": 10
+			  },
+			  {
+				"name": "E",
+				"type": 7
+			  }
+			],
+			"path": [
+			  "Result"
+			]
+		  }
+		},
+		{
+		  "id": 10,
+		  "type": {
+			"def": {
+			  "variant": {
+				"variants": [
+				  {
+					"fields": [
+					  {
 						"type": 1
 					  }
 					],
@@ -1287,7 +1338,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 10
+						"type": 11
 					  }
 					],
 					"index": 1,
@@ -1303,7 +1354,7 @@ const psp22_contract = {
 			  },
 			  {
 				"name": "E",
-				"type": 10
+				"type": 11
 			  }
 			],
 			"path": [
@@ -1312,7 +1363,7 @@ const psp22_contract = {
 		  }
 		},
 		{
-		  "id": 10,
+		  "id": 11,
 		  "type": {
 			"def": {
 			  "variant": {
@@ -1362,48 +1413,6 @@ const psp22_contract = {
 			  "errors",
 			  "psp22",
 			  "PSP22Error"
-			]
-		  }
-		},
-		{
-		  "id": 11,
-		  "type": {
-			"def": {
-			  "variant": {
-				"variants": [
-				  {
-					"fields": [
-					  {
-						"type": 0
-					  }
-					],
-					"index": 0,
-					"name": "Ok"
-				  },
-				  {
-					"fields": [
-					  {
-						"type": 7
-					  }
-					],
-					"index": 1,
-					"name": "Err"
-				  }
-				]
-			  }
-			},
-			"params": [
-			  {
-				"name": "T",
-				"type": 0
-			  },
-			  {
-				"name": "E",
-				"type": 7
-			  }
-			],
-			"path": [
-			  "Result"
 			]
 		  }
 		},
@@ -1789,7 +1798,7 @@ const psp22_contract = {
 				  {
 					"fields": [
 					  {
-						"type": 10,
+						"type": 11,
 						"typeName": "PSP22Error"
 					  }
 					],
@@ -1891,6 +1900,90 @@ const psp22_contract = {
 				  {
 					"index": 26,
 					"name": "NotEnoughRewardToWithdraw"
+				  },
+				  {
+					"index": 27,
+					"name": "NotTopupEnoughReward"
+				  },
+				  {
+					"index": 28,
+					"name": "NoAmount"
+				  },
+				  {
+					"index": 29,
+					"name": "InvalidTokenBalanceAndAllowance"
+				  },
+				  {
+					"index": 30,
+					"name": "CannotApprove"
+				  },
+				  {
+					"index": 31,
+					"name": "CannotTopupRewardPool"
+				  },
+				  {
+					"index": 32,
+					"name": "NotTimeToPurchase"
+				  },
+				  {
+					"index": 33,
+					"name": "NotTimeToClaim"
+				  },
+				  {
+					"index": 34,
+					"name": "NotTimeToBurn"
+				  },
+				  {
+					"index": 35,
+					"name": "NoTokenPurchased"
+				  },
+				  {
+					"index": 36,
+					"name": "AlreadyBurnt"
+				  },
+				  {
+					"index": 37,
+					"name": "InvalidTime"
+				  },
+				  {
+					"index": 38,
+					"name": "InvalidPercentage"
+				  },
+				  {
+					"index": 39,
+					"name": "InvalidDuration"
+				  },
+				  {
+					"index": 40,
+					"name": "InvalidTopupAmount"
+				  },
+				  {
+					"index": 41,
+					"name": "LaunchpadNotExist"
+				  },
+				  {
+					"index": 42,
+					"name": "InvalidIsActiveInput"
+				  },
+				  {
+					"index": 43,
+					"name": "InvalidCreationFee"
+				  },
+				  {
+					"index": 44,
+					"name": "InvalidPhaseData"
+				  },
+				  {
+					"index": 45,
+					"name": "CannotTopupToken"
+				  },
+				  {
+					"index": 46,
+					"name": "InvalidStartTimeAndEndTime"
+				  },
+				  {
+					"index": 47,
+					"name": "InvalidPhaseCount"
 				  }
 				]
 			  }
