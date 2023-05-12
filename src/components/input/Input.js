@@ -7,7 +7,7 @@ import {
   InputRightElement,
 } from "@chakra-ui/react";
 
-var reg = /^-?\d*\.?\d*$/
+var reg = /^\d*\.?\d*$/
 
 function IWInput(props) {
   const {

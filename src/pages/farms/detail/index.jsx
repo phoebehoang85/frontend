@@ -331,7 +331,6 @@ const MyStakeRewardInfoNFT = ({
     );
 
     let info = queryResult?.toHuman().Ok;
-    console.log(queryResult?.toHuman(), poolContract, 'queryResult?.toHuman()queryResult?.toHuman()');
     if (info) {
       info = {
         ...info,

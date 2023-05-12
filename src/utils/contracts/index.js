@@ -247,7 +247,6 @@ export async function execContractTxAndCallAPI(
         if (Object.keys(status.toHuman())[0] === "0") {
           toast.success(`Processing ...`);
         }
-        console.log(events, 'eventsevents');
         events.forEach(({ event: { method, data } }) => {
           if(method === "Instantiated" && data?.contract) {
             APIUpdate(data.contract?.toHuman())

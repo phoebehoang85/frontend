@@ -43,6 +43,7 @@ import CardThreeColumn from "components/card/CardThreeColumn";
 import BN from "bn.js";
 import { ADDRESSES_INW } from "constants";
 import { roundUp } from "utils";
+import { roundDown } from "utils";
 
 const inwContractAddress = azt_contract.CONTRACT_ADDRESS;
 
@@ -59,6 +60,7 @@ export default function FaucetPage({ api }) {
   const [inwTotalSupply, setInwTotalSupply] = useState(0);
   const [availableMint, setAvailableMint] = useState("0");
   const [inwBuyAmount, setInwBuyAmount] = useState("");
+  const [azeroBuyAmount, setAzeroBuyAmount] = useState("");
   const [inwInCur, setInwInCur] = useState(0);
   const [inwPrice, setInwPrice] = useState(0);
   const [tabIndex, setTabIndex] = useState(0);
@@ -252,7 +254,6 @@ export default function FaucetPage({ api }) {
         2
       ),
     };
-    console.log(unclaimAmount, 'unclaimAmountunclaimAmount');
     setAvailableMint(formatNumDynDecimal(leftAmount / 10 ** 12));
     setSaleInfo({
       buyerInfo: buyInfo,
@@ -447,7 +448,6 @@ export default function FaucetPage({ api }) {
 
         getInwMintingCapAndTotalSupply();
         getInfo();
-        setInwBuyAmount("");
       }),
       {
         loading: "Fetching new data ... ",
@@ -487,7 +487,6 @@ export default function FaucetPage({ api }) {
 
         getInwMintingCapAndTotalSupply();
         getInfo();
-        setInwBuyAmount("");
       }),
       {
         loading: "Fetching new data ... ",
@@ -527,7 +526,6 @@ export default function FaucetPage({ api }) {
 
         getInwMintingCapAndTotalSupply();
         getInfo();
-        setInwBuyAmount("");
       }),
       {
         loading: "Fetching new data ... ",
@@ -536,6 +534,16 @@ export default function FaucetPage({ api }) {
       }
     );
   };
+
+  const onChangeAzeroInput = ({ target }) => {
+    setAzeroBuyAmount(target.value)
+    setInwBuyAmount(roundDown(target.value / parseFloat(inwPrice)))
+  }
+
+  const onChangeInwInput = ({ target }) => {
+    setInwBuyAmount(target.value)
+    setAzeroBuyAmount((target.value * parseFloat(inwPrice)))
+  }
 
   const tabsData = [
     {
@@ -573,7 +581,7 @@ export default function FaucetPage({ api }) {
             >
               <IWInput
                 value={inwBuyAmount}
-                onChange={({ target }) => setInwBuyAmount(target.value)}
+                onChange={onChangeInwInput}
                 type="number"
                 placeholder="Enter INW amount"
                 inputRightElementIcon={
@@ -583,10 +591,10 @@ export default function FaucetPage({ api }) {
                 }
               />
 
-              <IWInput
-                value={formatNumDynDecimal(roundUp(inwPrice * inwBuyAmount), 4)}
-                isDisabled={true}
-                placeholder="0.000000000"
+               <IWInput
+                value={azeroBuyAmount}
+                onChange={onChangeAzeroInput}
+                placeholder="0"
                 inputRightElementIcon={<AzeroLogo />}
               />
               {inwPrice > 0 && <Flex
@@ -610,7 +618,7 @@ export default function FaucetPage({ api }) {
                   <Text textAlign="left" fontSize="md" lineHeight="28px">
                     You will receive {roundUp((inwBuyAmount * 5) / 100)} INW (5%
                     of total purchase) and the rest will be claimable every
-                    block during 18-month vesting period. Vesting period starts
+                    day during 18-month vesting period. Vesting period starts
                     after public sale ends.
                     {/* , then linear vesting over the next 24 months */}
                   </Text>
@@ -717,7 +725,7 @@ export default function FaucetPage({ api }) {
             >
               <IWInput
                 value={inwBuyAmount}
-                onChange={({ target }) => setInwBuyAmount(target.value)}
+                onChange={onChangeInwInput}
                 type="number"
                 placeholder="Enter INW amount"
                 inputRightElementIcon={
@@ -728,9 +736,9 @@ export default function FaucetPage({ api }) {
               />
 
               <IWInput
-                value={formatNumDynDecimal(inwBuyAmount * parseFloat(inwPrice))}
-                isDisabled={true}
-                placeholder="0.000000000"
+                value={azeroBuyAmount}
+                onChange={onChangeAzeroInput}
+                placeholder="0"
                 inputRightElementIcon={<AzeroLogo />}
               />
               {inwPrice > 0 && <Flex

@@ -19,6 +19,7 @@ import { Link as RouterLink, useHistory } from "react-router-dom";
 import routes from "routes.js";
 import WalletButton from "components/wallet/WalletButton";
 import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
 
 export default function NavbarLinks(props) {
   const { secondary } = props;
@@ -133,6 +134,29 @@ export default function NavbarLinks(props) {
             >
               <Text bg="transparent" fontSize="md">
                 Docs
+              </Text>
+            </Link>
+          </Flex>
+          <Flex
+            _hover={{ textDecoration: "none", bg: "bg.1" }}
+            p="6px 10px"
+            bg={"transparent"}
+            borderRadius="5px"
+            ml={{ base: "20px", md: "20px" }}
+          >
+            <Link
+              color={"text.1"}
+              fontWeight="600"
+              bg="transparent"
+              textDecoration="none"
+              _focus={{ borderWidth: "0px" }}
+              _hover={{ textDecoration: "none", bg: "bg.1" }}
+              onClick={() =>
+                toast.success("Coming soon!", {position: "top-center"})
+              }
+            >
+              <Text bg="transparent" fontSize="md">
+                Launchpad
               </Text>
             </Link>
           </Flex>

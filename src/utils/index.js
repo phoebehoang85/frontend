@@ -176,6 +176,11 @@ export function isPoolEnded(startTime = 0, duration = 0) {
   return false;
 }
 
-export function roundUp(v, n = 12) {
+export function roundUp(v, n = 4) {
   return Math.ceil(v * Math.pow(10, n)) / Math.pow(10, n);
+}
+
+export function roundDown(number, decimals = 4) {
+  decimals = decimals || 0;
+  return ( Math.floor( number * Math.pow(10, decimals) ) / Math.pow(10, decimals) );
 }
