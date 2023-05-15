@@ -45,7 +45,6 @@ export default function TokensPage() {
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      // Send Axios request here
       if(selectedContractAddr) {
         loadTokenInfo();
       }
@@ -62,10 +61,6 @@ export default function TokensPage() {
 
     if (!isAddressValid(selectedContractAddr)) {
       toast.error("Invalid address!");
-      return;
-    }
-
-    if (selectedContractAddr === azt_contract.CONTRACT_ADDRESS) {
       return;
     }
 
@@ -95,6 +90,7 @@ export default function TokensPage() {
       return { ...prev, title: tokenSymbol, content: balance };
     });
   }
+
   const tabsData = [
     {
       label: <>Check Balance</>,

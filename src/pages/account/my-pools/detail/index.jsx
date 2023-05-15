@@ -11,6 +11,7 @@ import {
   Text,
   VStack,
   Link,
+  Button,
 } from "@chakra-ui/react";
 import SectionContainer from "components/container/SectionContainer";
 import IWInput from "components/input/Input";
@@ -52,6 +53,9 @@ import { fetchAllStakingPools } from "redux/slices/allPoolsSlice";
 import { fetchMyNFTPools } from "redux/slices/myPoolsSlice";
 import { fetchAllNFTPools } from "redux/slices/allPoolsSlice";
 import AddressCopier from "components/address-copier/AddressCopier";
+import { BN } from "bn.js";
+import { roundUp } from "utils";
+import { roundDown } from "utils";
 
 export default function MyPoolDetailPage({ api }) {
   const [state, setState] = useState({});
@@ -379,6 +383,8 @@ const MyPoolInfo = ({
 
   const [amount, setAmount] = useState("");
 
+  const [withdrawbleAm, setWithdrawbleAm] = useState("");
+
   const fetchTokenBalance = useCallback(async () => {
     if (!currentAccount?.balance) return;
 
@@ -394,7 +400,20 @@ const MyPoolInfo = ({
 
     const balance = formatQueryResultToNumber(result);
     setTokenBalance(balance);
-  }, [api, currentAccount?.address, currentAccount?.balance, tokenContract]);
+    if (isPoolEnded(startTime, duration)) {
+      const unclaimRwQr = await execContractQuery(
+        currentAccount?.address,
+        "api",
+        pool_contract.CONTRACT_ABI,
+        poolContract,
+        0,
+        "genericPoolContractTrait::totalUnclaimedReward"
+      );
+      const unclaimRw = formatQueryResultToNumber(unclaimRwQr);
+      const withdrawableRs = rewardPool - +unclaimRw.replaceAll(",", "");
+      setWithdrawbleAm(roundDown(withdrawableRs, 3));
+    }
+  }, [api, currentAccount?.address, currentAccount?.balance, duration, poolContract, rewardPool, startTime, tokenContract]);
 
   useEffect(() => {
     mode !== "TOKEN_FARM" && fetchTokenBalance();
@@ -478,6 +497,12 @@ const MyPoolInfo = ({
     tokenBalance,
     tokenSymbol,
   ]);
+
+  const setMaxReward = () => {
+    if (roundUp(withdrawbleAm) > 0.0001) {
+      setAmount(withdrawbleAm);
+    }
+  };
 
   async function handleAddRewards() {
     if (!currentAccount) {
@@ -686,7 +711,6 @@ const MyPoolInfo = ({
 
     if (mode === "STAKING_POOL") {
       toast.success("Process...");
-
       await execContractTx(
         currentAccount,
         api,
@@ -835,6 +859,10 @@ const MyPoolInfo = ({
                 content: `${formatNumDynDecimal(rewardPool)} ${tokenSymbol}`,
               },
               {
+                title: "Withdrawble Amount",
+                content: `${formatNumDynDecimal(withdrawbleAm)} ${tokenSymbol}`,
+              },
+              {
                 title: "Max Staking Amount",
                 content: `${formatNumDynDecimal(
                   maxStakingAmount
@@ -865,9 +893,9 @@ const MyPoolInfo = ({
                   type="number"
                   placeholder="Enter amount to remove"
                   inputRightElementIcon={
-                    <Heading as="h5" size="h5">
-                      {tokenSymbol}
-                    </Heading>
+                    <Button w="50px" height={"40px"} onClick={setMaxReward}>
+                      Max
+                    </Button>
                   }
                 />
 
@@ -892,6 +920,7 @@ const MyPoolInfo = ({
                     buttonVariant="primary"
                     buttonLabel="Remove Rewards"
                     onClick={handleRemoveRewards}
+                    disableBtn={!(withdrawbleAm > 0.0001 && amount > 0)}
                     message={`Remove from reward pool ${amount} ${tokenSymbol}. Continue?`}
                   />
                 </HStack>

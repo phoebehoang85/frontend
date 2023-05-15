@@ -1,4 +1,11 @@
-import { Box, Button, Heading, SimpleGrid, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Heading,
+  SimpleGrid,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import SectionContainer from "components/container/SectionContainer";
 import IWInput from "components/input/Input";
 import { IWTable } from "components/table/IWTable";
@@ -58,11 +65,10 @@ export default function CreateTokenPage({ api }) {
   }, [currentAccount]);
 
   const updateIcon = async (contractAddress) => {
-    console.log({contractAddress, tokenIconUrl: iconIPFSUrl});
-    if(iconIPFSUrl) {
-      APICall.updateTokenIcon({contractAddress, tokenIconUrl: iconIPFSUrl})
+    if (iconIPFSUrl) {
+      APICall.updateTokenIcon({ contractAddress, tokenIconUrl: iconIPFSUrl });
     }
-  }
+  };
 
   async function createNewToken() {
     if (!currentAccount) {
@@ -165,7 +171,10 @@ export default function CreateTokenPage({ api }) {
     );
   }
 
-  const hasMorePage = useMemo(() => (currentPage+1)*5 < allTokensList?.length, [currentPage, allTokensList])
+  const hasMorePage = useMemo(
+    () => (currentPage) * 4 < allTokensList?.length,
+    [currentPage, allTokensList]
+  );
 
   const tableData = {
     tableHeader: [
@@ -212,7 +221,6 @@ export default function CreateTokenPage({ api }) {
         label: "Initial Mint",
       },
     ],
-
   };
 
   return (
@@ -311,7 +319,13 @@ export default function CreateTokenPage({ api }) {
         title="Recent Tokens"
         description={``}
       >
-        <InfiniteTable {...tableData} tableBody={allTokensList?.slice(0, currentPage*5) || []} getNext={() => hasMorePage ? setCurrentPage(currentPage+1): ""} hasMore={hasMorePage} isDisableRowClick={true} />
+        <InfiniteTable
+          {...tableData}
+          tableBody={allTokensList?.slice(0, currentPage * 4) || []}
+          getNext={() => (hasMorePage ? setCurrentPage(currentPage + 1) : "")}
+          hasMore={hasMorePage}
+          isDisableRowClick={true}
+        />
       </SectionContainer>
     </>
   );

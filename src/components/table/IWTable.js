@@ -23,6 +23,7 @@ import ImageCloudFlare from "components/image-cf/ImageCF";
 import { addressShortener } from "utils";
 import FadeIn from "react-fade-in/lib/FadeIn";
 import TokenIcon from "components/TokenIcon";
+import AddressCopier from "components/address-copier/AddressCopier";
 
 export function IWTable({
   tableHeader,
@@ -328,7 +329,7 @@ export const formatDataCellTable = (itemObj, header, mode) => {
     case "contractAddress":
       return (
         <>
-          <Text>{addressShortener(itemObj[header])}</Text>
+          <AddressCopier address={itemObj[header]} />
         </>
       );
     case "tokenSymbol":
@@ -348,28 +349,28 @@ export const formatDataCellTable = (itemObj, header, mode) => {
     case "owner":
       return (
         <>
-          <Text>{addressShortener(itemObj[header])}</Text>
+          <AddressCopier address={itemObj[header]} />
         </>
       );
 
     case "poolContract":
       return (
         <>
-          <Text>{addressShortener(itemObj[header])}</Text>
+          <AddressCopier address={itemObj[header]} />
         </>
       );
 
     case "creator":
       return (
         <>
-          <Text>{addressShortener(itemObj[header])}</Text>
+          <AddressCopier address={itemObj[header]} />
         </>
       );
 
     case "mintTo":
       return (
         <>
-          <Text>{addressShortener(itemObj[header])}</Text>
+          <AddressCopier address={itemObj[header]} />
         </>
       );
 

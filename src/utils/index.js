@@ -48,7 +48,11 @@ export function delay(sec) {
 }
 
 export const formatNumToBN = (number = 0, decimal = 12) => {
-  return new BN(number * 1).mul(new BN(10 ** decimal)).toString();
+  let numberMul = 6
+  if(number > 10 ** 6) {
+    numberMul = 0
+  }
+  return new BN(+number * 10 ** numberMul).mul(new BN(10 ** (decimal - 6))).toString();
 };
 
 export const formatNumDynDecimal = (num = 0, dec = 4) => {
@@ -182,5 +186,5 @@ export function roundUp(v, n = 4) {
 
 export function roundDown(number, decimals = 4) {
   decimals = decimals || 0;
-  return ( Math.floor( number * Math.pow(10, decimals) ) / Math.pow(10, decimals) );
+  return Math.floor(number * Math.pow(10, decimals)) / Math.pow(10, decimals);
 }

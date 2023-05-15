@@ -49,7 +49,6 @@ function IWInput(props) {
           <InputRightElement
             right="16px"
             justifyContent="end"
-            pointerEvents="none"
             children={inputRightElementIcon}
           />
         )}
@@ -58,6 +57,7 @@ function IWInput(props) {
           onChange={onChangeInput}
           type={type}
           id={id}
+          onWheel={(e) => e.target.blur()} 
           min={0}
           placeholder={placeholder}
         />{" "}
